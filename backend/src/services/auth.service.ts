@@ -1,0 +1,247 @@
+import bcrypt from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
+import jwt from 'jsonwebtoken';
+import pool from '../db/pool';
+import emailQueue from './email.queue';
+
+const BCRYPT_ROUNDS = 12;
+const JWT_SECRET = process.env.JWT_SECRET || 'CHANGE_ME_IN_PRODUCTION';
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
+
+export interface JwtPayload {
+  sub: string;    // user id
+  email: string;
+  name: string;
+  role: 'candidat' | 'recruteur' | 'admin';
+  iat?: number;
+  exp?: number;
+}
+
+// ─── Utilitaire JWT ───────────────────────────────────────────────────────────
+export const signJwt = (payload: Omit<JwtPayload, 'iat' | 'exp'>): string => {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as jwt.SignOptions);
+};
+
+export const verifyJwt = (token: string): JwtPayload => {
+  return jwt.verify(token, JWT_SECRET) as JwtPayload;
+};
+
+// ─── Register ─────────────────────────────────────────────────────────────────
+export const registerUser = async (
+  name: string,
+  email: string,
+  password: string,
+  role: 'candidat' | 'recruteur'
+) => {
+  // Vérification email existant
+  const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email.toLowerCase()]);
+  if (existing.rows.length > 0) {
+    throw new Error('EMAIL_ALREADY_EXISTS');
+  }
+
+  // Hash bcrypt (jamais stocké en clair)
+  const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
+
+  // UUID v4 comme token de vérification email
+  const verificationToken = uuidv4();
+
+  // INSERT dans PostgreSQL
+  const result = await pool.query(
+    `INSERT INTO users (name, email, password_hash, role, verified, verification_token)
+     VALUES ($1, $2, $3, $4, FALSE, $5)
+     RETURNING id, name, email, role, verified`,
+    [name, email.toLowerCase(), passwordHash, role, verificationToken]
+  );
+
+  const newUser = result.rows[0];
+
+  // Push job email de confirmation dans Bull/Redis (asynchrone, jamais bloquant)
+  await emailQueue.add({
+    type: 'email-verification',
+    to: email,
+    name,
+    token: verificationToken,
+  });
+
+  return newUser;
+};
+
+// ─── Verify Email Token ───────────────────────────────────────────────────────
+export const verifyEmailToken = async (token: string) => {
+  const result = await pool.query(
+    `UPDATE users
+     SET verified = TRUE, verification_token = NULL
+     WHERE verification_token = $1 AND verified = FALSE
+     RETURNING id, name, email, role, verified`,
+    [token]
+  );
+
+  if (result.rows.length === 0) {
+    throw new Error('INVALID_OR_EXPIRED_TOKEN');
+  }
+
+  const user = result.rows[0];
+
+  // JWT signé retourné au client
+  const jwtToken = signJwt({
+    sub: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+  });
+
+  return { user, token: jwtToken };
+};
+
+// ─── Login ────────────────────────────────────────────────────────────────────
+export const loginUser = async (email: string, password: string) => {
+  const result = await pool.query(
+    `SELECT id, name, email, password_hash, role, verified, avatar_url,
+            title, phone, location, bio, skills, cv_filename,
+            company_name, company_website
+     FROM users WHERE email = $1`,
+    [email.toLowerCase()]
+  );
+
+  if (result.rows.length === 0) {
+    throw new Error('INVALID_CREDENTIALS');
+  }
+
+  const user = result.rows[0];
+
+  if (!user.password_hash) {
+    throw new Error('USE_GOOGLE_LOGIN');
+  }
+
+  if (!user.verified) {
+    throw new Error('EMAIL_NOT_VERIFIED');
+  }
+
+  const isValid = await bcrypt.compare(password, user.password_hash);
+  if (!isValid) {
+    throw new Error('INVALID_CREDENTIALS');
+  }
+
+  const jwtToken = signJwt({
+    sub: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+  });
+
+  // Retourner sans password_hash
+  const { password_hash: _, ...safeUser } = user;
+  return { user: safeUser, token: jwtToken };
+};
+
+// ─── Get User by ID ───────────────────────────────────────────────────────────
+export const getUserById = async (id: string) => {
+  const result = await pool.query(
+    `SELECT id, name, email, role, verified, avatar_url,
+            title, phone, location, bio, skills, cv_filename,
+            company_name, company_website, created_at
+     FROM users WHERE id = $1`,
+    [id]
+  );
+  return result.rows[0] || null;
+};
+
+// ─── Request Password Reset ───────────────────────────────────────────────────
+export const requestPasswordReset = async (email: string) => {
+  const result = await pool.query(
+    'SELECT id, name, email FROM users WHERE email = $1 AND verified = TRUE',
+    [email.toLowerCase()]
+  );
+
+  // Toujours répondre OK (security: ne pas révéler si l'email existe)
+  if (result.rows.length === 0) {
+    return;
+  }
+
+  const user = result.rows[0];
+
+  // Token aléatoire + expiry 1 heure
+  const resetToken = uuidv4();
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString();
+
+  await pool.query(
+    'UPDATE users SET reset_token = $1, reset_token_expires = $2 WHERE id = $3',
+    [resetToken, expiresAt, user.id]
+  );
+
+  // Push job email reset dans Bull/Redis
+  await emailQueue.add({
+    type: 'password-reset',
+    to: email,
+    name: user.name,
+    token: resetToken,
+  });
+};
+
+// ─── Complete Password Reset ──────────────────────────────────────────────────
+export const completePasswordReset = async (token: string, newPassword: string) => {
+  const result = await pool.query(
+    `SELECT id, reset_token_expires FROM users
+     WHERE reset_token = $1 AND reset_token_expires > NOW()`,
+    [token]
+  );
+
+  if (result.rows.length === 0) {
+    throw new Error('RESET_TOKEN_INVALID_OR_EXPIRED');
+  }
+
+  const newHash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
+
+  await pool.query(
+    `UPDATE users
+     SET password_hash = $1, reset_token = NULL, reset_token_expires = NULL
+     WHERE id = $2`,
+    [newHash, result.rows[0].id]
+  );
+};
+
+// ─── Update User Profile ──────────────────────────────────────────────────────
+export const updateUserProfile = async (
+  userId: string,
+  profile: {
+    name?: string;
+    title?: string;
+    phone?: string;
+    location?: string;
+    bio?: string;
+    skills?: string[];
+    cvFileName?: string;
+    companyName?: string;
+    companyWebsite?: string;
+  }
+) => {
+  const result = await pool.query(
+    `UPDATE users SET
+      name = COALESCE($1, name),
+      title = COALESCE($2, title),
+      phone = COALESCE($3, phone),
+      location = COALESCE($4, location),
+      bio = COALESCE($5, bio),
+      skills = COALESCE($6, skills),
+      cv_filename = COALESCE($7, cv_filename),
+      company_name = COALESCE($8, company_name),
+      company_website = COALESCE($9, company_website)
+    WHERE id = $10
+    RETURNING id, name, email, role, verified, avatar_url,
+              title, phone, location, bio, skills, cv_filename,
+              company_name, company_website`,
+    [
+      profile.name,
+      profile.title,
+      profile.phone,
+      profile.location,
+      profile.bio,
+      profile.skills,
+      profile.cvFileName,
+      profile.companyName,
+      profile.companyWebsite,
+      userId,
+    ]
+  );
+  return result.rows[0];
+};
