@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import pool from '../db/pool';
+import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -27,22 +28,35 @@ passport.use(
           return done(new Error('NO_EMAIL_FROM_GOOGLE'), undefined);
         }
 
-        // Upsert : crée ou met à jour l'utilisateur Google
+        // Upsert : crée ou met à jour l'utilisateur Google (SQLite-compatible)
         let user;
         try {
-          const result = await pool.query(
-            `INSERT INTO users (name, email, google_id, role, verified, avatar_url)
-             VALUES ($1, $2, $3, $4, TRUE, $5)
-             ON CONFLICT (email) DO UPDATE SET
-               google_id = COALESCE(users.google_id, EXCLUDED.google_id),
-               avatar_url = COALESCE(EXCLUDED.avatar_url, users.avatar_url),
-               verified = TRUE
-             RETURNING id, name, email, role, verified, avatar_url`,
-            [name, email, googleId, role, avatarUrl]
+          // Chercher l'utilisateur existant par email
+          const existing = await pool.query(
+            'SELECT id FROM users WHERE email = $1',
+            [email]
           );
-          user = result.rows[0];
+
+          if (existing.rows.length > 0) {
+            // Mettre à jour le google_id et avatar_url si nécessaire
+            await pool.query(
+              `UPDATE users SET google_id = COALESCE(google_id, $1), avatar_url = COALESCE($2, avatar_url), verified = 1 WHERE email = $3`,
+              [googleId, avatarUrl, email]
+            );
+            const updated = await pool.query('SELECT id, name, email, role, verified, avatar_url FROM users WHERE email = $1', [email]);
+            user = updated.rows[0];
+          } else {
+            // Créer un nouvel utilisateur Google
+            const newId = uuidv4();
+            await pool.query(
+              `INSERT INTO users (id, name, email, google_id, role, verified, avatar_url)
+               VALUES ($1, $2, $3, $4, $5, 1, $6)`,
+              [newId, name, email, googleId, role, avatarUrl]
+            );
+            user = { id: newId, name, email, role, verified: true, avatar_url: avatarUrl };
+          }
         } catch (dbErr) {
-          console.warn('⚠️ Mode hors-ligne activé pour Google OAuth.');
+          console.warn('⚠️ Mode hors-ligne Google OAuth.');
           user = {
             id: require('crypto').randomUUID(),
             name,

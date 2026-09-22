@@ -9,10 +9,10 @@ const JWT_SECRET = process.env.JWT_SECRET || 'CHANGE_ME_IN_PRODUCTION';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
 export interface JwtPayload {
-  sub: string;    // user id
+  sub: string;
   email: string;
   name: string;
-  role: 'candidat' | 'recruteur' | 'admin';
+  role: 'candidat' | 'recruteur' | 'admin' | 'admin_manager';
   iat?: number;
   exp?: number;
 }
@@ -33,45 +33,29 @@ export const registerUser = async (
   password: string,
   role: 'candidat' | 'recruteur'
 ) => {
-  // Vérification email existant (avec fallback)
-  try {
-    const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email.toLowerCase()]);
-    if (existing.rows.length > 0) {
-      throw new Error('EMAIL_ALREADY_EXISTS');
-    }
-  } catch (err: any) {
-    if (err.message === 'EMAIL_ALREADY_EXISTS') throw err;
-    // Sinon, on ignore l'erreur de connexion BDD pour le mode hors-ligne
+  const cleanEmail = email.toLowerCase();
+
+  // Vérification email existant
+  const existing = await pool.query('SELECT id FROM users WHERE email = $1', [cleanEmail]);
+  if (existing.rows.length > 0) {
+    throw new Error('EMAIL_ALREADY_EXISTS');
   }
 
-  // Hash bcrypt (jamais stocké en clair)
   const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
-
-  // UUID v4 comme token de vérification email
   const verificationToken = uuidv4();
+  const userId = uuidv4();
 
-  // INSERT dans PostgreSQL (avec fallback mock pour les tests sans BDD)
-  let newUser;
-  try {
-    const result = await pool.query(
-      `INSERT INTO users (name, email, password_hash, role, verified, verification_token)
-       VALUES ($1, $2, $3, $4, FALSE, $5)
-       RETURNING id, name, email, role, verified`,
-      [name, email.toLowerCase(), passwordHash, role, verificationToken]
-    );
-    newUser = result.rows[0];
-  } catch (dbErr) {
-    console.warn('⚠️ Mode hors-ligne activé (Erreur BDD). Création d\'un utilisateur fictif pour le test.');
-    newUser = {
-      id: uuidv4(),
-      name,
-      email: email.toLowerCase(),
-      role,
-      verified: false
-    };
-  }
+  // INSERT avec UUID généré côté applicatif
+  const result = await pool.query(
+    `INSERT INTO users (id, name, email, password_hash, role, verified, verification_token)
+     VALUES ($1, $2, $3, $4, $5, 0, $6)
+     RETURNING id, name, email, role, verified`,
+    [userId, name, cleanEmail, passwordHash, role, verificationToken]
+  );
 
-  // Push job email de confirmation dans Bull/Redis (asynchrone, non bloquant si Redis est absent)
+  const newUser = result.rows[0];
+
+  // Envoyer email de vérification
   try {
     await emailQueue.add({
       type: 'email-verification',
@@ -80,7 +64,7 @@ export const registerUser = async (
       token: verificationToken,
     });
   } catch (queueErr) {
-    console.warn('⚠️ Bull/Redis non disponible pour l\'envoi d\'email:', (queueErr as Error).message);
+    console.warn('⚠️ Email queue non disponible:', (queueErr as Error).message);
   }
 
   return newUser;
@@ -88,34 +72,26 @@ export const registerUser = async (
 
 // ─── Verify Email Token ───────────────────────────────────────────────────────
 export const verifyEmailToken = async (token: string) => {
-  let user;
-  try {
-    const result = await pool.query(
-      `UPDATE users
-       SET verified = TRUE, verification_token = NULL
-       WHERE verification_token = $1 AND verified = FALSE
-       RETURNING id, name, email, role, verified`,
-      [token]
-    );
+  // Vérifier que le token existe et n'est pas encore vérifié
+  const found = await pool.query(
+    'SELECT id, name, email, role FROM users WHERE verification_token = $1 AND verified = 0',
+    [token]
+  );
 
-    if (result.rows.length === 0) {
-      throw new Error('INVALID_OR_EXPIRED_TOKEN');
-    }
-    user = result.rows[0];
-  } catch (err: any) {
-    if (err.message === 'INVALID_OR_EXPIRED_TOKEN') throw err;
-    console.warn('⚠️ Mode hors-ligne activé pour la vérification d\'email.');
-    // Mock user for offline mode
-    user = {
-      id: uuidv4(),
-      name: 'Utilisateur Test',
-      email: 'test@novorise.com',
-      role: 'candidat',
-      verified: true
-    };
+  if (found.rows.length === 0) {
+    throw new Error('INVALID_OR_EXPIRED_TOKEN');
   }
 
-  // JWT signé retourné au client
+  const user = found.rows[0];
+
+  // Marquer comme vérifié
+  await pool.query(
+    'UPDATE users SET verified = 1, verification_token = NULL WHERE id = $1',
+    [user.id]
+  );
+
+  user.verified = true;
+
   const jwtToken = signJwt({
     sub: user.id,
     email: user.email,
@@ -133,29 +109,31 @@ export const loginUser = async (email: string, password: string) => {
     cleanEmail = `${cleanEmail}@novorise.com`;
   }
 
-  // ─── Compte Administrateur Dédié (user: admin / password: Admin@1212) ─────────
+  // ─── Compte Administrateur Dédié (user: admin / password: Admin@1212) ────────
   if (
     (cleanEmail === 'admin@novorise.com' || cleanEmail === 'admin@admin.com') &&
     password === 'Admin@1212'
   ) {
+    const adminId = '00000000-0000-0000-0000-000000000001';
     const adminUser = {
-      id: '00000000-0000-0000-0000-000000000001',
+      id: adminId,
       name: 'Administrateur Principal',
       email: cleanEmail,
       role: 'admin' as const,
       verified: true,
-      avatar_url: undefined,
     };
 
-    // Assurer silencieusement son existence dans PostgreSQL si le pool est actif
+    // Assurer silencieusement son existence dans SQLite
     try {
-      const passwordHash = await bcrypt.hash('Admin@1212', 10);
-      await pool.query(
-        `INSERT INTO users (id, name, email, password_hash, role, verified)
-         VALUES ($1, $2, $3, $4, 'admin', TRUE)
-         ON CONFLICT (email) DO UPDATE SET password_hash = $4, role = 'admin', verified = TRUE`,
-        [adminUser.id, adminUser.name, adminUser.email, passwordHash]
-      );
+      const existingAdmin = await pool.query('SELECT id FROM users WHERE id = $1', [adminId]);
+      if (existingAdmin.rows.length === 0) {
+        const passwordHash = await bcrypt.hash('Admin@1212', 10);
+        await pool.query(
+          `INSERT INTO users (id, name, email, password_hash, role, verified)
+           VALUES ($1, $2, $3, $4, 'admin', 1)`,
+          [adminId, adminUser.name, adminUser.email, passwordHash]
+        );
+      }
     } catch (_) {}
 
     const jwtToken = signJwt({
@@ -202,7 +180,6 @@ export const loginUser = async (email: string, password: string) => {
     role: user.role,
   });
 
-  // Retourner sans password_hash
   const { password_hash: _, ...safeUser } = user;
   return { user: safeUser, token: jwtToken };
 };
@@ -222,18 +199,15 @@ export const getUserById = async (id: string) => {
 // ─── Request Password Reset ───────────────────────────────────────────────────
 export const requestPasswordReset = async (email: string) => {
   const result = await pool.query(
-    'SELECT id, name, email FROM users WHERE email = $1 AND verified = TRUE',
+    'SELECT id, name, email FROM users WHERE email = $1 AND verified = 1',
     [email.toLowerCase()]
   );
 
-  // Toujours répondre OK (security: ne pas révéler si l'email existe)
   if (result.rows.length === 0) {
-    return;
+    return; // Sécurité : ne pas révéler si l'email existe
   }
 
   const user = result.rows[0];
-
-  // Token aléatoire + expiry 1 heure
   const resetToken = uuidv4();
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString();
 
@@ -242,7 +216,6 @@ export const requestPasswordReset = async (email: string) => {
     [resetToken, expiresAt, user.id]
   );
 
-  // Push job email reset dans Bull/Redis
   await emailQueue.add({
     type: 'password-reset',
     to: email,
@@ -254,9 +227,9 @@ export const requestPasswordReset = async (email: string) => {
 // ─── Complete Password Reset ──────────────────────────────────────────────────
 export const completePasswordReset = async (token: string, newPassword: string) => {
   const result = await pool.query(
-    `SELECT id, reset_token_expires FROM users
-     WHERE reset_token = $1 AND reset_token_expires > NOW()`,
-    [token]
+    `SELECT id FROM users
+     WHERE reset_token = $1 AND reset_token_expires > $2`,
+    [token, new Date().toISOString()]
   );
 
   if (result.rows.length === 0) {
@@ -266,9 +239,7 @@ export const completePasswordReset = async (token: string, newPassword: string) 
   const newHash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
 
   await pool.query(
-    `UPDATE users
-     SET password_hash = $1, reset_token = NULL, reset_token_expires = NULL
-     WHERE id = $2`,
+    'UPDATE users SET password_hash = $1, reset_token = NULL, reset_token_expires = NULL WHERE id = $2',
     [newHash, result.rows[0].id]
   );
 };
@@ -289,7 +260,7 @@ export const updateUserProfile = async (
     companyWebsite?: string;
   }
 ) => {
-  const result = await pool.query(
+  await pool.query(
     `UPDATE users SET
       name = COALESCE($1, name),
       title = COALESCE($2, title),
@@ -300,11 +271,9 @@ export const updateUserProfile = async (
       cv_filename = COALESCE($7, cv_filename),
       cover_letter_filename = COALESCE($8, cover_letter_filename),
       company_name = COALESCE($9, company_name),
-      company_website = COALESCE($10, company_website)
-    WHERE id = $11
-    RETURNING id, name, email, role, verified, avatar_url,
-              title, phone, location, bio, skills, cv_filename, cover_letter_filename,
-              company_name, company_website`,
+      company_website = COALESCE($10, company_website),
+      updated_at = datetime('now')
+    WHERE id = $11`,
     [
       profile.name,
       profile.title,
@@ -319,5 +288,14 @@ export const updateUserProfile = async (
       userId,
     ]
   );
-  return result.rows[0];
+
+  // Récupérer et retourner le profil mis à jour
+  const updated = await pool.query(
+    `SELECT id, name, email, role, verified, avatar_url,
+            title, phone, location, bio, skills, cv_filename, cover_letter_filename,
+            company_name, company_website
+     FROM users WHERE id = $1`,
+    [userId]
+  );
+  return updated.rows[0];
 };

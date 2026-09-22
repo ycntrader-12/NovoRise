@@ -18,10 +18,10 @@ router.get('/stats', requireRole('admin'), async (_req: Request, res: Response) 
     const usersCount = await pool.query(`
       SELECT 
         COUNT(*) as total,
-        COUNT(*) FILTER (WHERE role = 'candidat') as candidats,
-        COUNT(*) FILTER (WHERE role = 'recruteur') as recruteurs,
-        COUNT(*) FILTER (WHERE role = 'admin') as admins,
-        COUNT(*) FILTER (WHERE is_verified = true) as verified
+        SUM(CASE WHEN role = 'candidat' THEN 1 ELSE 0 END) as candidats,
+        SUM(CASE WHEN role = 'recruteur' THEN 1 ELSE 0 END) as recruteurs,
+        SUM(CASE WHEN role = 'admin' THEN 1 ELSE 0 END) as admins,
+        SUM(CASE WHEN verified = 1 THEN 1 ELSE 0 END) as verified
       FROM users
     `);
 
@@ -36,13 +36,13 @@ router.get('/stats', requireRole('admin'), async (_req: Request, res: Response) 
     const appsCount = await pool.query(`
       SELECT 
         COUNT(*) as total,
-        COUNT(*) FILTER (WHERE status = 'En attente') as en_attente,
-        COUNT(*) FILTER (WHERE status = 'Acceptée') as acceptees,
-        COUNT(*) FILTER (WHERE status = 'Refusée') as refusees
+        SUM(CASE WHEN status = 'En attente' THEN 1 ELSE 0 END) as en_attente,
+        SUM(CASE WHEN status = 'Acceptée' THEN 1 ELSE 0 END) as acceptees,
+        SUM(CASE WHEN status = 'Refusée' THEN 1 ELSE 0 END) as refusees
       FROM applications
     `);
 
-    const dbVersion = await pool.query('SELECT version();');
+    const dbVersion = await pool.query("SELECT 'SQLite (local)' as version");
 
     res.json({
       users: usersCount.rows[0],
@@ -65,7 +65,7 @@ router.get('/users', async (req: Request, res: Response) => {
     const { role, search } = req.query;
 
     let query = `
-      SELECT id, email, name, role, is_verified, created_at, avatar_url
+      SELECT id, email, name, role, verified as is_verified, created_at, avatar_url
       FROM users
       WHERE 1=1
     `;
@@ -79,7 +79,7 @@ router.get('/users', async (req: Request, res: Response) => {
 
     if (search) {
       params.push(`%${search}%`);
-      query += ` AND (name ILIKE $${++count} OR email ILIKE $${count})`;
+      query += ` AND (name LIKE $${++count} OR email LIKE $${count})`;
     }
 
     query += ' ORDER BY created_at DESC';
@@ -108,10 +108,10 @@ router.patch('/users/:id', async (req: Request, res: Response) => {
     const result = await pool.query(
       `UPDATE users 
        SET role = COALESCE($1, role),
-           is_verified = COALESCE($2, is_verified)
+           verified = COALESCE($2, verified)
        WHERE id = $3
-       RETURNING id, email, name, role, is_verified, created_at`,
-      [role || null, is_verified !== undefined ? is_verified : null, id]
+       RETURNING id, email, name, role, verified as is_verified, created_at`,
+      [role || null, is_verified !== undefined ? (is_verified ? 1 : 0) : null, id]
     );
 
     if (result.rowCount === 0) {
@@ -156,11 +156,12 @@ router.post('/users', requireRole('admin'), async (req: Request, res: Response) 
 
     let newUser;
     try {
+      const newId = uuidv4();
       const result = await pool.query(
-        `INSERT INTO users (name, email, password_hash, role, verified)
-         VALUES ($1, $2, $3, $4, TRUE)
+        `INSERT INTO users (id, name, email, password_hash, role, verified)
+         VALUES ($1, $2, $3, $4, $5, 1)
          RETURNING id, name, email, role, verified, created_at`,
-        [name, email.toLowerCase(), passwordHash, role]
+        [newId, name, email.toLowerCase(), passwordHash, role]
       );
       newUser = result.rows[0];
     } catch (_dbErr) {
