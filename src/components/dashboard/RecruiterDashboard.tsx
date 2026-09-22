@@ -78,7 +78,7 @@ export const RecruiterDashboard: React.FC = () => {
     setNewJob({
       title: '',
       company: user?.profile?.companyName || 'NovoRise Partner',
-      category: 'Tech & IT',
+      category: 'Informatique & Numérique',
       contract: 'CDI',
       workplace: 'Remote',
       location: 'Casablanca (Remote possible)',
@@ -424,7 +424,6 @@ export const RecruiterDashboard: React.FC = () => {
                   onChange={(e) => setNewJob({...newJob, category: e.target.value as any})}
                   className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#FF9F1C] bg-white"
                 >
-                  <option value="Tech & IT">Tech & IT</option>
                   {/* Toutes les catégories sont chargées dynamiquement */}
                   {JOB_CATEGORIES.map(cat => (
                     <option key={cat.label} value={cat.label}>{cat.icon} {cat.label}</option>

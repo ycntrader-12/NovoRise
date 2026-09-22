@@ -72,7 +72,7 @@ const INITIAL_JOBS: Job[] = [
     company: 'TechNova Solutions',
     logoBg: 'bg-gradient-to-tr from-blue-600 to-indigo-600',
     logoText: 'TN',
-    category: 'Tech & IT',
+    category: 'Informatique & Numérique',
     contract: 'CDI',
     workplace: 'Remote',
     location: 'Casablanca (Remote possible)',
@@ -102,7 +102,7 @@ const INITIAL_JOBS: Job[] = [
     company: 'Pulse Creative Studio',
     logoBg: 'bg-gradient-to-tr from-purple-600 to-pink-600',
     logoText: 'PC',
-    category: 'Tech & IT',
+    category: 'Design & Architecture',
     contract: 'CDI',
     workplace: 'Hybride',
     location: 'Rabat',
@@ -132,7 +132,7 @@ const INITIAL_JOBS: Job[] = [
     company: 'ScaleUp Media',
     logoBg: 'bg-gradient-to-tr from-orange-500 to-amber-500',
     logoText: 'SM',
-    category: 'Marketing & Com',
+    category: 'Marketing & Communication',
     contract: 'CDI',
     workplace: 'Hybride',
     location: 'Casablanca',
@@ -162,7 +162,7 @@ const INITIAL_JOBS: Job[] = [
     company: 'Nexus Intelligence',
     logoBg: 'bg-gradient-to-tr from-emerald-500 to-teal-600',
     logoText: 'NI',
-    category: 'Tech & IT',
+    category: 'Informatique & Numérique',
     contract: 'CDI',
     workplace: 'Remote',
     location: 'Remote',
@@ -192,7 +192,7 @@ const INITIAL_JOBS: Job[] = [
     company: 'OmniSales Global',
     logoBg: 'bg-gradient-to-tr from-blue-500 to-cyan-500',
     logoText: 'OS',
-    category: 'Vente & Business',
+    category: 'Commerce & Vente',
     contract: 'CDI',
     workplace: 'Présentiel',
     location: 'Casablanca',
@@ -222,7 +222,7 @@ const INITIAL_JOBS: Job[] = [
     company: 'CloudWave Solutions',
     logoBg: 'bg-gradient-to-tr from-indigo-600 to-violet-700',
     logoText: 'CW',
-    category: 'Ingénierie & R&D',
+    category: 'Informatique & Numérique',
     contract: 'Freelance',
     workplace: 'Remote',
     location: 'Remote',
@@ -252,7 +252,7 @@ const INITIAL_JOBS: Job[] = [
     company: 'InnovaTech Systems',
     logoBg: 'bg-gradient-to-tr from-purple-700 to-indigo-800',
     logoText: 'IT',
-    category: 'Ingénierie & R&D',
+    category: 'Génie Électrique & Électronique',
     contract: 'CDI',
     workplace: 'Présentiel',
     location: 'Tanger',
@@ -282,7 +282,7 @@ const INITIAL_JOBS: Job[] = [
     company: 'NovoRise Studio',
     logoBg: 'bg-gradient-to-tr from-[#FF9F1C] to-[#FF5E36]',
     logoText: 'NR',
-    category: 'Tech & IT',
+    category: 'Informatique & Numérique',
     contract: 'Stage',
     workplace: 'Hybride',
     location: 'Casablanca',
@@ -802,7 +802,14 @@ function NovoRiseMain() {
                       {meta.icon}
                     </div>
                     <h3 className="text-sm font-bold text-[#0B132B] mb-1 leading-tight">{meta.label}</h3>
-                    <p className="text-gray-400 text-xs mb-3">{meta.count.toLocaleString('fr-FR')} offres</p>
+                    <p className="text-gray-400 text-xs mb-2">{meta.count.toLocaleString('fr-FR')} offres</p>
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {meta.jobs.slice(0, 3).map(jobName => (
+                        <span key={jobName} className="text-[10px] bg-gray-50 text-gray-500 px-1.5 py-0.5 rounded border border-gray-100">
+                          {jobName}
+                        </span>
+                      ))}
+                    </div>
                     <div className="flex items-center text-xs font-semibold text-gray-400 group-hover:text-[#FF5E36] transition-colors">
                       Explorer <ArrowRight className="ml-1 w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all" />
                     </div>
