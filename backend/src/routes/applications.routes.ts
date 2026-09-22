@@ -10,7 +10,7 @@ const router = Router();
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/', requireAuth, requireRole('candidat'), async (req: Request, res: Response) => {
   try {
-    const { jobId, coverNote, cvFileName } = req.body;
+    const { jobId, coverNote, cvFileName, coverLetterFileName } = req.body;
     const candidateId = req.user!.sub;
 
     // Vérifier que l'offre existe et est active
@@ -30,11 +30,14 @@ router.post('/', requireAuth, requireRole('candidat'), async (req: Request, res:
 
     // Insérer la candidature
     const appResult = await pool.query(
-      `INSERT INTO applications (job_id, candidate_id, cover_note, cv_filename)
-       VALUES ($1, $2, $3, $4)
-       ON CONFLICT (job_id, candidate_id) DO NOTHING
+      `INSERT INTO applications (job_id, candidate_id, cover_note, cv_filename, cover_letter_filename)
+       VALUES ($1, $2, $3, $4, $5)
+       ON CONFLICT (job_id, candidate_id) DO UPDATE SET 
+         cover_note = COALESCE(EXCLUDED.cover_note, applications.cover_note),
+         cv_filename = COALESCE(EXCLUDED.cv_filename, applications.cv_filename),
+         cover_letter_filename = COALESCE(EXCLUDED.cover_letter_filename, applications.cover_letter_filename)
        RETURNING *`,
-      [jobId, candidateId, coverNote, cvFileName]
+      [jobId, candidateId, coverNote, cvFileName, coverLetterFileName]
     );
 
     if (appResult.rows.length === 0) {
@@ -49,18 +52,20 @@ router.post('/', requireAuth, requireRole('candidat'), async (req: Request, res:
     );
 
     // Push notification email recruteur dans Bull/Redis (asynchrone)
-    await emailQueue.add({
-      type: 'application-notification',
-      to: job.recruiter_email,
-      name: job.recruiter_name,
-      payload: {
-        recruiterName: job.recruiter_name,
-        jobTitle: job.title,
-        candidateName: req.user!.name,
-        candidateEmail: req.user!.email,
-        appliedAt: new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Casablanca' }),
-      },
-    });
+    try {
+      await emailQueue.add({
+        type: 'application-notification',
+        to: job.recruiter_email,
+        name: job.recruiter_name,
+        payload: {
+          recruiterName: job.recruiter_name,
+          jobTitle: job.title,
+          candidateName: req.user!.name,
+          candidateEmail: req.user!.email,
+          appliedAt: new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Casablanca' }),
+        },
+      });
+    } catch (_) {}
 
     res.status(201).json(appResult.rows[0]);
   } catch (err) {
@@ -95,6 +100,7 @@ router.get('/me', requireAuth, requireRole('candidat'), async (req: Request, res
       appliedAt: row.applied_at,
       coverNote: row.cover_note,
       cvFileName: row.cv_filename,
+      coverLetterFileName: row.cover_letter_filename,
     })));
   } catch (err) {
     console.error('GET /applications/me error:', err);

@@ -5,6 +5,7 @@ interface SubmitApplicationPayload {
   jobId: string;
   coverNote?: string;
   cvFileName?: string;
+  coverLetterFileName?: string;
 }
 
 // POST /api/applications

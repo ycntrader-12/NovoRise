@@ -26,12 +26,16 @@ CREATE TABLE IF NOT EXISTS users (
   bio                  TEXT,
   skills               TEXT[],
   cv_filename          VARCHAR(255),
+  cover_letter_filename VARCHAR(255),
   -- Profil recruteur
   company_name         VARCHAR(255),
   company_website      TEXT,
   created_at           TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
   updated_at           TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
+
+-- Assurer l'ajout de la colonne si la table existe déjà
+ALTER TABLE users ADD COLUMN IF NOT EXISTS cover_letter_filename VARCHAR(255);
 
 -- ─── Table job_posts ─────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS job_posts (
@@ -60,11 +64,15 @@ CREATE TABLE IF NOT EXISTS applications (
   candidate_id         UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   cover_note           TEXT,
   cv_filename          VARCHAR(255),
+  cover_letter_filename VARCHAR(255),
   status               VARCHAR(30)  NOT NULL DEFAULT 'En attente' CHECK (status IN ('En attente','En cours d''examen','Entretien','Acceptée','Refusée')),
   applied_at           TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
   updated_at           TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
   UNIQUE (job_id, candidate_id)
 );
+
+-- Assurer l'ajout de la colonne si la table existe déjà
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS cover_letter_filename VARCHAR(255);
 
 -- ─── Triggers updated_at ─────────────────────────────────────────────────────
 CREATE OR REPLACE FUNCTION update_updated_at_column()

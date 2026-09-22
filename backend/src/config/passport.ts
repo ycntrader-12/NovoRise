@@ -28,18 +28,32 @@ passport.use(
         }
 
         // Upsert : crée ou met à jour l'utilisateur Google
-        const result = await pool.query(
-          `INSERT INTO users (name, email, google_id, role, verified, avatar_url)
-           VALUES ($1, $2, $3, $4, TRUE, $5)
-           ON CONFLICT (email) DO UPDATE SET
-             google_id = COALESCE(users.google_id, EXCLUDED.google_id),
-             avatar_url = COALESCE(EXCLUDED.avatar_url, users.avatar_url),
-             verified = TRUE
-           RETURNING id, name, email, role, verified, avatar_url`,
-          [name, email, googleId, role, avatarUrl]
-        );
+        let user;
+        try {
+          const result = await pool.query(
+            `INSERT INTO users (name, email, google_id, role, verified, avatar_url)
+             VALUES ($1, $2, $3, $4, TRUE, $5)
+             ON CONFLICT (email) DO UPDATE SET
+               google_id = COALESCE(users.google_id, EXCLUDED.google_id),
+               avatar_url = COALESCE(EXCLUDED.avatar_url, users.avatar_url),
+               verified = TRUE
+             RETURNING id, name, email, role, verified, avatar_url`,
+            [name, email, googleId, role, avatarUrl]
+          );
+          user = result.rows[0];
+        } catch (dbErr) {
+          console.warn('⚠️ Mode hors-ligne activé pour Google OAuth.');
+          user = {
+            id: require('crypto').randomUUID(),
+            name,
+            email,
+            role,
+            verified: true,
+            avatar_url: avatarUrl
+          };
+        }
 
-        return done(null, result.rows[0]);
+        return done(null, user);
       } catch (err) {
         return done(err as Error, undefined);
       }

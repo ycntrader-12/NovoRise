@@ -38,7 +38,15 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
 
   if (!response.ok) {
     const errorBody = await response.json().catch(() => ({ message: 'Erreur réseau' }));
-    throw Object.assign(new Error(errorBody.message || 'Request failed'), {
+    
+    let errorMessage = errorBody.message;
+    if (errorBody.error === 'VALIDATION_ERROR' && Array.isArray(errorBody.details)) {
+      errorMessage = errorBody.details.map((e: any) => e.msg).join(', ');
+    } else if (!errorMessage) {
+      errorMessage = errorBody.error ? `Erreur: ${errorBody.error}` : `HTTP ${response.status} Request failed`;
+    }
+
+    throw Object.assign(new Error(errorMessage), {
       status: response.status,
       code: errorBody.error,
       details: errorBody.details,

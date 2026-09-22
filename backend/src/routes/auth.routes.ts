@@ -19,6 +19,7 @@ const router = Router();
 const handleValidationErrors = (req: Request, res: Response): boolean => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.error('Validation error on route', req.originalUrl, ':', errors.array());
     res.status(400).json({ error: 'VALIDATION_ERROR', details: errors.array() });
     return true;
   }
@@ -128,6 +129,7 @@ router.post(
             bio: user.bio,
             skills: user.skills,
             cvFileName: user.cv_filename,
+            coverLetterFileName: user.cover_letter_filename,
             companyName: user.company_name,
             companyWebsite: user.company_website,
           },
@@ -216,6 +218,7 @@ router.get('/me', requireAuth, async (req: Request, res: Response) => {
         bio: user.bio,
         skills: user.skills,
         cvFileName: user.cv_filename,
+        coverLetterFileName: user.cover_letter_filename,
         companyName: user.company_name,
         companyWebsite: user.company_website,
       },

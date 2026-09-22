@@ -30,7 +30,8 @@ export const AuthFlowModal: React.FC = () => {
     login,
     loginWithGoogle,
     requestPasswordReset,
-    completePasswordReset
+    completePasswordReset,
+    apiError
   } = useAuth();
 
   // Local form states
@@ -50,16 +51,26 @@ export const AuthFlowModal: React.FC = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await register(name, email, password, role);
-    setLoading(false);
+    try {
+      await register(name, email, password, role);
+    } catch (err) {
+      // Error is already caught and set to apiError in useAuth
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Handle Connexion Submit
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await login(email, password);
-    setLoading(false);
+    try {
+      await login(email, password);
+    } catch (err) {
+      // Error is set in apiError
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Handle Google OAuth
@@ -133,6 +144,13 @@ export const AuthFlowModal: React.FC = () => {
                 Créez votre compte pour explorer les meilleures offres d'emploi ou recruter des talents d'exception.
               </p>
             </div>
+
+            {apiError && (
+              <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 flex items-center gap-3 text-sm">
+                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                <p>{apiError}</p>
+              </div>
+            )}
 
             <form onSubmit={handleRegister} className="space-y-5 text-sm max-w-lg mx-auto">
               
@@ -329,6 +347,13 @@ export const AuthFlowModal: React.FC = () => {
               <div className="mb-6 bg-emerald-50 text-emerald-800 text-xs p-3.5 rounded-xl flex items-center gap-2 border border-emerald-100 max-w-lg mx-auto">
                 <CheckCircle2 className="w-4 h-4 text-[#16A34A] flex-shrink-0" />
                 <span>{feedbackMsg}</span>
+              </div>
+            )}
+
+            {apiError && (
+              <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 flex items-center gap-3 text-sm max-w-lg mx-auto">
+                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                <p>{apiError}</p>
               </div>
             )}
 

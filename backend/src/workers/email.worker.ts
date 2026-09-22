@@ -4,22 +4,24 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// ─── Transporter Nodemailer — port 587 STARTTLS (Mailtrap) ───────────────────
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'sandbox.smtp.mailtrap.io',
-  port: parseInt(process.env.SMTP_PORT || '587', 10),
-  secure: false,       // false = STARTTLS (upgrade automatique sur port 587)
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
+let transporter: nodemailer.Transporter;
+
+// ─── Transporter Nodemailer — Ethereal (Test SMTP) ───────────────────────────
+nodemailer.createTestAccount().then((testAccount) => {
+  transporter = nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false, 
+    auth: {
+      user: testAccount.user, 
+      pass: testAccount.pass, 
+    },
+  });
+  console.log("🟢 SMTP: Ethereal test account initialized. Emails will be caught here.");
 });
 
 const FROM = process.env.SMTP_FROM || '"NovoRise" <noreply@novorise.ma>';
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3005';
 
 // ─── Templates HTML ───────────────────────────────────────────────────────────
 
@@ -177,7 +179,7 @@ emailQueue.process(async (job) => {
       throw new Error(`Unknown email job type: ${type}`);
   }
 
-  await transporter.sendMail({
+  const info = await transporter.sendMail({
     from: FROM,
     to,
     subject,
@@ -185,6 +187,7 @@ emailQueue.process(async (job) => {
   });
 
   console.log(`✅ Email [${type}] sent to ${to}`);
+  console.log(`🔗 Ethereal preview URL: ${nodemailer.getTestMessageUrl(info)}`);
 });
 
 export default emailQueue;

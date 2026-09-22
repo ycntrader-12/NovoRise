@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { 
   Briefcase, 
   FileText, 
+  FileCode,
   Search, 
   CheckCircle2, 
   Clock, 
@@ -41,6 +42,7 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
   );
   const [newSkillInput, setNewSkillInput] = useState('');
   const [cvFile, setCvFile] = useState(user?.profile?.cvFileName || 'CV_Principal_2026.pdf');
+  const [coverLetterFile, setCoverLetterFile] = useState(user?.profile?.coverLetterFileName || 'Lettre_De_Motivation_2026.pdf');
 
   const showToast = (msg: string) => {
     setToastMsg(msg);
@@ -53,9 +55,10 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
       title: profileTitle,
       bio: profileBio,
       skills,
-      cvFileName: cvFile
+      cvFileName: cvFile,
+      coverLetterFileName: coverLetterFile
     });
-    showToast('Profil et CV mis à jour avec succès ! ✨');
+    showToast('Profil, CV et Lettre de motivation mis à jour avec succès ! ✨');
   };
 
   const addSkill = () => {
@@ -402,26 +405,59 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
               </div>
             </div>
 
-            {/* CV Document Box */}
-            <div>
-              <label className="block font-semibold text-gray-700 mb-1">Curriculum Vitae actif</label>
-              <div className="border-2 border-dashed border-gray-200 rounded-2xl p-5 text-center hover:border-[#FF9F1C] transition-colors relative cursor-pointer">
-                <input
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) setCvFile(f.name);
-                  }}
-                  className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-                />
-                <div className="w-10 h-10 bg-orange-50 text-[#FF9F1C] rounded-xl flex items-center justify-center mx-auto mb-2">
-                  <Upload className="w-5 h-5" />
+            {/* CV & Lettre de Motivation Documents Section */}
+            <div className="space-y-4 pt-2">
+              <div className="flex items-center justify-between">
+                <label className="block font-semibold text-gray-800 text-sm">Documents Candidat (Tous formats acceptés)</label>
+                <span className="text-[11px] text-[#FF5E36] font-medium">PDF, DOC, DOCX, ODT, RTF, TXT, Images...</span>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                {/* CV Box */}
+                <div className="border-2 border-dashed border-gray-200 rounded-2xl p-5 text-center hover:border-[#FF9F1C] bg-gray-50/50 hover:bg-white transition-all relative cursor-pointer">
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx,.odt,.rtf,.txt,.jpg,.jpeg,.png,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) setCvFile(f.name);
+                    }}
+                    className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10"
+                  />
+                  <div className="w-10 h-10 bg-orange-50 text-[#FF9F1C] rounded-xl flex items-center justify-center mx-auto mb-2">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Document 1 • CV</span>
+                  <div className="font-bold text-[#0B132B] text-xs truncate max-w-[240px] mx-auto">{cvFile}</div>
+                  <div className="text-[11px] text-gray-500 mt-1 flex items-center justify-center gap-1">
+                    <Upload className="w-3 h-3 text-[#FF9F1C]" />
+                    <span>Cliquez ou déposez votre CV (Tous formats)</span>
+                  </div>
                 </div>
-                <div className="font-bold text-[#0B132B]">{cvFile}</div>
-                <div className="text-[11px] text-gray-400 mt-1">
-                  Cliquez ou déposez un nouveau fichier PDF pour remplacer votre CV actuel
+
+                {/* Lettre de Motivation Box */}
+                <div className="border-2 border-dashed border-gray-200 rounded-2xl p-5 text-center hover:border-[#2D6BE4] bg-gray-50/50 hover:bg-white transition-all relative cursor-pointer">
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx,.odt,.rtf,.txt,.jpg,.jpeg,.png,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) setCoverLetterFile(f.name);
+                    }}
+                    className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10"
+                  />
+                  <div className="w-10 h-10 bg-blue-50 text-[#2D6BE4] rounded-xl flex items-center justify-center mx-auto mb-2">
+                    <FileCode className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Document 2 • Lettre de Motivation</span>
+                  <div className="font-bold text-[#0B132B] text-xs truncate max-w-[240px] mx-auto">{coverLetterFile}</div>
+                  <div className="text-[11px] text-gray-500 mt-1 flex items-center justify-center gap-1">
+                    <Upload className="w-3 h-3 text-[#2D6BE4]" />
+                    <span>Cliquez ou déposez votre Lettre (Tous formats)</span>
+                  </div>
                 </div>
+
               </div>
             </div>
 

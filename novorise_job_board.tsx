@@ -346,7 +346,8 @@ function NovoRiseMain() {
     email: user?.email || '',
     phone: '',
     note: '',
-    fileName: ''
+    fileName: '',
+    coverLetterFileName: ''
   });
 
   const showToast = (msg: string) => {
@@ -1420,6 +1421,7 @@ function NovoRiseMain() {
                 candidateEmail: applyForm.email || user?.email || 'candidat@novorise.com',
                 candidatePhone: applyForm.phone,
                 cvFileName: applyForm.fileName || user?.profile?.cvFileName || 'CV_Candidat_NovoRise.pdf',
+                coverLetterFileName: applyForm.coverLetterFileName || user?.profile?.coverLetterFileName,
                 coverNote: applyForm.note
               });
 
@@ -1464,25 +1466,50 @@ function NovoRiseMain() {
                 </div>
               </div>
 
-              {/* Upload CV */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Curriculum Vitae (PDF) *</label>
-                <div className="border-2 border-dashed border-gray-200 rounded-2xl p-4 text-center hover:border-[#FF9F1C] transition-colors cursor-pointer relative">
-                  <input 
-                    type="file" 
-                    accept=".pdf,.doc,.docx"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) setApplyForm({...applyForm, fileName: file.name});
-                    }}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                  <Upload className="w-6 h-6 text-gray-400 mx-auto mb-1" />
-                  <span className="text-xs font-medium text-gray-600 block">
-                    {applyForm.fileName || user?.profile?.cvFileName 
-                      ? `✓ ${applyForm.fileName || user?.profile?.cvFileName}` 
-                      : 'Cliquez ou glissez votre CV ici'}
-                  </span>
+              {/* Upload Documents (CV + Lettre de motivation - Tous Formats) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* CV Upload */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">CV (Tous formats) *</label>
+                  <div className="border-2 border-dashed border-gray-200 rounded-2xl p-3 text-center hover:border-[#FF9F1C] bg-gray-50/50 hover:bg-white transition-all cursor-pointer relative">
+                    <input 
+                      type="file" 
+                      accept=".pdf,.doc,.docx,.odt,.rtf,.txt,.jpg,.jpeg,.png,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) setApplyForm({...applyForm, fileName: file.name});
+                      }}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    />
+                    <FileText className="w-5 h-5 text-[#FF9F1C] mx-auto mb-1" />
+                    <span className="text-xs font-medium text-gray-700 block truncate">
+                      {applyForm.fileName || user?.profile?.cvFileName 
+                        ? `✓ ${applyForm.fileName || user?.profile?.cvFileName}` 
+                        : 'Déposer votre CV'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Lettre de Motivation Upload */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Lettre de Motivation (Optionnel)</label>
+                  <div className="border-2 border-dashed border-gray-200 rounded-2xl p-3 text-center hover:border-[#2D6BE4] bg-gray-50/50 hover:bg-white transition-all cursor-pointer relative">
+                    <input 
+                      type="file" 
+                      accept=".pdf,.doc,.docx,.odt,.rtf,.txt,.jpg,.jpeg,.png,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) setApplyForm({...applyForm, coverLetterFileName: file.name});
+                      }}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    />
+                    <FileText className="w-5 h-5 text-[#2D6BE4] mx-auto mb-1" />
+                    <span className="text-xs font-medium text-gray-700 block truncate">
+                      {applyForm.coverLetterFileName || user?.profile?.coverLetterFileName 
+                        ? `✓ ${applyForm.coverLetterFileName || user?.profile?.coverLetterFileName}` 
+                        : 'Déposer votre Lettre'}
+                    </span>
+                  </div>
                 </div>
               </div>
 

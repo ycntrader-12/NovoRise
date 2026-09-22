@@ -7,6 +7,7 @@ export interface UserProfile {
   bio?: string;
   skills?: string[];
   cvFileName?: string;
+  coverLetterFileName?: string;
   companyName?: string;
   companyWebsite?: string;
 }
@@ -36,6 +37,7 @@ export interface Application {
   candidateEmail: string;
   candidatePhone?: string;
   cvFileName?: string;
+  coverLetterFileName?: string;
   coverNote?: string;
 }
 

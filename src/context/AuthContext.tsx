@@ -57,6 +57,7 @@ interface AuthContextType {
     candidateEmail: string;
     candidatePhone?: string;
     cvFileName?: string;
+    coverLetterFileName?: string;
     coverNote?: string;
   }) => Promise<void>;
   recruiterJobs: RecruiterJobPost[];
@@ -303,6 +304,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     candidateEmail: string;
     candidatePhone?: string;
     cvFileName?: string;
+    coverLetterFileName?: string;
     coverNote?: string;
   }) => {
     try {
@@ -310,6 +312,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         jobId: appData.jobId,
         coverNote: appData.coverNote,
         cvFileName: appData.cvFileName,
+        coverLetterFileName: appData.coverLetterFileName,
       });
       // Enrichir avec les infos du job pour l'affichage local
       const enriched: Application = {
