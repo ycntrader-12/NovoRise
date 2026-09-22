@@ -55,13 +55,17 @@ export const registerUser = async (
 
   const newUser = result.rows[0];
 
-  // Push job email de confirmation dans Bull/Redis (asynchrone, jamais bloquant)
-  await emailQueue.add({
-    type: 'email-verification',
-    to: email,
-    name,
-    token: verificationToken,
-  });
+  // Push job email de confirmation dans Bull/Redis (asynchrone, non bloquant si Redis est absent)
+  try {
+    await emailQueue.add({
+      type: 'email-verification',
+      to: email,
+      name,
+      token: verificationToken,
+    });
+  } catch (queueErr) {
+    console.warn('⚠️ Bull/Redis non disponible pour l\'envoi d\'email:', (queueErr as Error).message);
+  }
 
   return newUser;
 };

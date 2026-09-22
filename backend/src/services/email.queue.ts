@@ -14,6 +14,9 @@ export interface EmailJobData {
 const redisConfig = {
   host: process.env.REDIS_HOST || '127.0.0.1',
   port: parseInt(process.env.REDIS_PORT || '6379', 10),
+  enableOfflineQueue: false,
+  maxRetriesPerRequest: 1,
+  retryStrategy: () => null, // Ne pas boucler indéfiniment si Redis local n'est pas actif
 };
 
 // File de tâches Bull pour les emails
@@ -35,7 +38,10 @@ emailQueue.on('ready', () => {
 });
 
 emailQueue.on('error', (err) => {
-  console.error('❌ Email queue error:', err.message);
+  // Silence logs if local Redis server is not running
+  if (!err.message.includes('ECONNREFUSED')) {
+    console.error('❌ Email queue warning:', err.message);
+  }
 });
 
 emailQueue.on('failed', (job, err) => {
