@@ -1,54 +1,54 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// NovoRise — Classification officielle des 7 Grands Domaines & Secteurs
+// NovoRise — Classification Standard Recommandée (Plateformes de Recrutement)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type MainDomain =
-  | '1. Sciences Exactes, Formelles et Naturelles'
-  | '2. Ingénierie, Technologies et Informatique'
-  | '3. Sciences Médicales et de la Santé'
-  | '4. Sciences Humaines, Sociales et Gouvernance'
-  | '5. Arts, Médias, Culture et Design'
-  | '6. Commerce, Logistique et Services'
-  | '7. Agriculture, Ressources Naturelles et Environnement';
+  | 'Sciences & Recherche'
+  | 'Ingénierie & Informatique'
+  | 'Santé & Médical'
+  | 'Droit, Finance & Gouvernance'
+  | 'Arts, Médias & Création'
+  | 'Commerce, Logistique & Services'
+  | 'Agriculture & Environnement';
 
 export type JobCategory =
-  // ── 1. Sciences Exactes, Formelles et Naturelles ──────────────────────────
+  // ── 1. Sciences & Recherche ───────────────────────────────────────────────
   | 'Mathématiques & Logique'
   | 'Physique & Astronomie'
   | 'Chimie & Matière'
   | "Sciences de la Terre et de l'Univers"
   | 'Sciences du Vivant (Biologie)'
-  // ── 2. Ingénierie, Technologies et Informatique ───────────────────────────
+  // ── 2. Ingénierie & Informatique ──────────────────────────────────────────
   | 'Informatique & Numérique'
   | 'Génie Mécanique & Matériaux'
   | 'Génie Électrique & Électronique'
   | 'Génie Civil & BTP'
   | 'Génie Énergétique & Nucléaire'
-  // ── 3. Sciences Médicales et de la Santé ──────────────────────────────────
+  // ── 3. Santé & Médical ───────────────────────────────────────────────────
   | 'Médecine Clinique'
   | 'Soins & Paramédical'
   | 'Sciences Pharmaceutiques'
   | 'Odontologie & Santé Bucco-dentaire'
   | 'Santé Publique & Prévention'
-  // ── 4. Sciences Humaines, Sociales et Gouvernance ─────────────────────────
+  // ── 4. Droit, Finance & Gouvernance ───────────────────────────────────────
   | 'Droit & Justice'
   | 'Économie & Finance'
   | 'Ressources Humaines & Management'
   | 'Psychologie & Sociologie'
   | 'Enseignement & Recherche'
-  // ── 5. Arts, Médias, Culture et Design ────────────────────────────────────
+  // ── 5. Arts, Médias & Création ───────────────────────────────────────────
   | 'Arts Visuels & Plastiques'
   | 'Cinéma, Audiovisuel & Spectacle'
   | 'Design & Architecture'
   | 'Information, Médias & Édition'
   | 'Industrie du Divertissement & Jeu Vidéo'
-  // ── 6. Commerce, Logistique et Services ───────────────────────────────────
+  // ── 6. Commerce, Logistique & Services ───────────────────────────────────
   | 'Commerce & Vente'
   | 'Marketing & Communication'
   | 'Transport & Logistique'
   | 'Hôtellerie, Restauration & Tourisme'
   | 'Services Généraux & Sécurité'
-  // ── 7. Agriculture, Ressources Naturelles et Environnement ────────────────
+  // ── 7. Agriculture & Environnement ───────────────────────────────────────
   | 'Agriculture & Élevage'
   | 'Sylviculture & Pêche'
   | 'Environnement & Développement Durable'
@@ -61,26 +61,26 @@ export interface CategoryMeta {
   color: string;
   textColor: string;
   count: number;
-  jobs: string[]; // Liste des métiers/postes associés
+  jobs: string[]; // Métiers & spécialités recommandées
 }
 
 export const MAIN_DOMAINS: MainDomain[] = [
-  '1. Sciences Exactes, Formelles et Naturelles',
-  '2. Ingénierie, Technologies et Informatique',
-  '3. Sciences Médicales et de la Santé',
-  '4. Sciences Humaines, Sociales et Gouvernance',
-  '5. Arts, Médias, Culture et Design',
-  '6. Commerce, Logistique et Services',
-  '7. Agriculture, Ressources Naturelles et Environnement',
+  'Sciences & Recherche',
+  'Ingénierie & Informatique',
+  'Santé & Médical',
+  'Droit, Finance & Gouvernance',
+  'Arts, Médias & Création',
+  'Commerce, Logistique & Services',
+  'Agriculture & Environnement',
 ];
 
 export const CATEGORY_GROUPS = MAIN_DOMAINS;
 
 export const JOB_CATEGORIES: CategoryMeta[] = [
-  // ── 1. Sciences Exactes, Formelles et Naturelles
+  // ── 1. Sciences & Recherche
   {
     label: 'Mathématiques & Logique',
-    group: '1. Sciences Exactes, Formelles et Naturelles',
+    group: 'Sciences & Recherche',
     icon: '📐',
     color: 'bg-blue-50',
     textColor: 'text-blue-600',
@@ -89,7 +89,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Physique & Astronomie',
-    group: '1. Sciences Exactes, Formelles et Naturelles',
+    group: 'Sciences & Recherche',
     icon: '🌌',
     color: 'bg-indigo-50',
     textColor: 'text-indigo-600',
@@ -98,7 +98,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Chimie & Matière',
-    group: '1. Sciences Exactes, Formelles et Naturelles',
+    group: 'Sciences & Recherche',
     icon: '🧪',
     color: 'bg-violet-50',
     textColor: 'text-violet-600',
@@ -107,7 +107,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: "Sciences de la Terre et de l'Univers",
-    group: '1. Sciences Exactes, Formelles et Naturelles',
+    group: 'Sciences & Recherche',
     icon: '🌍',
     color: 'bg-cyan-50',
     textColor: 'text-cyan-600',
@@ -116,7 +116,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Sciences du Vivant (Biologie)',
-    group: '1. Sciences Exactes, Formelles et Naturelles',
+    group: 'Sciences & Recherche',
     icon: '🔬',
     color: 'bg-emerald-50',
     textColor: 'text-emerald-600',
@@ -124,10 +124,10 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
     jobs: ['Biologiste', 'Généticien', 'Zoologiste', 'Botaniste', 'Microbiologiste']
   },
 
-  // ── 2. Ingénierie, Technologies et Informatique
+  // ── 2. Ingénierie & Informatique
   {
     label: 'Informatique & Numérique',
-    group: '2. Ingénierie, Technologies et Informatique',
+    group: 'Ingénierie & Informatique',
     icon: '💻',
     color: 'bg-blue-50',
     textColor: 'text-blue-600',
@@ -136,16 +136,16 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Génie Mécanique & Matériaux',
-    group: '2. Ingénierie, Technologies et Informatique',
+    group: 'Ingénierie & Informatique',
     icon: '⚙️',
     color: 'bg-slate-50',
     textColor: 'text-slate-600',
     count: 1740,
-    jobs: ['Ingénieur mécanique', 'Concepteur CAO', 'Technicien de maintenance industrielle', 'Opérateur sur machine à commande numérique (CN)']
+    jobs: ['Ingénieur mécanique', 'Concepteur CAO', 'Technicien de maintenance industrielle', 'Opérateur CN']
   },
   {
     label: 'Génie Électrique & Électronique',
-    group: '2. Ingénierie, Technologies et Informatique',
+    group: 'Ingénierie & Informatique',
     icon: '⚡',
     color: 'bg-amber-50',
     textColor: 'text-amber-600',
@@ -154,7 +154,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Génie Civil & BTP',
-    group: '2. Ingénierie, Technologies et Informatique',
+    group: 'Ingénierie & Informatique',
     icon: '🏗️',
     color: 'bg-stone-50',
     textColor: 'text-stone-600',
@@ -163,18 +163,18 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Génie Énergétique & Nucléaire',
-    group: '2. Ingénierie, Technologies et Informatique',
+    group: 'Ingénierie & Informatique',
     icon: '🔋',
     color: 'bg-yellow-50',
     textColor: 'text-yellow-600',
     count: 980,
-    jobs: ['Ingénieur en énergies renouvelables', 'Thermicien', 'Ingénieur sûreté nucléaire', "Technicien d'exploitation de centrale"]
+    jobs: ['Ingénieur en énergies renouvelables', 'Thermicien', 'Ingénieur sûreté nucléaire', "Technicien d'exploitation"]
   },
 
-  // ── 3. Sciences Médicales et de la Santé
+  // ── 3. Santé & Médical
   {
     label: 'Médecine Clinique',
-    group: '3. Sciences Médicales et de la Santé',
+    group: 'Santé & Médical',
     icon: '🏥',
     color: 'bg-red-50',
     textColor: 'text-red-500',
@@ -183,16 +183,16 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Soins & Paramédical',
-    group: '3. Sciences Médicales et de la Santé',
+    group: 'Santé & Médical',
     icon: '🩺',
     color: 'bg-rose-50',
     textColor: 'text-rose-500',
     count: 2840,
-    jobs: ['Infirmier(ère)', 'Kinésithérapeute', 'Sage-femme', 'Ergothérapeute', 'Manipulateur en électroradiologie']
+    jobs: ['Infirmier(ère)', 'Kinésithérapeute', 'Sage-femme', 'Ergothérapeute', 'Manipulateur radio']
   },
   {
     label: 'Sciences Pharmaceutiques',
-    group: '3. Sciences Médicales et de la Santé',
+    group: 'Santé & Médical',
     icon: '💊',
     color: 'bg-pink-50',
     textColor: 'text-pink-500',
@@ -201,7 +201,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Odontologie & Santé Bucco-dentaire',
-    group: '3. Sciences Médicales et de la Santé',
+    group: 'Santé & Médical',
     icon: '🦷',
     color: 'bg-sky-50',
     textColor: 'text-sky-600',
@@ -210,7 +210,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Santé Publique & Prévention',
-    group: '3. Sciences Médicales et de la Santé',
+    group: 'Santé & Médical',
     icon: '🛡️',
     color: 'bg-teal-50',
     textColor: 'text-teal-600',
@@ -218,10 +218,10 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
     jobs: ['Épidémiologiste', 'Médecin du travail', 'Inspecteur de santé publique', 'Biostatisticien']
   },
 
-  // ── 4. Sciences Humaines, Sociales et Gouvernance
+  // ── 4. Droit, Finance & Gouvernance
   {
     label: 'Droit & Justice',
-    group: '4. Sciences Humaines, Sociales et Gouvernance',
+    group: 'Droit, Finance & Gouvernance',
     icon: '⚖️',
     color: 'bg-slate-50',
     textColor: 'text-slate-700',
@@ -230,7 +230,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Économie & Finance',
-    group: '4. Sciences Humaines, Sociales et Gouvernance',
+    group: 'Droit, Finance & Gouvernance',
     icon: '📈',
     color: 'bg-emerald-50',
     textColor: 'text-emerald-600',
@@ -239,7 +239,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Ressources Humaines & Management',
-    group: '4. Sciences Humaines, Sociales et Gouvernance',
+    group: 'Droit, Finance & Gouvernance',
     icon: '👥',
     color: 'bg-teal-50',
     textColor: 'text-teal-600',
@@ -248,7 +248,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Psychologie & Sociologie',
-    group: '4. Sciences Humaines, Sociales et Gouvernance',
+    group: 'Droit, Finance & Gouvernance',
     icon: '🧠',
     color: 'bg-purple-50',
     textColor: 'text-purple-600',
@@ -257,18 +257,18 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Enseignement & Recherche',
-    group: '4. Sciences Humaines, Sociales et Gouvernance',
+    group: 'Droit, Finance & Gouvernance',
     icon: '🎓',
     color: 'bg-blue-50',
     textColor: 'text-blue-600',
     count: 2190,
-    jobs: ['Professeur des écoles', 'Enseignant-chercheur', 'Formateur professionnel', 'Ingénieur pédagogique', "Inspecteur de l'Éducation nationale"]
+    jobs: ['Professeur des écoles', 'Enseignant-chercheur', 'Formateur professionnel', 'Ingénieur pédagogique', "Inspecteur"]
   },
 
-  // ── 5. Arts, Médias, Culture et Design
+  // ── 5. Arts, Médias & Création
   {
     label: 'Arts Visuels & Plastiques',
-    group: '5. Arts, Médias, Culture et Design',
+    group: 'Arts, Médias & Création',
     icon: '🎨',
     color: 'bg-pink-50',
     textColor: 'text-pink-600',
@@ -277,7 +277,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Cinéma, Audiovisuel & Spectacle',
-    group: '5. Arts, Médias, Culture et Design',
+    group: 'Arts, Médias & Création',
     icon: '🎬',
     color: 'bg-purple-50',
     textColor: 'text-purple-600',
@@ -286,7 +286,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Design & Architecture',
-    group: '5. Arts, Médias, Culture et Design',
+    group: 'Arts, Médias & Création',
     icon: '✏️',
     color: 'bg-orange-50',
     textColor: 'text-orange-500',
@@ -295,7 +295,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Information, Médias & Édition',
-    group: '5. Arts, Médias, Culture et Design',
+    group: 'Arts, Médias & Création',
     icon: '📰',
     color: 'bg-amber-50',
     textColor: 'text-amber-600',
@@ -304,18 +304,18 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Industrie du Divertissement & Jeu Vidéo',
-    group: '5. Arts, Médias, Culture et Design',
+    group: 'Arts, Médias & Création',
     icon: '🎮',
     color: 'bg-indigo-50',
     textColor: 'text-indigo-600',
     count: 1890,
-    jobs: ['Game Designer', 'Développeur 3D', 'Animateur 2D/3D', 'Testeur QA', 'Producteur de jeux vidéos']
+    jobs: ['Game Designer', 'Développeur 3D', 'Animateur 2D/3D', 'Testeur QA', 'Producteur de jeux']
   },
 
-  // ── 6. Commerce, Logistique et Services
+  // ── 6. Commerce, Logistique & Services
   {
     label: 'Commerce & Vente',
-    group: '6. Commerce, Logistique et Services',
+    group: 'Commerce, Logistique & Services',
     icon: '💼',
     color: 'bg-green-50',
     textColor: 'text-green-600',
@@ -324,7 +324,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Marketing & Communication',
-    group: '6. Commerce, Logistique et Services',
+    group: 'Commerce, Logistique & Services',
     icon: '📣',
     color: 'bg-orange-50',
     textColor: 'text-orange-500',
@@ -333,7 +333,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Transport & Logistique',
-    group: '6. Commerce, Logistique et Services',
+    group: 'Commerce, Logistique & Services',
     icon: '🚚',
     color: 'bg-sky-50',
     textColor: 'text-sky-600',
@@ -342,7 +342,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Hôtellerie, Restauration & Tourisme',
-    group: '6. Commerce, Logistique et Services',
+    group: 'Commerce, Logistique & Services',
     icon: '🏨',
     color: 'bg-rose-50',
     textColor: 'text-rose-500',
@@ -351,18 +351,18 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Services Généraux & Sécurité',
-    group: '6. Commerce, Logistique et Services',
+    group: 'Commerce, Logistique & Services',
     icon: '🛡️',
     color: 'bg-gray-100',
     textColor: 'text-gray-600',
     count: 1940,
-    jobs: ['Agent de sécurité', 'Sapeur-pompier', 'Technicien de propreté', "Hôte(sse) d'accueil", "Concierge d'entreprise"]
+    jobs: ['Agent de sécurité', 'Sapeur-pompier', 'Technicien de propreté', "Hôte(sse) d'accueil", "Concierge"]
   },
 
-  // ── 7. Agriculture, Ressources Naturelles et Environnement
+  // ── 7. Agriculture & Environnement
   {
     label: 'Agriculture & Élevage',
-    group: '7. Agriculture, Ressources Naturelles et Environnement',
+    group: 'Agriculture & Environnement',
     icon: '🌾',
     color: 'bg-lime-50',
     textColor: 'text-lime-700',
@@ -371,7 +371,7 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Sylviculture & Pêche',
-    group: '7. Agriculture, Ressources Naturelles et Environnement',
+    group: 'Agriculture & Environnement',
     icon: '🌲',
     color: 'bg-emerald-50',
     textColor: 'text-emerald-700',
@@ -380,16 +380,16 @@ export const JOB_CATEGORIES: CategoryMeta[] = [
   },
   {
     label: 'Environnement & Développement Durable',
-    group: '7. Agriculture, Ressources Naturelles et Environnement',
+    group: 'Agriculture & Environnement',
     icon: '🌱',
     color: 'bg-green-50',
     textColor: 'text-green-600',
     count: 1870,
-    jobs: ['Ingénieur environnement', 'Conseiller en transition écologique', 'Technicien en traitement des eaux', 'Chargé de mission RSE', 'Écologue']
+    jobs: ['Ingénieur environnement', 'Conseiller en transition écologique', 'Technicien eaux', 'Chargé RSE', 'Écologue']
   },
   {
     label: 'Extraction & Mines',
-    group: '7. Agriculture, Ressources Naturelles et Environnement',
+    group: 'Agriculture & Environnement',
     icon: '⛏️',
     color: 'bg-amber-50',
     textColor: 'text-amber-700',
