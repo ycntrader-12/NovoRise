@@ -4,8 +4,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "dev:admin": "vite --port 3007 admin.html",
+    "dev": "vite --port 3005 --strictPort",
+    "dev:admin": "vite --port 3007 --strictPort",
+    "dev:backend": "cd backend && set PORT=3006 && npm run dev",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
