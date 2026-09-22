@@ -218,15 +218,15 @@ export const AdminDashboardPortal: React.FC = () => {
 
             <form onSubmit={handleAdminLogin} className="space-y-4 text-sm">
               <div>
-                <label className="block font-semibold text-[#1A1A2E] mb-1.5 text-xs">Email Administrateur</label>
+                <label className="block font-semibold text-[#1A1A2E] mb-1.5 text-xs">Identifiant / Email Administrateur</label>
                 <div className="relative">
                   <Mail className="w-4 h-4 text-[#6B7280] absolute left-3.5 top-3.5" />
                   <input
-                    type="email"
+                    type="text"
                     required
                     value={adminEmail}
                     onChange={(e) => setAdminEmail(e.target.value)}
-                    placeholder="admin@novorise.com"
+                    placeholder="admin (ou admin@novorise.com)"
                     className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all text-sm"
                   />
                 </div>
