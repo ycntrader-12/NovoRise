@@ -7,6 +7,7 @@ import passport from './config/passport';
 import authRoutes from './routes/auth.routes';
 import jobsRoutes from './routes/jobs.routes';
 import applicationsRoutes from './routes/applications.routes';
+import adminRoutes from './routes/admin.routes';
 
 // Worker email (démarre Bull consumer dès le lancement)
 import './workers/email.worker';
@@ -19,7 +20,14 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 // ─── Middlewares globaux ──────────────────────────────────────────────────────
 app.use(cors({
-  origin: [FRONTEND_URL, 'http://localhost:5173', 'http://localhost:3000'],
+  origin: [
+    FRONTEND_URL, 
+    'http://localhost:3005', 
+    'http://localhost:3006', 
+    'http://localhost:3007',
+    'http://localhost:5173', 
+    'http://localhost:3000'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -33,6 +41,7 @@ app.use(passport.initialize());
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobsRoutes);
 app.use('/api/applications', applicationsRoutes);
+app.use('/api/admin', adminRoutes);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/api/health', (_req, res) => {
