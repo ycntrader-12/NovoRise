@@ -165,74 +165,104 @@ export const AdminDashboardPortal: React.FC = () => {
   // Check Admin Gate
   if (!isAuthenticated || user?.role !== 'admin') {
     return (
-      <div className="min-h-screen bg-[#1A1A2E] flex items-center justify-center p-4 font-inter text-[#1A1A2E]">
-        <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-gray-100 relative">
+      <div className="min-h-screen bg-[#1A1A2E] flex items-center justify-center p-4 sm:p-8 font-inter text-[#1A1A2E]">
+        <div className="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-gray-800 overflow-hidden relative grid grid-cols-1 md:grid-cols-12">
           
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-blue-50 text-[#2D6BE4] rounded-2xl flex items-center justify-center mx-auto mb-4 border border-blue-100 shadow-sm">
-              <ShieldCheck className="w-8 h-8" />
+          {/* Left Panel — Panoramic Admin Branding */}
+          <div className="md:col-span-5 bg-[#141424] text-white p-8 md:p-10 flex flex-col justify-between border-b md:border-b-0 md:border-r border-gray-800/80 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#2D6BE4]/10 rounded-full filter blur-3xl pointer-events-none"></div>
+            
+            <div>
+              <div className="w-14 h-14 bg-[#2D6BE4] text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">
+                <ShieldCheck className="w-7 h-7" />
+              </div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[11px] font-bold uppercase tracking-wider mb-3">
+                Port : 3007 • Espace Sécurisé
+              </div>
+              <h2 className="text-2xl font-bold tracking-tight text-white">Portail Administrateur</h2>
+              <p className="text-gray-400 text-xs mt-2 leading-relaxed font-medium">
+                Accès restreint à la base de données PostgreSQL Supabase et à la gestion des privilèges utilisateurs NovoRise.
+              </p>
             </div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-[#2D6BE4] text-[11px] font-bold uppercase tracking-wider mb-2">
-              Port : 3007 • Espace Réservé
+
+            <div className="mt-8 space-y-3 pt-6 border-t border-gray-800/80 text-xs text-gray-400 font-medium">
+              <div className="flex items-center gap-2 text-gray-300">
+                <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
+                <span>Explorateur de tables SQL en direct</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-300">
+                <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
+                <span>Gestion avancée des comptes utilisateurs</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-300">
+                <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
+                <span>Supervision de la santé du serveur (API 3006)</span>
+              </div>
             </div>
-            <h2 className="text-2xl font-bold text-[#1A1A2E]">Portail d'Administration</h2>
-            <p className="text-[#6B7280] text-xs mt-1.5 font-medium">
-              Accès restreint au backend et à la base de données PostgreSQL de NovoRise.
-            </p>
           </div>
 
-          {loginError && (
-            <div className="mb-6 bg-red-50 text-red-700 text-xs p-3.5 rounded-xl border border-red-100 flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
-              <span>{loginError}</span>
+          {/* Right Panel — Login Form */}
+          <div className="md:col-span-7 p-8 md:p-10 bg-white flex flex-col justify-center">
+            
+            <div className="mb-6">
+              <h3 className="text-xl font-bold text-[#1A1A2E]">Connexion Secrète</h3>
+              <p className="text-[#6B7280] text-xs mt-1 font-medium">Veuillez saisir vos identifiants à privilèges administrateur.</p>
             </div>
-          )}
 
-          <form onSubmit={handleAdminLogin} className="space-y-4 text-sm">
-            <div>
-              <label className="block font-semibold text-[#1A1A2E] mb-1.5 text-xs">Email Administrateur</label>
-              <div className="relative">
-                <Mail className="w-4 h-4 text-[#6B7280] absolute left-3.5 top-3.5" />
-                <input
-                  type="email"
-                  required
-                  value={adminEmail}
-                  onChange={(e) => setAdminEmail(e.target.value)}
-                  placeholder="admin@novorise.com"
-                  className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all text-sm"
-                />
+            {loginError && (
+              <div className="mb-6 bg-red-50 text-red-700 text-xs p-3.5 rounded-xl border border-red-100 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                <span>{loginError}</span>
               </div>
-            </div>
+            )}
 
-            <div>
-              <label className="block font-semibold text-[#1A1A2E] mb-1.5 text-xs">Mot de passe</label>
-              <div className="relative">
-                <Lock className="w-4 h-4 text-[#6B7280] absolute left-3.5 top-3.5" />
-                <input
-                  type="password"
-                  required
-                  value={adminPassword}
-                  onChange={(e) => setAdminPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all text-sm"
-                />
+            <form onSubmit={handleAdminLogin} className="space-y-4 text-sm">
+              <div>
+                <label className="block font-semibold text-[#1A1A2E] mb-1.5 text-xs">Email Administrateur</label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 text-[#6B7280] absolute left-3.5 top-3.5" />
+                  <input
+                    type="email"
+                    required
+                    value={adminEmail}
+                    onChange={(e) => setAdminEmail(e.target.value)}
+                    placeholder="admin@novorise.com"
+                    className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all text-sm"
+                  />
+                </div>
               </div>
+
+              <div>
+                <label className="block font-semibold text-[#1A1A2E] mb-1.5 text-xs">Mot de passe</label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-[#6B7280] absolute left-3.5 top-3.5" />
+                  <input
+                    type="password"
+                    required
+                    value={adminPassword}
+                    onChange={(e) => setAdminPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all text-sm"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#2D6BE4] hover:bg-[#2D6BE4]/90 text-white py-3.5 rounded-xl font-semibold shadow-sm transition-all flex items-center justify-center gap-2 text-sm cursor-pointer mt-2"
+              >
+                <Key className="w-4 h-4" />
+                <span>Se connecter au Portail Admin</span>
+              </button>
+            </form>
+
+            <div className="mt-6 pt-5 border-t border-gray-100 text-center">
+              <p className="text-[11px] text-[#6B7280] font-medium">
+                Serveur d'administration configuré sur le port <span className="font-bold text-[#2D6BE4]">3007</span>.
+              </p>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-[#2D6BE4] hover:bg-[#2D6BE4]/90 text-white py-3.5 rounded-xl font-semibold shadow-sm transition-all flex items-center justify-center gap-2 text-sm cursor-pointer mt-2"
-            >
-              <Key className="w-4 h-4" />
-              <span>Se connecter au Portail Admin</span>
-            </button>
-          </form>
-
-          <div className="mt-6 pt-5 border-t border-gray-100 text-center">
-            <p className="text-[11px] text-[#6B7280] font-medium">
-              Ce serveur d'administration écoute exclusivement sur le port <span className="font-bold text-[#2D6BE4]">3007</span>.
-            </p>
           </div>
 
         </div>
@@ -251,9 +281,9 @@ export const AdminDashboardPortal: React.FC = () => {
         </div>
       )}
 
-      {/* Admin Navbar */}
+      {/* Admin Navbar — Wide Panoramic Container */}
       <header className="bg-[#1A1A2E] text-white sticky top-0 z-40 border-b border-gray-800 shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1780px] w-full mx-auto px-4 sm:px-8 lg:px-12">
           <div className="flex justify-between items-center h-16">
             
             {/* Logo Admin */}
@@ -344,8 +374,8 @@ export const AdminDashboardPortal: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Admin Body */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Main Admin Body — Wide Widescreen Layout */}
+      <main className="max-w-[1780px] w-full mx-auto px-4 sm:px-8 lg:px-12 py-8">
         
         {/* ================= TAB 1: STATS & SYSTEM HEALTH ================= */}
         {activeTab === 'stats' && stats && (
@@ -597,9 +627,9 @@ export const AdminDashboardPortal: React.FC = () => {
                     </thead>
                     <tbody className="divide-y divide-gray-100 text-gray-700">
                       {tableData.map((row, idx) => (
-                        <tr key={idx} className="hover:bg-gray-50/80">
+                        <tr key={idx} className="hover:bg-gray-50/80 transition-colors">
                           {Object.values(row).map((val, i) => (
-                            <td key={i} className="py-2.5 px-3 whitespace-nowrap max-w-[200px] truncate">
+                            <td key={i} className="py-3 px-4 whitespace-nowrap max-w-[340px] truncate text-gray-800">
                               {typeof val === 'object' ? JSON.stringify(val) : String(val)}
                             </td>
                           ))}
