@@ -1,41 +1,39 @@
 import bcrypt from 'bcryptjs';
-import pool from './pool';
+import { v4 as uuidv4 } from 'uuid';
+import { db } from './pool.js';
 
 async function seedAdmin() {
   try {
     const password = 'Admin@1212';
     const passwordHash = await bcrypt.hash(password, 12);
 
-    // Upsert admin@novorise.com
-    const res1 = await pool.query(
-      `INSERT INTO users (name, email, password_hash, role, verified)
-       VALUES ('Administrateur Principal', 'admin@novorise.com', $1, 'admin', TRUE)
-       ON CONFLICT (email) DO UPDATE 
-       SET password_hash = $1, role = 'admin', verified = TRUE
-       RETURNING id, name, email, role, verified`,
-      [passwordHash]
-    );
+    const admins = [
+      { id: '00000000-0000-0000-0000-000000000001', name: 'Administrateur Principal', email: 'admin@novorise.com' },
+      { id: '00000000-0000-0000-0000-000000000002', name: 'Administrateur', email: 'admin@admin.com' },
+    ];
 
-    // Upsert admin@admin.com
-    const res2 = await pool.query(
-      `INSERT INTO users (name, email, password_hash, role, verified)
-       VALUES ('Administrateur', 'admin@admin.com', $1, 'admin', TRUE)
-       ON CONFLICT (email) DO UPDATE 
-       SET password_hash = $1, role = 'admin', verified = TRUE
-       RETURNING id, name, email, role, verified`,
-      [passwordHash]
-    );
+    for (const admin of admins) {
+      const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(admin.email);
+      if (existing) {
+        db.prepare('UPDATE users SET password_hash = ?, role = \'admin\', verified = 1 WHERE email = ?')
+          .run(passwordHash, admin.email);
+        console.log(`✅ Mis à jour : ${admin.email}`);
+      } else {
+        db.prepare(
+          `INSERT INTO users (id, name, email, password_hash, role, verified)
+           VALUES (?, ?, ?, ?, 'admin', 1)`
+        ).run(admin.id, admin.name, admin.email, passwordHash);
+        console.log(`✅ Créé : ${admin.email}`);
+      }
+    }
 
-    console.log('✅ Comptes Administrateur créés / mis à jour avec succès :');
-    console.log('   Compte 1 : admin@novorise.com (ou simple "admin")');
-    console.log('   Compte 2 : admin@admin.com');
+    console.log('\n🔑 Identifiants admin :');
+    console.log('   Email 1 : admin@novorise.com (ou juste "admin")');
+    console.log('   Email 2 : admin@admin.com');
     console.log('   Mot de passe : Admin@1212');
-    console.log('   Rôle : admin');
-    console.log('   Data 1 :', res1.rows[0]);
-    console.log('   Data 2 :', res2.rows[0]);
     process.exit(0);
   } catch (err) {
-    console.error('❌ Erreur lors du seeding de l\'administrateur :', err);
+    console.error('❌ Erreur lors du seeding :', err);
     process.exit(1);
   }
 }
