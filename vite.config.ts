@@ -8,8 +8,8 @@ export default defineConfig({
     {
       name: 'admin-redirect-middleware',
       configureServer(server) {
-        server.middlewares.use((req, _res, next) => {
-          const host = req.headers.host || '';
+        server.middlewares.use((req: any, _res: any, next: () => void) => {
+          const host = req.headers?.host || '';
           // Si la requête arrive sur le port 3007 (Admin Portal) et vise la racine /
           if (host.includes('3007') && (req.url === '/' || req.url === '/index.html')) {
             req.url = '/admin.html';
