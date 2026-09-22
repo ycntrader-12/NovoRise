@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS job_posts (
   recruiter_id         UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   title                VARCHAR(255) NOT NULL,
   company              VARCHAR(255) NOT NULL,
-  category             VARCHAR(50)  NOT NULL CHECK (category IN ('Tech & IT','Marketing & Com','Vente & Business','Ingénierie & R&D')),
+  category             VARCHAR(100) NOT NULL,
   contract             VARCHAR(20)  NOT NULL CHECK (contract IN ('CDI','CDD','Freelance','Stage')),
   workplace            VARCHAR(20)  NOT NULL CHECK (workplace IN ('Remote','Hybride','Présentiel')),
   location             VARCHAR(255),

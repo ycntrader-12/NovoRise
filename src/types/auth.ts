@@ -39,11 +39,15 @@ export interface Application {
   coverNote?: string;
 }
 
+// Ré-export du type centralisé
+export type { JobCategory } from './categories';
+import type { JobCategory } from './categories';
+
 export interface RecruiterJobPost {
   id: string;
   title: string;
   company: string;
-  category: 'Tech & IT' | 'Marketing & Com' | 'Vente & Business' | 'Ingénierie & R&D';
+  category: JobCategory;
   contract: 'CDI' | 'CDD' | 'Freelance' | 'Stage';
   workplace: 'Remote' | 'Hybride' | 'Présentiel';
   location: string;
@@ -62,3 +66,4 @@ export type AuthModalStep =
   | 'email-confirmation' 
   | 'forgot-password' 
   | 'reset-password';
+

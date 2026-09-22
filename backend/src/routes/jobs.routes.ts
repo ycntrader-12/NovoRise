@@ -75,7 +75,7 @@ router.post(
   [
     body('title').trim().notEmpty(),
     body('company').trim().notEmpty(),
-    body('category').isIn(['Tech & IT', 'Marketing & Com', 'Vente & Business', 'Ingénierie & R&D']),
+    body('category').isString().notEmpty().withMessage('Secteur requis'),
     body('contract').isIn(['CDI', 'CDD', 'Freelance', 'Stage']),
     body('workplace').isIn(['Remote', 'Hybride', 'Présentiel']),
   ],

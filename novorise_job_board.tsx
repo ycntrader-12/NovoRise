@@ -31,7 +31,8 @@ import {
   UserCheck,
   LogOut,
   LayoutDashboard,
-  Check
+  Check,
+  ChevronDown
 } from 'lucide-react';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { AuthFlowModal } from './src/components/auth/AuthFlowModal';
@@ -39,6 +40,7 @@ import { CandidateDashboard } from './src/components/dashboard/CandidateDashboar
 import { RecruiterDashboard } from './src/components/dashboard/RecruiterDashboard';
 import { VerifyEmailPage } from './src/components/auth/VerifyEmailPage';
 import { GoogleCallbackPage } from './src/components/auth/GoogleCallbackPage';
+import { JOB_CATEGORIES, FEATURED_CATEGORIES, CATEGORY_GROUPS, type JobCategory } from './src/types/categories';
 
 // Job Type
 export interface Job {
@@ -47,7 +49,7 @@ export interface Job {
   company: string;
   logoBg: string;
   logoText: string;
-  category: 'Tech & IT' | 'Marketing & Com' | 'Vente & Business' | 'Ingénierie & R&D';
+  category: JobCategory;
   contract: 'CDI' | 'CDD' | 'Freelance' | 'Stage';
   workplace: 'Remote' | 'Hybride' | 'Présentiel';
   location: string;
@@ -781,87 +783,64 @@ function NovoRiseMain() {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              
-              {/* Card 1: Tech & IT */}
-              <div 
-                onClick={() => {
-                  setActiveCategory('Tech & IT');
-                  document.getElementById('offres-section')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className={`bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer border group relative ${
-                  activeCategory === 'Tech & IT' ? 'border-[#FF9F1C] ring-2 ring-orange-400/20' : 'border-gray-100'
-                }`}
-              >
-                <div className="bg-blue-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#FF9F1C]/10 transition-colors">
-                  <Code className="text-blue-600 group-hover:text-[#FF9F1C] w-7 h-7 transition-colors" />
-                </div>
-                <h3 className="text-xl font-bold text-[#0B132B] mb-2">Tech & IT</h3>
-                <p className="text-gray-500 text-sm mb-4">4,520 opportunités ouvertes</p>
-                <div className="flex items-center text-sm font-medium text-gray-400 group-hover:text-[#FF5E36] transition-colors">
-                  Explorer <ArrowRight className="ml-1 w-4 h-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-                </div>
-              </div>
+            {/* Top 8 featured categories — cards cliquables */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              {FEATURED_CATEGORIES.map(catLabel => {
+                const meta = JOB_CATEGORIES.find(c => c.label === catLabel)!;
+                return (
+                  <div
+                    key={catLabel}
+                    onClick={() => {
+                      setActiveCategory(catLabel);
+                      document.getElementById('offres-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className={`bg-white rounded-2xl p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer border group ${
+                      activeCategory === catLabel ? 'border-[#FF9F1C] ring-2 ring-orange-400/20' : 'border-gray-100'
+                    }`}
+                  >
+                    <div className={`${meta.color} w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-2xl group-hover:bg-[#FF9F1C]/10 transition-colors`}>
+                      {meta.icon}
+                    </div>
+                    <h3 className="text-sm font-bold text-[#0B132B] mb-1 leading-tight">{meta.label}</h3>
+                    <p className="text-gray-400 text-xs mb-3">{meta.count.toLocaleString('fr-FR')} offres</p>
+                    <div className="flex items-center text-xs font-semibold text-gray-400 group-hover:text-[#FF5E36] transition-colors">
+                      Explorer <ArrowRight className="ml-1 w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all" />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
 
-              {/* Card 2: Marketing & Com */}
-              <div 
-                onClick={() => {
-                  setActiveCategory('Marketing & Com');
-                  document.getElementById('offres-section')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className={`bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer border group relative ${
-                  activeCategory === 'Marketing & Com' ? 'border-[#FF9F1C] ring-2 ring-orange-400/20' : 'border-gray-100'
-                }`}
-              >
-                <div className="bg-orange-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#FF9F1C]/10 transition-colors">
-                  <Megaphone className="text-orange-500 group-hover:text-[#FF9F1C] w-7 h-7 transition-colors" />
-                </div>
-                <h3 className="text-xl font-bold text-[#0B132B] mb-2">Marketing & Com</h3>
-                <p className="text-gray-500 text-sm mb-4">1,840 opportunités ouvertes</p>
-                <div className="flex items-center text-sm font-medium text-gray-400 group-hover:text-[#FF5E36] transition-colors">
-                  Explorer <ArrowRight className="ml-1 w-4 h-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-                </div>
-              </div>
-
-              {/* Card 3: Vente & Business */}
-              <div 
-                onClick={() => {
-                  setActiveCategory('Vente & Business');
-                  document.getElementById('offres-section')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className={`bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer border group relative ${
-                  activeCategory === 'Vente & Business' ? 'border-[#FF9F1C] ring-2 ring-orange-400/20' : 'border-gray-100'
-                }`}
-              >
-                <div className="bg-green-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#FF9F1C]/10 transition-colors">
-                  <Briefcase className="text-green-600 group-hover:text-[#FF9F1C] w-7 h-7 transition-colors" />
-                </div>
-                <h3 className="text-xl font-bold text-[#0B132B] mb-2">Vente & Business</h3>
-                <p className="text-gray-500 text-sm mb-4">2,930 opportunités ouvertes</p>
-                <div className="flex items-center text-sm font-medium text-gray-400 group-hover:text-[#FF5E36] transition-colors">
-                  Explorer <ArrowRight className="ml-1 w-4 h-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-                </div>
-              </div>
-
-              {/* Card 4: Ingénierie & R&D */}
-              <div 
-                onClick={() => {
-                  setActiveCategory('Ingénierie & R&D');
-                  document.getElementById('offres-section')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className={`bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer border group relative ${
-                  activeCategory === 'Ingénierie & R&D' ? 'border-[#FF9F1C] ring-2 ring-orange-400/20' : 'border-gray-100'
-                }`}
-              >
-                <div className="bg-purple-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#FF9F1C]/10 transition-colors">
-                  <Cpu className="text-purple-600 group-hover:text-[#FF9F1C] w-7 h-7 transition-colors" />
-                </div>
-                <h3 className="text-xl font-bold text-[#0B132B] mb-2">Ingénierie & R&D</h3>
-                <p className="text-gray-500 text-sm mb-4">1,120 opportunités ouvertes</p>
-                <div className="flex items-center text-sm font-medium text-gray-400 group-hover:text-[#FF5E36] transition-colors">
-                  Explorer <ArrowRight className="ml-1 w-4 h-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-                </div>
-              </div>
+            {/* Tous les secteurs — grille compacte groupée */}
+            <div className="bg-gradient-to-br from-[#F8F9FE] to-white rounded-3xl border border-gray-100 p-6">
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Tous les secteurs ({JOB_CATEGORIES.length})</p>
+              {CATEGORY_GROUPS.map(group => {
+                const cats = JOB_CATEGORIES.filter(c => c.group === group);
+                return (
+                  <div key={group} className="mb-4 last:mb-0">
+                    <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest mb-2">{group}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {cats.map(cat => (
+                        <button
+                          key={cat.label}
+                          onClick={() => {
+                            setActiveCategory(cat.label);
+                            document.getElementById('offres-section')?.scrollIntoView({ behavior: 'smooth' });
+                          }}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                            activeCategory === cat.label
+                              ? 'bg-[#0B132B] text-white shadow-sm'
+                              : 'bg-white border border-gray-200 text-gray-600 hover:border-[#FF9F1C] hover:text-[#FF5E36]'
+                          }`}
+                        >
+                          <span>{cat.icon}</span>
+                          {cat.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </section>
 
@@ -896,19 +875,57 @@ function NovoRiseMain() {
                 <span className="text-xs font-semibold text-gray-400 mr-1 flex items-center gap-1">
                   <Filter className="w-3.5 h-3.5" /> Secteur:
                 </span>
-                {['Tous', 'Tech & IT', 'Marketing & Com', 'Vente & Business', 'Ingénierie & R&D'].map(cat => (
+                {/* Bouton Tous */}
+                <button
+                  onClick={() => setActiveCategory('Tous')}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+                    activeCategory === 'Tous'
+                      ? 'bg-[#0B132B] text-white shadow-sm'
+                      : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  Tous
+                </button>
+
+                {/* Dropdown groupé — tous les secteurs */}
+                <div className="relative group">
                   <button
-                    key={cat}
-                    onClick={() => setActiveCategory(cat)}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-                      activeCategory === cat 
-                        ? 'bg-[#0B132B] text-white shadow-sm' 
+                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+                      activeCategory !== 'Tous'
+                        ? 'bg-[#FF9F1C] text-white shadow-sm'
                         : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
                     }`}
                   >
-                    {cat}
+                    <Filter className="w-3 h-3" />
+                    {activeCategory !== 'Tous' ? activeCategory : 'Choisir un secteur'}
+                    <ChevronDown className="w-3 h-3" />
                   </button>
-                ))}
+                  <div className="absolute left-0 top-full mt-1 z-50 hidden group-hover:block w-[520px] bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 max-h-[420px] overflow-y-auto">
+                    {CATEGORY_GROUPS.map(group => {
+                      const cats = JOB_CATEGORIES.filter(c => c.group === group);
+                      return (
+                        <div key={group} className="mb-3 last:mb-0">
+                          <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest mb-1.5 px-1">{group}</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {cats.map(cat => (
+                              <button
+                                key={cat.label}
+                                onClick={() => setActiveCategory(cat.label)}
+                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                                  activeCategory === cat.label
+                                    ? 'bg-[#0B132B] text-white'
+                                    : 'bg-gray-50 text-gray-600 hover:bg-orange-50 hover:text-[#FF5E36]'
+                                }`}
+                              >
+                                <span className="text-sm">{cat.icon}</span> {cat.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-gray-100 text-xs">

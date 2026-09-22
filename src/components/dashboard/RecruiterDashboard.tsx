@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { RecruiterJobPost, Application } from '../../types/auth';
+import { JOB_CATEGORIES } from '../../types/categories';
+
 
 export const RecruiterDashboard: React.FC = () => {
   const { 
@@ -423,9 +425,10 @@ export const RecruiterDashboard: React.FC = () => {
                   className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#FF9F1C] bg-white"
                 >
                   <option value="Tech & IT">Tech & IT</option>
-                  <option value="Marketing & Com">Marketing & Com</option>
-                  <option value="Vente & Business">Vente & Business</option>
-                  <option value="Ingénierie & R&D">Ingénierie & R&D</option>
+                  {/* Toutes les catégories sont chargées dynamiquement */}
+                  {JOB_CATEGORIES.map(cat => (
+                    <option key={cat.label} value={cat.label}>{cat.icon} {cat.label}</option>
+                  ))}
                 </select>
               </div>
               <div>
