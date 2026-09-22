@@ -449,9 +449,9 @@ function NovoRiseMain() {
       <AuthFlowModal />
 
       {/* HEADER */}
-      <header className="absolute top-0 w-full z-40 bg-[#0B132B]/90 backdrop-blur-md border-b border-white/10">
+      <header className="sticky top-0 z-50 bg-[#F8F7F5]/90 backdrop-blur-md border-b border-gray-200/60 w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4 md:py-5">
+          <div className="flex justify-between items-center h-16">
             
             {/* Logo */}
             <div 
@@ -462,16 +462,16 @@ function NovoRiseMain() {
               }}
               className="flex items-center gap-2 cursor-pointer select-none group"
             >
-              <div className="bg-gradient-to-tr from-[#FF9F1C] to-[#FF5E36] p-2 rounded-xl shadow-lg shadow-orange-500/20 group-hover:scale-105 transition-transform">
-                <TrendingUp className="text-white w-6 h-6" strokeWidth={3} />
+              <div className="bg-[#2D6BE4] p-1.5 rounded-lg text-white shadow-sm group-hover:scale-105 transition-transform">
+                <TrendingUp className="w-5 h-5" strokeWidth={2.5} />
               </div>
-              <span className="text-2xl font-bold text-white tracking-tight">
-                Novo<span className="text-[#FF9F1C]">Rise</span>
+              <span className="text-2xl font-bold text-[#1A1A2E] tracking-tight">
+                Novo<span className="text-[#2D6BE4]">Rise</span>
               </span>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-7 items-center">
+            <nav className="hidden md:flex space-x-8 items-center">
               <button 
                 onClick={() => {
                   setActiveView('home');
@@ -479,10 +479,10 @@ function NovoRiseMain() {
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }} 
                 className={`font-medium text-sm transition-colors ${
-                  activeView === 'home' ? 'text-[#FF9F1C]' : 'text-white hover:text-[#FF9F1C]'
+                  activeView === 'home' ? 'text-[#2D6BE4]' : 'text-[#1A1A2E] hover:text-[#2D6BE4]'
                 }`}
               >
-                Offres d'emploi
+                Trouver un emploi
               </button>
 
               <button 
@@ -491,9 +491,9 @@ function NovoRiseMain() {
                   const el = document.getElementById('categories-section');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }} 
-                className="text-gray-300 hover:text-white font-medium text-sm transition-colors"
+                className="text-[#6B7280] hover:text-[#1A1A2E] font-medium text-sm transition-colors"
               >
-                Secteurs
+                Secteurs d'activité
               </button>
 
               {/* Role-based Dashboard link if authenticated */}
@@ -502,10 +502,10 @@ function NovoRiseMain() {
                   onClick={() => {
                     setActiveView(user?.role === 'recruteur' ? 'recruiter-dashboard' : 'candidate-dashboard');
                   }}
-                  className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl transition-all ${
+                  className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-all ${
                     activeView === 'candidate-dashboard' || activeView === 'recruiter-dashboard'
-                      ? 'bg-gradient-to-r from-[#FF9F1C] to-[#FF5E36] text-white shadow-md'
-                      : 'bg-white/10 text-white hover:bg-white/20'
+                      ? 'bg-[#2D6BE4] text-white shadow-sm'
+                      : 'bg-gray-100 text-[#1A1A2E] hover:bg-gray-200'
                   }`}
                 >
                   <LayoutDashboard className="w-3.5 h-3.5" />
@@ -521,10 +521,10 @@ function NovoRiseMain() {
                   const el = document.getElementById('offres-section');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full transition-all border ${
+                className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all border ${
                   showOnlySaved 
-                    ? 'bg-[#FF9F1C] text-white border-[#FF9F1C]' 
-                    : 'bg-white/10 text-gray-300 border-white/10 hover:bg-white/20'
+                    ? 'bg-[#2D6BE4] text-white border-[#2D6BE4]' 
+                    : 'bg-white text-[#6B7280] border-gray-200 hover:bg-gray-50 hover:text-[#1A1A2E]'
                 }`}
               >
                 <Bookmark className="w-3.5 h-3.5" />
@@ -538,20 +538,20 @@ function NovoRiseMain() {
                 <div className="flex items-center gap-3">
                   <div 
                     onClick={() => setActiveView(user?.role === 'recruteur' ? 'recruiter-dashboard' : 'candidate-dashboard')}
-                    className="flex items-center gap-2.5 bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-2xl border border-white/10 cursor-pointer transition-colors"
+                    className="flex items-center gap-2.5 bg-gray-100 hover:bg-gray-200/80 px-3 py-1.5 rounded-lg border border-gray-200 cursor-pointer transition-colors"
                   >
-                    <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#FF9F1C] to-[#FF5E36] text-white flex items-center justify-center font-bold text-xs">
+                    <div className="w-8 h-8 rounded-lg bg-[#2D6BE4] text-white flex items-center justify-center font-bold text-xs">
                       {user?.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="text-left">
-                      <div className="text-xs font-bold text-white line-clamp-1">{user?.name}</div>
-                      <div className="text-[10px] text-[#FF9F1C] font-semibold uppercase">{user?.role}</div>
+                      <div className="text-xs font-bold text-[#1A1A2E] line-clamp-1">{user?.name}</div>
+                      <div className="text-[10px] text-[#2D6BE4] font-semibold uppercase">{user?.role}</div>
                     </div>
                   </div>
 
                   <button
                     onClick={logout}
-                    className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                    className="p-2 text-[#6B7280] hover:text-[#1A1A2E] hover:bg-gray-100 rounded-lg transition-colors"
                     title="Déconnexion"
                     aria-label="Déconnexion"
                   >
@@ -562,25 +562,15 @@ function NovoRiseMain() {
                 <>
                   <button 
                     onClick={() => { setAuthModalStep('login'); setAuthModalOpen(true); }}
-                    className="text-white hover:text-gray-200 font-medium text-xs px-3 py-2 transition-colors cursor-pointer"
+                    className="text-[#1A1A2E] font-medium text-sm px-4 py-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                   >
                     Connexion
                   </button>
                   <button 
                     onClick={() => { setAuthModalStep('register'); setAuthModalOpen(true); }}
-                    className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm px-4 py-2 rounded-full font-medium text-xs transition-all transform hover:scale-105 cursor-pointer"
+                    className="bg-[#2D6BE4] text-white px-5 py-2 rounded-lg font-medium text-sm hover:bg-[#2D6BE4]/90 transition-colors shadow-sm cursor-pointer"
                   >
-                    S'inscrire
-                  </button>
-                  <button
-                    onClick={() => {
-                      setAuthModalStep('register');
-                      setAuthModalOpen(true);
-                    }}
-                    className="bg-gradient-to-r from-[#FF9F1C] to-[#FF5E36] text-white px-4 py-2 rounded-full font-semibold text-xs shadow-md hover:shadow-orange-500/20 transition-all flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <PlusCircle className="w-3.5 h-3.5" />
-                    <span>Publier</span>
+                    Espace Recruteur
                   </button>
                 </>
               )}
@@ -590,7 +580,7 @@ function NovoRiseMain() {
             <div className="md:hidden flex items-center gap-3">
               <button 
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-white hover:text-[#FF9F1C] focus:outline-none p-1"
+                className="text-[#1A1A2E] hover:text-[#2D6BE4] focus:outline-none p-1"
                 aria-label="Menu"
               >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -601,12 +591,12 @@ function NovoRiseMain() {
 
         {/* Mobile Menu Panel */}
         {isMobileMenuOpen && (
-          <div className="md:hidden bg-[#0B132B] px-4 pt-2 pb-6 space-y-3 shadow-2xl border-t border-white/10 animate-fade-in">
+          <div className="md:hidden bg-white px-4 pt-2 pb-6 space-y-3 shadow-lg border-b border-gray-200 animate-fade-in">
             <button 
               onClick={() => { setActiveView('home'); setIsMobileMenuOpen(false); }} 
-              className="block w-full text-left px-3 py-2 text-white font-medium rounded-md hover:bg-white/10 text-xs"
+              className="block w-full text-left px-3 py-2 text-[#1A1A2E] font-medium rounded-md hover:bg-gray-100 text-xs"
             >
-              Accueil & Offres
+              Trouver un emploi
             </button>
 
             {isAuthenticated ? (
@@ -616,30 +606,30 @@ function NovoRiseMain() {
                     setActiveView(user?.role === 'recruteur' ? 'recruiter-dashboard' : 'candidate-dashboard'); 
                     setIsMobileMenuOpen(false); 
                   }} 
-                  className="block w-full text-left px-3 py-2 text-[#FF9F1C] font-bold rounded-md hover:bg-white/10 text-xs"
+                  className="block w-full text-left px-3 py-2 text-[#2D6BE4] font-bold rounded-md hover:bg-gray-100 text-xs"
                 >
                   Mon Dashboard ({user?.role})
                 </button>
-                <div className="pt-2 border-t border-white/10 flex justify-between items-center px-3">
-                  <span className="text-gray-400 text-xs">{user?.email}</span>
-                  <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="text-rose-400 font-bold text-xs flex items-center gap-1">
+                <div className="pt-2 border-t border-gray-100 flex justify-between items-center px-3">
+                  <span className="text-[#6B7280] text-xs">{user?.email}</span>
+                  <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="text-rose-600 font-bold text-xs flex items-center gap-1">
                     <LogOut className="w-3.5 h-3.5" /> Déconnexion
                   </button>
                 </div>
               </>
             ) : (
-              <div className="pt-4 flex flex-col gap-2">
+              <div className="pt-2 flex flex-col gap-2">
                 <button 
                   onClick={() => { setIsMobileMenuOpen(false); setAuthModalStep('login'); setAuthModalOpen(true); }}
-                  className="text-white font-medium px-4 py-2 border border-white/20 rounded-full text-xs"
+                  className="text-[#1A1A2E] font-medium px-4 py-2 border border-gray-300 rounded-lg text-xs hover:bg-gray-100"
                 >
                   Connexion
                 </button>
                 <button 
                   onClick={() => { setIsMobileMenuOpen(false); setAuthModalStep('register'); setAuthModalOpen(true); }}
-                  className="bg-gradient-to-r from-[#FF9F1C] to-[#FF5E36] text-white px-4 py-2.5 rounded-full font-semibold text-xs flex items-center justify-center gap-2"
+                  className="bg-[#2D6BE4] text-white px-4 py-2.5 rounded-lg font-medium text-xs flex items-center justify-center gap-2 shadow-sm hover:bg-[#2D6BE4]/90"
                 >
-                  Inscription (Candidat / Recruteur)
+                  Espace Recruteur
                 </button>
               </div>
             )}
@@ -668,116 +658,100 @@ function NovoRiseMain() {
       {activeView === 'home' && (
         <main>
           {/* HERO SECTION */}
-          <section className="relative bg-[#0B132B] pt-32 pb-24 lg:pt-48 lg:pb-36 overflow-hidden">
-            <div 
-              className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] opacity-30 pointer-events-none" 
-              style={{ background: 'radial-gradient(circle, #FF9F1C 0%, transparent 60%)', filter: 'blur(80px)' }}
-            />
+          <section className="w-full py-16 md:py-24 px-4 flex flex-col items-center text-center">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#1A1A2E] mb-4 tracking-tight">
+              Trouvez l'emploi qui vous correspond.
+            </h1>
+            <p className="text-lg text-[#6B7280] mb-10 max-w-2xl font-medium">
+              Découvrez des milliers d'offres d'emploi dans les meilleures entreprises. 
+              Votre prochaine opportunité vous attend.
+            </p>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-              
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-orange-300 text-xs font-semibold mb-6">
-                <Sparkles className="w-3.5 h-3.5 text-[#FF9F1C]" />
-                <span>Plateforme de mise en relation Candidats & Recruteurs</span>
-              </div>
-
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6">
-                Élevez votre carrière.<br className="hidden md:block" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF9F1C] to-[#FF5E36]">
-                  Votre prochain chapitre commence ici.
-                </span>
-              </h1>
-              <p className="mt-4 text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-10">
-                Trouvez des opportunités qui vous correspondent parmi des milliers d'entreprises innovantes.
-              </p>
-
-              {/* Main Search Bar */}
-              <form 
-                onSubmit={handleSearchSubmit}
-                className="bg-white p-2 rounded-2xl md:rounded-full shadow-2xl flex flex-col md:flex-row items-center w-full max-w-4xl mx-auto gap-2 md:gap-0 transition-all focus-within:ring-4 focus-within:ring-orange-500/20"
-              >
-                <div className="flex items-center flex-1 p-3 border-b md:border-b-0 md:border-r border-gray-100 w-full group">
-                  <Search className="text-gray-400 mr-3 group-focus-within:text-[#FF9F1C] transition-colors w-5 h-5 flex-shrink-0" />
-                  <input 
-                    type="text" 
-                    value={searchKeyword}
-                    onChange={(e) => setSearchKeyword(e.target.value)}
-                    placeholder="Poste, compétences, mots-clés (ex: React, Marketing)..." 
-                    className="w-full outline-none text-gray-700 bg-transparent placeholder-gray-400 text-sm md:text-base"
-                  />
-                  {searchKeyword && (
-                    <button 
-                      type="button" 
-                      onClick={() => setSearchKeyword('')} 
-                      className="text-gray-400 hover:text-gray-600 text-xs mr-2"
-                    >
-                      ✕
-                    </button>
-                  )}
-                </div>
-                
-                <div className="flex items-center flex-1 p-3 w-full group">
-                  <MapPin className="text-gray-400 mr-3 group-focus-within:text-[#FF9F1C] transition-colors w-5 h-5 flex-shrink-0" />
-                  <input 
-                    type="text" 
-                    value={locationKeyword}
-                    onChange={(e) => setLocationKeyword(e.target.value)}
-                    placeholder="Localisation (ex: Casablanca, Remote, Paris)..." 
-                    className="w-full outline-none text-gray-700 bg-transparent placeholder-gray-400 text-sm md:text-base"
-                  />
-                  {locationKeyword && (
-                    <button 
-                      type="button" 
-                      onClick={() => setLocationKeyword('')} 
-                      className="text-gray-400 hover:text-gray-600 text-xs mr-2"
-                    >
-                      ✕
-                    </button>
-                  )}
-                </div>
-
-                <button 
-                  type="submit"
-                  className="bg-gradient-to-r from-[#FF9F1C] to-[#FF5E36] hover:from-[#e88b14] hover:to-[#e54a22] text-white px-8 py-4 rounded-xl md:rounded-full font-bold w-full md:w-auto mt-2 md:mt-0 shadow-lg shadow-orange-500/30 transition-all transform hover:scale-105 flex justify-center items-center gap-2 cursor-pointer"
-                >
-                  <span>Rechercher</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </form>
-              
-              {/* Quick trending tags */}
-              <div className="mt-8 flex flex-wrap justify-center items-center gap-2.5 text-sm">
-                <span className="text-gray-400 font-medium text-xs">Tendances :</span>
-                {['Développeur React', 'UI/UX Designer', 'Data Scientist', 'Casablanca', 'Remote'].map((tag) => (
+            {/* Prominent Search Bar */}
+            <form 
+              onSubmit={handleSearchSubmit}
+              className="w-full max-w-4xl bg-white rounded-2xl shadow-md p-2 flex flex-col md:flex-row items-center border border-gray-100"
+            >
+              <div className="flex items-center flex-1 w-full px-4 py-3 md:border-r border-gray-200">
+                <Search className="text-[#6B7280] w-5 h-5 mr-3 flex-shrink-0" />
+                <input 
+                  type="text" 
+                  value={searchKeyword}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
+                  placeholder="Intitulé de poste, mots-clés, entreprise..." 
+                  className="w-full outline-none text-[#1A1A2E] bg-transparent placeholder-[#6B7280] text-base"
+                />
+                {searchKeyword && (
                   <button 
-                    key={tag} 
-                    type="button"
-                    onClick={() => handleTagClick(tag)}
-                    className="bg-white/10 text-gray-300 px-3.5 py-1 rounded-full cursor-pointer hover:bg-white/20 hover:text-white transition-all text-xs border border-white/5 active:scale-95"
+                    type="button" 
+                    onClick={() => setSearchKeyword('')} 
+                    className="text-[#6B7280] hover:text-[#1A1A2E] text-xs mr-2"
                   >
-                    {tag}
+                    ✕
                   </button>
-                ))}
+                )}
               </div>
+              
+              <div className="flex items-center flex-1 w-full px-4 py-3 border-t md:border-t-0 border-gray-100">
+                <MapPin className="text-[#6B7280] w-5 h-5 mr-3 flex-shrink-0" />
+                <input 
+                  type="text" 
+                  value={locationKeyword}
+                  onChange={(e) => setLocationKeyword(e.target.value)}
+                  placeholder="Ville ou code postal" 
+                  className="w-full outline-none text-[#1A1A2E] bg-transparent placeholder-[#6B7280] text-base"
+                />
+                {locationKeyword && (
+                  <button 
+                    type="button" 
+                    onClick={() => setLocationKeyword('')} 
+                    className="text-[#6B7280] hover:text-[#1A1A2E] text-xs mr-2"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              <button 
+                type="submit"
+                className="w-full md:w-auto bg-[#2D6BE4] hover:bg-[#2D6BE4]/90 text-white px-8 py-3.5 rounded-xl font-semibold flex items-center justify-center transition-colors mt-2 md:mt-0 flex-shrink-0 cursor-pointer shadow-sm"
+              >
+                Rechercher
+              </button>
+            </form>
+            
+            {/* Quick trending tags */}
+            <div className="mt-8 flex flex-wrap justify-center items-center gap-2.5 text-sm">
+              <span className="text-[#6B7280] font-medium text-xs">Tendances :</span>
+              {['Développeur React', 'UI/UX Designer', 'Data Scientist', 'Casablanca', 'Remote'].map((tag) => (
+                <button 
+                  key={tag} 
+                  type="button"
+                  onClick={() => handleTagClick(tag)}
+                  className="bg-white text-[#6B7280] hover:text-[#1A1A2E] px-3.5 py-1 rounded-full cursor-pointer hover:bg-gray-100 transition-all text-xs border border-gray-200/60 active:scale-95 shadow-sm"
+                >
+                  {tag}
+                </button>
+              ))}
             </div>
           </section>
 
           {/* CATEGORIES SECTION */}
-          <section id="categories-section" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+          <section id="categories-section" className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
             <div className="flex justify-between items-end mb-10">
               <div>
-                <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#FF5E36] uppercase tracking-wider mb-2">
-                  <Sparkles className="w-3.5 h-3.5" /> Métiers & Secteurs
+                <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#2D6BE4] uppercase tracking-wider mb-2">
+                  <Sparkles className="w-3.5 h-3.5 text-[#2D6BE4]" /> Métiers & Secteurs
                 </div>
-                <h2 className="text-3xl font-bold text-[#0B132B]">Opportunités recommandées</h2>
-                <p className="text-gray-500 mt-2">Explorez les secteurs qui recrutent le plus activement aujourd'hui.</p>
+                <h2 className="text-3xl font-bold text-[#1A1A2E]">Opportunités recommandées</h2>
+                <p className="text-[#6B7280] mt-2 font-medium">Explorez les secteurs qui recrutent le plus activement aujourd'hui.</p>
               </div>
               <button 
                 onClick={() => {
                   setActiveCategory('Tous');
                   document.getElementById('offres-section')?.scrollIntoView({ behavior: 'smooth' });
                 }} 
-                className="hidden md:flex items-center text-[#FF5E36] font-semibold hover:text-[#FF9F1C] transition-colors text-sm"
+                className="hidden md:flex items-center text-[#2D6BE4] font-semibold hover:underline transition-colors text-sm"
               >
                 Voir toutes les offres <ArrowRight className="ml-2 w-5 h-5" />
               </button>
@@ -794,23 +768,23 @@ function NovoRiseMain() {
                       setActiveCategory(catLabel);
                       document.getElementById('offres-section')?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className={`bg-white rounded-2xl p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer border group ${
-                      activeCategory === catLabel ? 'border-[#FF9F1C] ring-2 ring-orange-400/20' : 'border-gray-100'
+                    className={`bg-white rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer border group ${
+                      activeCategory === catLabel ? 'border-[#2D6BE4] ring-2 ring-blue-400/20' : 'border-gray-100'
                     }`}
                   >
-                    <div className={`${meta.color} w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-2xl group-hover:bg-[#FF9F1C]/10 transition-colors`}>
+                    <div className="w-12 h-12 rounded-xl bg-[#F8F7F5] border border-gray-100 flex items-center justify-center mb-4 text-2xl group-hover:bg-[#2D6BE4]/10 transition-colors">
                       {meta.icon}
                     </div>
-                    <h3 className="text-sm font-bold text-[#0B132B] mb-1 leading-tight">{meta.label}</h3>
-                    <p className="text-gray-400 text-xs mb-2">{meta.count.toLocaleString('fr-FR')} offres</p>
+                    <h3 className="text-sm font-bold text-[#1A1A2E] mb-1 leading-tight group-hover:text-[#2D6BE4] transition-colors">{meta.label}</h3>
+                    <p className="text-[#6B7280] text-xs mb-2">{meta.count.toLocaleString('fr-FR')} offres</p>
                     <div className="flex flex-wrap gap-1 mb-3">
                       {meta.jobs.slice(0, 3).map(jobName => (
-                        <span key={jobName} className="text-[10px] bg-gray-50 text-gray-500 px-1.5 py-0.5 rounded border border-gray-100">
+                        <span key={jobName} className="text-[10px] bg-[#F8F7F5] text-[#6B7280] px-1.5 py-0.5 rounded border border-gray-100">
                           {jobName}
                         </span>
                       ))}
                     </div>
-                    <div className="flex items-center text-xs font-semibold text-gray-400 group-hover:text-[#FF5E36] transition-colors">
+                    <div className="flex items-center text-xs font-semibold text-[#6B7280] group-hover:text-[#2D6BE4] transition-colors">
                       Explorer <ArrowRight className="ml-1 w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all" />
                     </div>
                   </div>
@@ -819,13 +793,13 @@ function NovoRiseMain() {
             </div>
 
             {/* Tous les secteurs — grille compacte groupée */}
-            <div className="bg-gradient-to-br from-[#F8F9FE] to-white rounded-3xl border border-gray-100 p-6">
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Tous les secteurs ({JOB_CATEGORIES.length})</p>
+            <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+              <p className="text-xs font-bold text-[#6B7280] uppercase tracking-wider mb-4">Tous les secteurs ({JOB_CATEGORIES.length})</p>
               {CATEGORY_GROUPS.map(group => {
                 const cats = JOB_CATEGORIES.filter(c => c.group === group);
                 return (
                   <div key={group} className="mb-4 last:mb-0">
-                    <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest mb-2">{group}</p>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">{group}</p>
                     <div className="flex flex-wrap gap-2">
                       {cats.map(cat => (
                         <button
@@ -836,8 +810,8 @@ function NovoRiseMain() {
                           }}
                           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                             activeCategory === cat.label
-                              ? 'bg-[#0B132B] text-white shadow-sm'
-                              : 'bg-white border border-gray-200 text-gray-600 hover:border-[#FF9F1C] hover:text-[#FF5E36]'
+                              ? 'bg-[#1A1A2E] text-white shadow-sm'
+                              : 'bg-[#F8F7F5] border border-gray-200/60 text-[#6B7280] hover:border-[#2D6BE4] hover:text-[#2D6BE4]'
                           }`}
                         >
                           <span>{cat.icon}</span>
@@ -856,22 +830,18 @@ function NovoRiseMain() {
             
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#FF9F1C] animate-pulse"></span>
-                  <span className="text-xs font-bold text-[#FF5E36] uppercase tracking-wider">Offres d'emploi en direct</span>
-                </div>
-                <h2 className="text-3xl font-bold text-[#0B132B] mt-1">Dernières opportunités</h2>
-                <p className="text-gray-500 text-sm mt-1">
-                  {filteredJobs.length} offre{filteredJobs.length > 1 ? 's' : ''} disponible{filteredJobs.length > 1 ? 's' : ''} selon vos critères
+                <h2 className="text-2xl font-bold text-[#1A1A2E]">Offres d'emploi ({filteredJobs.length})</h2>
+                <p className="text-[#6B7280] text-sm mt-1 font-medium">
+                  Découvrez nos opportunités sélectionnées selon vos critères
                 </p>
               </div>
 
               {(searchKeyword || locationKeyword || activeCategory !== 'Tous' || activeContract !== 'Tous' || activeWorkplace !== 'Tous' || showOnlySaved) && (
                 <button 
                   onClick={resetFilters}
-                  className="self-start md:self-auto text-xs font-semibold text-[#FF5E36] hover:text-[#FF9F1C] underline flex items-center gap-1 transition-colors"
+                  className="self-start md:self-auto text-xs font-semibold text-[#2D6BE4] hover:underline flex items-center gap-1 transition-colors"
                 >
-                  ✕ Réinitialiser tous les filtres
+                  ✕ Réinitialiser les filtres
                 </button>
               )}
             </div>
@@ -879,7 +849,7 @@ function NovoRiseMain() {
             {/* Filter Bar */}
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-8 space-y-4">
               <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-                <span className="text-xs font-semibold text-gray-400 mr-1 flex items-center gap-1">
+                <span className="text-xs font-semibold text-[#6B7280] mr-1 flex items-center gap-1">
                   <Filter className="w-3.5 h-3.5" /> Secteur:
                 </span>
                 {/* Bouton Tous */}
@@ -887,8 +857,8 @@ function NovoRiseMain() {
                   onClick={() => setActiveCategory('Tous')}
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                     activeCategory === 'Tous'
-                      ? 'bg-[#0B132B] text-white shadow-sm'
-                      : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                      ? 'bg-[#1A1A2E] text-white shadow-sm'
+                      : 'bg-[#F8F7F5] text-[#6B7280] hover:bg-gray-100'
                   }`}
                 >
                   Tous
@@ -899,8 +869,8 @@ function NovoRiseMain() {
                   <button
                     className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                       activeCategory !== 'Tous'
-                        ? 'bg-[#FF9F1C] text-white shadow-sm'
-                        : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                        ? 'bg-[#2D6BE4] text-white shadow-sm'
+                        : 'bg-[#F8F7F5] text-[#6B7280] hover:bg-gray-100'
                     }`}
                   >
                     <Filter className="w-3 h-3" />
@@ -920,8 +890,8 @@ function NovoRiseMain() {
                                 onClick={() => setActiveCategory(cat.label)}
                                 className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
                                   activeCategory === cat.label
-                                    ? 'bg-[#0B132B] text-white'
-                                    : 'bg-gray-50 text-gray-600 hover:bg-orange-50 hover:text-[#FF5E36]'
+                                    ? 'bg-[#1A1A2E] text-white'
+                                    : 'bg-[#F8F7F5] text-[#6B7280] hover:bg-blue-50 hover:text-[#2D6BE4]'
                                 }`}
                               >
                                 <span className="text-sm">{cat.icon}</span> {cat.label}
@@ -937,15 +907,15 @@ function NovoRiseMain() {
 
               <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-gray-100 text-xs">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-semibold text-gray-400">Contrat:</span>
+                  <span className="font-semibold text-[#6B7280]">Contrat:</span>
                   {['Tous', 'CDI', 'CDD', 'Freelance', 'Stage'].map(contract => (
                     <button
                       key={contract}
                       onClick={() => setActiveContract(contract)}
                       className={`px-2.5 py-1 rounded-lg transition-all ${
                         activeContract === contract 
-                          ? 'bg-[#FF9F1C] text-white font-bold' 
-                          : 'text-gray-600 hover:bg-gray-100'
+                          ? 'bg-[#2D6BE4] text-white font-bold' 
+                          : 'text-[#6B7280] hover:bg-gray-100'
                       }`}
                     >
                       {contract}
@@ -954,15 +924,15 @@ function NovoRiseMain() {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-semibold text-gray-400">Modalité:</span>
+                  <span className="font-semibold text-[#6B7280]">Modalité:</span>
                   {['Tous', 'Remote', 'Hybride', 'Présentiel'].map(wp => (
                     <button
                       key={wp}
                       onClick={() => setActiveWorkplace(wp)}
                       className={`px-2.5 py-1 rounded-lg transition-all ${
                         activeWorkplace === wp 
-                          ? 'bg-[#FF5E36] text-white font-bold' 
-                          : 'text-gray-600 hover:bg-gray-100'
+                          ? 'bg-[#1A1A2E] text-white font-bold' 
+                          : 'text-[#6B7280] hover:bg-gray-100'
                       }`}
                     >
                       {wp}
@@ -974,17 +944,17 @@ function NovoRiseMain() {
 
             {/* Jobs Cards Grid */}
             {filteredJobs.length === 0 ? (
-              <div className="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-sm max-w-lg mx-auto">
-                <div className="w-16 h-16 bg-orange-50 text-[#FF9F1C] rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-white rounded-2xl p-12 text-center border border-gray-100 shadow-sm max-w-lg mx-auto">
+                <div className="w-16 h-16 bg-blue-50 text-[#2D6BE4] rounded-full flex items-center justify-center mx-auto mb-4">
                   <Search className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-[#0B132B] mb-2">Aucune offre trouvée</h3>
-                <p className="text-gray-500 text-sm mb-6">
+                <h3 className="text-xl font-bold text-[#1A1A2E] mb-2">Aucune offre trouvée</h3>
+                <p className="text-[#6B7280] text-sm mb-6 font-medium">
                   Aucune offre ne correspond exactement à vos critères. Essayez d'élargir votre recherche.
                 </p>
                 <button 
                   onClick={resetFilters}
-                  className="bg-[#0B132B] text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-slate-800 transition-colors"
+                  className="bg-[#2D6BE4] text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#2D6BE4]/90 transition-colors shadow-sm cursor-pointer"
                 >
                   Réinitialiser les filtres
                 </button>
@@ -997,30 +967,30 @@ function NovoRiseMain() {
                     <div 
                       key={job.id}
                       onClick={() => setSelectedJob(job)}
-                      className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-xl hover:border-orange-200 transition-all cursor-pointer flex flex-col justify-between group relative"
+                      className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md border border-gray-100 transition-all group flex flex-col justify-between h-full cursor-pointer"
                     >
                       <div>
+                        {/* Header: Logo, Title, Bookmark */}
                         <div className="flex items-start justify-between gap-3 mb-4">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-12 h-12 rounded-xl ${job.logoBg} text-white flex items-center justify-center font-extrabold text-sm shadow-sm flex-shrink-0`}>
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-xl bg-[#F8F7F5] border border-gray-100 flex items-center justify-center font-bold text-[#2D6BE4] text-xl shrink-0">
                               {job.logoText}
                             </div>
                             <div>
-                              <h4 className="font-bold text-gray-500 text-xs flex items-center gap-1.5">
-                                {job.company}
-                                <span className="inline-block w-1 h-1 rounded-full bg-gray-300"></span>
-                                <span className="text-gray-400">{job.postedTime}</span>
-                              </h4>
-                              <h3 className="text-lg font-bold text-[#0B132B] group-hover:text-[#FF5E36] transition-colors line-clamp-1 mt-0.5">
+                              <h3 className="text-lg font-semibold text-[#1A1A2E] group-hover:text-[#2D6BE4] transition-colors leading-tight line-clamp-1">
                                 {job.title}
                               </h3>
+                              <div className="flex items-center text-sm text-[#6B7280] mt-1 font-medium">
+                                <Building2 className="w-4 h-4 mr-1.5 text-[#6B7280]" />
+                                {job.company}
+                              </div>
                             </div>
                           </div>
 
                           <button
                             onClick={(e) => toggleBookmark(job.id, e)}
-                            className={`p-2 rounded-xl transition-colors ${
-                              isSaved ? 'text-[#FF9F1C] bg-orange-50' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
+                            className={`p-1.5 rounded-lg transition-colors ${
+                              isSaved ? 'text-[#2D6BE4] bg-blue-50' : 'text-gray-300 hover:text-[#2D6BE4]'
                             }`}
                             title={isSaved ? "Retirer des favoris" : "Enregistrer l'offre"}
                             aria-label="Enregistrer l'offre"
@@ -1029,61 +999,42 @@ function NovoRiseMain() {
                           </button>
                         </div>
 
-                        <p className="text-gray-600 text-xs line-clamp-2 mb-4 leading-relaxed">
+                        {/* Badges */}
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#F8F7F5] text-[#6B7280] border border-gray-100">
+                            <MapPin className="w-3.5 h-3.5 mr-1 text-[#6B7280]" />
+                            {job.location} ({job.workplace})
+                          </span>
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#2D6BE4]/10 text-[#2D6BE4]">
+                            <Briefcase className="w-3.5 h-3.5 mr-1" />
+                            {job.contract}
+                          </span>
+                        </div>
+
+                        <p className="text-[#6B7280] text-xs line-clamp-2 mb-4 leading-relaxed font-medium">
                           {job.description}
                         </p>
-
-                        <div className="flex flex-wrap items-center gap-2 mb-4 text-xs font-medium">
-                          <span className="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg flex items-center gap-1">
-                            <Briefcase className="w-3 h-3 text-slate-500" /> {job.contract}
-                          </span>
-                          <span className={`px-2.5 py-1 rounded-lg flex items-center gap-1 ${
-                            job.workplace === 'Remote' ? 'bg-emerald-50 text-emerald-700' : 'bg-blue-50 text-blue-700'
-                          }`}>
-                            <Globe className="w-3 h-3" /> {job.workplace}
-                          </span>
-                          <span className="bg-gray-100 text-gray-600 px-2.5 py-1 rounded-lg flex items-center gap-1">
-                            <MapPin className="w-3 h-3 text-gray-400" /> {job.location}
-                          </span>
-                        </div>
-
-                        <div className="flex flex-wrap gap-1.5 mb-5">
-                          {job.tags.slice(0, 4).map(tag => (
-                            <span 
-                              key={tag} 
-                              onClick={(e) => { e.stopPropagation(); handleTagClick(tag); }}
-                              className="text-[11px] font-medium bg-gray-50 text-gray-600 px-2.5 py-0.5 rounded-md hover:bg-orange-50 hover:text-[#FF5E36] transition-colors"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                          {job.tags.length > 4 && (
-                            <span className="text-[10px] text-gray-400 px-1 py-0.5">
-                              +{job.tags.length - 4}
-                            </span>
-                          )}
-                        </div>
                       </div>
 
-                      <div className="pt-4 border-t border-gray-100 flex items-center justify-between gap-2 mt-auto">
-                        <div className="text-xs">
-                          <span className="text-gray-400 block text-[10px]">Rémunération estimée</span>
-                          <span className="font-bold text-[#0B132B]">{job.salary}</span>
+                      {/* Footer: Time and Action Button */}
+                      <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-100">
+                        <div className="flex items-center text-xs text-[#6B7280] font-medium">
+                          <Clock className="w-4 h-4 mr-1.5 text-[#6B7280]" />
+                          {job.postedTime}
                         </div>
                         
                         <div className="flex items-center gap-2">
                           <button
                             onClick={(e) => { e.stopPropagation(); setSelectedJob(job); }}
-                            className="px-3.5 py-1.5 text-xs font-semibold text-gray-600 hover:text-[#0B132B] hover:bg-gray-100 rounded-xl transition-colors"
+                            className="px-3 py-1.5 text-xs font-semibold text-[#6B7280] hover:text-[#1A1A2E] hover:bg-gray-100 rounded-lg transition-colors"
                           >
                             Détails
                           </button>
                           <button
                             onClick={(e) => { e.stopPropagation(); setApplyJob(job); }}
-                            className="bg-[#0B132B] group-hover:bg-gradient-to-r group-hover:from-[#FF9F1C] group-hover:to-[#FF5E36] text-white px-4 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1"
+                            className="bg-[#16A34A] hover:bg-[#16A34A]/90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-sm flex items-center gap-1 cursor-pointer"
                           >
                             <span>Postuler</span>
-                            <ChevronRight className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       </div>
@@ -1099,13 +1050,11 @@ function NovoRiseMain() {
           <section id="solutions-section" className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               
-              <div className="bg-[#0B132B] rounded-3xl p-8 lg:p-12 relative overflow-hidden group shadow-xl">
-                <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
-                
+              <div className="bg-[#1A1A2E] rounded-2xl p-8 lg:p-12 relative overflow-hidden group shadow-sm border border-gray-100">
                 <h3 className="text-2xl lg:text-3xl font-bold text-white mb-4 relative z-10">
                   Pour les candidats
                 </h3>
-                <p className="text-gray-300 mb-8 max-w-sm relative z-10 text-sm leading-relaxed">
+                <p className="text-gray-300 mb-8 max-w-sm relative z-10 text-sm leading-relaxed font-medium">
                   Faites-vous repérer directement par les meilleurs recruteurs. Déposez votre CV dans notre vivier de talents vérifiés.
                 </p>
                 
@@ -1118,20 +1067,18 @@ function NovoRiseMain() {
                       setAuthModalOpen(true);
                     }
                   }}
-                  className="bg-white text-[#0B132B] hover:bg-gray-100 px-6 py-3.5 rounded-full font-bold flex items-center gap-2 transition-all transform hover:scale-105 shadow-lg relative z-10 text-sm cursor-pointer"
+                  className="bg-[#2D6BE4] text-white hover:bg-[#2D6BE4]/90 px-6 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors shadow-sm relative z-10 text-sm cursor-pointer"
                 >
-                  <Upload className="w-4 h-4 text-[#FF5E36]" /> 
+                  <Upload className="w-4 h-4 text-white" /> 
                   <span>{isAuthenticated ? 'Accéder à mon espace CV' : 'Créer un profil Candidat'}</span>
                 </button>
               </div>
 
-              <div className="bg-gradient-to-br from-[#FF9F1C] to-[#FF5E36] rounded-3xl p-8 lg:p-12 relative overflow-hidden group shadow-xl">
-                <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-white/20 rounded-full blur-2xl"></div>
-
+              <div className="bg-[#2D6BE4] rounded-2xl p-8 lg:p-12 relative overflow-hidden group shadow-sm text-white">
                 <h3 className="text-2xl lg:text-3xl font-bold text-white mb-4 relative z-10">
                   Pour les recruteurs
                 </h3>
-                <p className="text-white/95 mb-8 max-w-sm relative z-10 text-sm leading-relaxed">
+                <p className="text-white/90 mb-8 max-w-sm relative z-10 text-sm leading-relaxed font-medium">
                   Accédez à un vivier de talents qualifiés et diffusez vos offres d'emploi à la bonne audience en un clic.
                 </p>
                 
@@ -1144,10 +1091,10 @@ function NovoRiseMain() {
                       setAuthModalOpen(true);
                     }
                   }}
-                  className="bg-[#0B132B] text-white hover:bg-slate-900 px-6 py-3.5 rounded-full font-bold flex items-center gap-2 transition-all transform hover:scale-105 shadow-lg relative z-10 text-sm cursor-pointer"
+                  className="bg-[#16A34A] hover:bg-[#16A34A]/90 text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors shadow-sm relative z-10 text-sm cursor-pointer"
                 >
-                  <PlusCircle className="w-4 h-4 text-[#FF9F1C]" /> 
-                  <span>{isAuthenticated ? 'Accéder au Dashboard Recruteur' : 'Publier une offre (Recruteur)'}</span>
+                  <PlusCircle className="w-4 h-4 text-white" /> 
+                  <span>{isAuthenticated ? 'Accéder au Dashboard Recruteur' : 'Espace Recruteur'}</span>
                 </button>
               </div>
 
@@ -1157,21 +1104,21 @@ function NovoRiseMain() {
       )}
 
       {/* FOOTER */}
-      <footer className="bg-white border-t border-gray-200 pt-16 pb-8 mt-10">
+      <footer className="bg-white border-t border-gray-200/60 pt-16 pb-8 mt-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             
             <div className="col-span-1 md:col-span-1">
               <div className="flex items-center gap-2 mb-4 cursor-pointer" onClick={() => { setActiveView('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
-                <div className="bg-gradient-to-tr from-[#FF9F1C] to-[#FF5E36] p-1.5 rounded-lg">
-                  <TrendingUp className="text-white w-5 h-5" strokeWidth={3} />
+                <div className="bg-[#2D6BE4] p-1.5 rounded-lg text-white shadow-sm">
+                  <TrendingUp className="w-5 h-5" strokeWidth={2.5} />
                 </div>
-                <span className="text-xl font-bold text-[#0B132B] tracking-tight">
-                  Novo<span className="text-[#FF9F1C]">Rise</span>
+                <span className="text-xl font-bold text-[#1A1A2E] tracking-tight">
+                  Novo<span className="text-[#2D6BE4]">Rise</span>
                 </span>
               </div>
-              <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                Le point de rencontre entre les talents ambitieux et les entreprises innovantes. L'espoir d'une nouvelle carrière commence ici.
+              <p className="text-[#6B7280] text-sm leading-relaxed mb-6 font-medium">
+                Le point de rencontre entre les talents ambitieux et les entreprises innovantes. Votre prochaine opportunité commence ici.
               </p>
               
               <div className="flex items-center gap-3">
@@ -1179,7 +1126,7 @@ function NovoRiseMain() {
                   href="https://linkedin.com" 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="w-9 h-9 rounded-full bg-gray-100 hover:bg-[#FF9F1C] hover:text-white text-gray-600 flex items-center justify-center transition-colors shadow-sm"
+                  className="w-9 h-9 rounded-full bg-[#F8F7F5] hover:bg-[#2D6BE4] hover:text-white text-[#6B7280] flex items-center justify-center transition-colors shadow-sm"
                   aria-label="LinkedIn"
                 >
                   <Linkedin className="w-4 h-4" />
