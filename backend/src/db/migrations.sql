@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
   name                 VARCHAR(255) NOT NULL,
   email                VARCHAR(255) UNIQUE NOT NULL,
   password_hash        VARCHAR(255),                          -- NULL si connexion Google OAuth
-  role                 VARCHAR(20)  NOT NULL DEFAULT 'candidat' CHECK (role IN ('candidat','recruteur','admin')),
+  role                 VARCHAR(20)  NOT NULL DEFAULT 'candidat' CHECK (role IN ('candidat','recruteur','admin','admin_manager')),
   verified             BOOLEAN      NOT NULL DEFAULT FALSE,
   verification_token   UUID,
   reset_token          VARCHAR(255),
@@ -103,3 +103,9 @@ CREATE INDEX IF NOT EXISTS idx_users_reset_token ON users(reset_token);
 CREATE INDEX IF NOT EXISTS idx_job_posts_recruiter ON job_posts(recruiter_id);
 CREATE INDEX IF NOT EXISTS idx_applications_job ON applications(job_id);
 CREATE INDEX IF NOT EXISTS idx_applications_candidate ON applications(candidate_id);
+
+-- ─── Migration : ajout du rôle admin_manager ─────────────────────────────────
+-- Exécuter si la contrainte CHECK existe déjà sur une table existante
+ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check;
+ALTER TABLE users ADD CONSTRAINT users_role_check
+  CHECK (role IN ('candidat','recruteur','admin','admin_manager'));

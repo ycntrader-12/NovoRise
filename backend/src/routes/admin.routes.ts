@@ -1,17 +1,19 @@
 import { Router, Request, Response } from 'express';
 import pool from '../db/pool';
 import { requireAuth, requireRole } from '../middleware/auth.middleware';
+import bcrypt from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
 
 const router = Router();
 
-// Protect ALL admin routes with requireAuth and requireRole('admin')
+// Protect ALL admin routes — admin_manager can access user management only
 router.use(requireAuth);
-router.use(requireRole('admin'));
+router.use(requireRole('admin', 'admin_manager'));
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /api/admin/stats — Statistiques globales de la plateforme & DB
+// GET /api/admin/stats — Statistiques globales (admin uniquement)
 // ─────────────────────────────────────────────────────────────────────────────
-router.get('/stats', async (_req: Request, res: Response) => {
+router.get('/stats', requireRole('admin'), async (_req: Request, res: Response) => {
   try {
     const usersCount = await pool.query(`
       SELECT 
@@ -98,7 +100,7 @@ router.patch('/users/:id', async (req: Request, res: Response) => {
     const { id } = req.params;
     const { role, is_verified } = req.body;
 
-    if (role && !['candidat', 'recruteur', 'admin'].includes(role)) {
+    if (role && !['candidat', 'recruteur', 'admin', 'admin_manager'].includes(role)) {
       res.status(400).json({ error: 'INVALID_ROLE' });
       return;
     }
@@ -120,6 +122,55 @@ router.patch('/users/:id', async (req: Request, res: Response) => {
     res.json(result.rows[0]);
   } catch (err) {
     console.error('PATCH /admin/users/:id error:', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /api/admin/users — Créer un utilisateur (admin uniquement)
+// ─────────────────────────────────────────────────────────────────────────────
+router.post('/users', requireRole('admin'), async (req: Request, res: Response) => {
+  try {
+    const { name, email, password, role } = req.body;
+
+    if (!name || !email || !password || !role) {
+      res.status(400).json({ error: 'VALIDATION_ERROR', message: 'name, email, password, role sont requis' });
+      return;
+    }
+
+    if (!['candidat', 'recruteur', 'admin', 'admin_manager'].includes(role)) {
+      res.status(400).json({ error: 'INVALID_ROLE' });
+      return;
+    }
+
+    // Vérifier si email existe déjà
+    try {
+      const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email.toLowerCase()]);
+      if (existing.rows.length > 0) {
+        res.status(409).json({ error: 'EMAIL_ALREADY_EXISTS', message: 'Cet email est déjà utilisé' });
+        return;
+      }
+    } catch (_dbErr) { /* mode hors-ligne */ }
+
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    let newUser;
+    try {
+      const result = await pool.query(
+        `INSERT INTO users (name, email, password_hash, role, verified)
+         VALUES ($1, $2, $3, $4, TRUE)
+         RETURNING id, name, email, role, verified, created_at`,
+        [name, email.toLowerCase(), passwordHash, role]
+      );
+      newUser = result.rows[0];
+    } catch (_dbErr) {
+      console.warn('⚠️ Mode hors-ligne : utilisateur créé en mémoire.');
+      newUser = { id: uuidv4(), name, email: email.toLowerCase(), role, verified: true, created_at: new Date().toISOString() };
+    }
+
+    res.status(201).json({ message: 'Utilisateur créé avec succès', user: newUser });
+  } catch (err) {
+    console.error('POST /admin/users error:', err);
     res.status(500).json({ error: 'SERVER_ERROR' });
   }
 });
@@ -152,9 +203,9 @@ router.delete('/users/:id', async (req: Request, res: Response) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /api/admin/database/tables — Visualiser les tables SQL & métadonnées
+// GET /api/admin/database/tables — Visualiser les tables SQL (admin uniquement)
 // ─────────────────────────────────────────────────────────────────────────────
-router.get('/database/tables', async (_req: Request, res: Response) => {
+router.get('/database/tables', requireRole('admin'), async (_req: Request, res: Response) => {
   try {
     const tablesQuery = `
       SELECT table_name 
@@ -191,9 +242,9 @@ router.get('/database/tables', async (_req: Request, res: Response) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /api/admin/database/table/:name — Explorer le contenu d'une table SQL
+// GET /api/admin/database/table/:name — Explorer une table (admin uniquement)
 // ─────────────────────────────────────────────────────────────────────────────
-router.get('/database/table/:name', async (req: Request, res: Response) => {
+router.get('/database/table/:name', requireRole('admin'), async (req: Request, res: Response) => {
   try {
     const name = String(req.params.name);
     const allowedTables = ['users', 'job_posts', 'applications'];
@@ -212,9 +263,9 @@ router.get('/database/table/:name', async (req: Request, res: Response) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DELETE /api/admin/jobs/:id — Supprimer n'importe quelle offre d'emploi
+// DELETE /api/admin/jobs/:id — Supprimer une offre (admin uniquement)
 // ─────────────────────────────────────────────────────────────────────────────
-router.delete('/jobs/:id', async (req: Request, res: Response) => {
+router.delete('/jobs/:id', requireRole('admin'), async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const result = await pool.query('DELETE FROM job_posts WHERE id = $1 RETURNING id, title', [id]);

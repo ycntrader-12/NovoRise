@@ -1,4 +1,4 @@
-import { apiGet, apiPatch, apiDelete } from './client';
+import { apiGet, apiPatch, apiDelete, apiPost } from './client';
 
 export interface AdminStats {
   users: {
@@ -27,10 +27,17 @@ export interface AdminUser {
   id: string;
   email: string;
   name: string;
-  role: 'candidat' | 'recruteur' | 'admin';
+  role: 'candidat' | 'recruteur' | 'admin' | 'admin_manager';
   is_verified: boolean;
   created_at: string;
   avatar_url?: string;
+}
+
+export interface CreateUserPayload {
+  name: string;
+  email: string;
+  password: string;
+  role: 'candidat' | 'recruteur' | 'admin' | 'admin_manager';
 }
 
 export interface DbTableColumn {
@@ -84,5 +91,10 @@ export const adminApi = {
   // Delete job post
   async deleteJob(id: string): Promise<{ message: string }> {
     return apiDelete<{ message: string }>(`/admin/jobs/${id}`);
+  },
+
+  // Create a new user account (admin only)
+  async createUser(payload: CreateUserPayload): Promise<{ message: string; user: AdminUser }> {
+    return apiPost<{ message: string; user: AdminUser }>('/admin/users', payload);
   },
 };

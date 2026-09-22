@@ -23,7 +23,8 @@ import {
   Key
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { adminApi, AdminStats, AdminUser, DbTableInfo } from '../../api/admin.api';
+import { adminApi, AdminStats, AdminUser, DbTableInfo, CreateUserPayload } from '../../api/admin.api';
+import { UserPlus, X } from 'lucide-react';
 
 export const AdminDashboardPortal: React.FC = () => {
   const { user, isAuthenticated, login, logout } = useAuth();
@@ -48,6 +49,14 @@ export const AdminDashboardPortal: React.FC = () => {
   // UI Loaders & Alerts
   const [loading, setLoading] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  // Create User Modal State
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [createForm, setCreateForm] = useState<CreateUserPayload>({ name: '', email: '', password: '', role: 'candidat' });
+  const [createLoading, setCreateLoading] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
+
+  const isAdminManager = user?.role === 'admin_manager';
 
   const showToast = (msg: string) => {
     setToastMsg(msg);
@@ -108,15 +117,20 @@ export const AdminDashboardPortal: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isAuthenticated && user?.role === 'admin') {
-      loadStats();
+    if (isAuthenticated && (user?.role === 'admin' || user?.role === 'admin_manager')) {
       loadUsers();
-      loadDatabaseTables();
+      if (user?.role === 'admin') {
+        loadStats();
+        loadDatabaseTables();
+        setActiveTab('stats');
+      } else {
+        setActiveTab('users');
+      }
     }
   }, [isAuthenticated, user]);
 
   useEffect(() => {
-    if (isAuthenticated && user?.role === 'admin' && activeTab === 'users') {
+    if (isAuthenticated && (user?.role === 'admin' || user?.role === 'admin_manager') && activeTab === 'users') {
       loadUsers();
     }
   }, [userRoleFilter, userSearchQuery]);
@@ -156,14 +170,32 @@ export const AdminDashboardPortal: React.FC = () => {
       await adminApi.deleteUser(userId);
       showToast(`Utilisateur ${userName} supprimé`);
       loadUsers();
-      loadStats();
+      if (user?.role === 'admin') loadStats();
     } catch (err: any) {
       showToast(err.message === 'CANNOT_DELETE_SELF' ? 'Impossible de supprimer votre propre compte admin' : 'Erreur lors de la suppression');
     }
   };
 
-  // Check Admin Gate
-  if (!isAuthenticated || user?.role !== 'admin') {
+  // Handle Create User
+  const handleCreateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCreateError(null);
+    setCreateLoading(true);
+    try {
+      const result = await adminApi.createUser(createForm);
+      showToast(`✅ Compte créé : ${result.user.name} (${result.user.role})`);
+      setShowCreateModal(false);
+      setCreateForm({ name: '', email: '', password: '', role: 'candidat' });
+      loadUsers();
+    } catch (err: any) {
+      setCreateError(err.message || 'Erreur lors de la création');
+    } finally {
+      setCreateLoading(false);
+    }
+  };
+
+  // Check Admin Gate — allow admin and admin_manager
+  if (!isAuthenticated || (user?.role !== 'admin' && user?.role !== 'admin_manager')) {
     return (
       <div className="min-h-screen bg-[#1A1A2E] flex items-center justify-center p-4 sm:p-8 font-inter text-[#1A1A2E]">
         <div className="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-gray-800 overflow-hidden relative grid grid-cols-1 md:grid-cols-12">
@@ -305,15 +337,18 @@ export const AdminDashboardPortal: React.FC = () => {
 
             {/* Nav Tabs */}
             <nav className="hidden md:flex space-x-1 items-center bg-gray-800/60 p-1.5 rounded-xl border border-gray-700">
-              <button
-                onClick={() => setActiveTab('stats')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'stats' ? 'bg-[#2D6BE4] text-white shadow-sm' : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                <Activity className="w-4 h-4" />
-                <span>Statistiques & Santé</span>
-              </button>
+              {/* Stats tab — admin only */}
+              {!isAdminManager && (
+                <button
+                  onClick={() => setActiveTab('stats')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+                    activeTab === 'stats' ? 'bg-[#2D6BE4] text-white shadow-sm' : 'text-gray-300 hover:text-white'
+                  }`}
+                >
+                  <Activity className="w-4 h-4" />
+                  <span>Statistiques &amp; Santé</span>
+                </button>
+              )}
 
               <button
                 onClick={() => setActiveTab('users')}
@@ -325,31 +360,45 @@ export const AdminDashboardPortal: React.FC = () => {
                 <span>Utilisateurs ({usersList.length})</span>
               </button>
 
-              <button
-                onClick={() => setActiveTab('database')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'database' ? 'bg-[#2D6BE4] text-white shadow-sm' : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                <Database className="w-4 h-4" />
-                <span>Base PostgreSQL ({dbTables.length} tables)</span>
-              </button>
+              {/* Database tab — admin only */}
+              {!isAdminManager && (
+                <button
+                  onClick={() => setActiveTab('database')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+                    activeTab === 'database' ? 'bg-[#2D6BE4] text-white shadow-sm' : 'text-gray-300 hover:text-white'
+                  }`}
+                >
+                  <Database className="w-4 h-4" />
+                  <span>Base PostgreSQL ({dbTables.length} tables)</span>
+                </button>
+              )}
             </nav>
 
             {/* User Session Info & Refresh */}
             <div className="flex items-center gap-3">
-              <button
-                onClick={() => {
-                  loadStats();
-                  loadUsers();
-                  loadDatabaseTables();
-                  showToast('Données actualisées en direct depuis PostgreSQL');
-                }}
-                className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
-                title="Actualiser les données"
-              >
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-              </button>
+              {!isAdminManager && (
+                <button
+                  onClick={() => {
+                    loadStats();
+                    loadUsers();
+                    loadDatabaseTables();
+                    showToast('Données actualisées en direct depuis PostgreSQL');
+                  }}
+                  className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+                  title="Actualiser les données"
+                >
+                  <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                </button>
+              )}
+              {isAdminManager && (
+                <button
+                  onClick={() => loadUsers()}
+                  className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+                  title="Actualiser"
+                >
+                  <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                </button>
+              )}
 
               <div className="flex items-center gap-2.5 bg-gray-800/80 px-3 py-1.5 rounded-xl border border-gray-700">
                 <div className="w-7 h-7 rounded-lg bg-[#2D6BE4] text-white flex items-center justify-center font-bold text-xs">
@@ -357,7 +406,9 @@ export const AdminDashboardPortal: React.FC = () => {
                 </div>
                 <div className="text-left hidden sm:block">
                   <div className="text-xs font-bold text-white leading-none">{user.name}</div>
-                  <div className="text-[10px] text-emerald-400 font-medium mt-0.5">Admin connecté</div>
+                  <div className={`text-[10px] font-medium mt-0.5 ${isAdminManager ? 'text-amber-400' : 'text-emerald-400'}`}>
+                    {isAdminManager ? 'Admin Manager' : 'Admin connecté'}
+                  </div>
                 </div>
               </div>
 
@@ -490,7 +541,7 @@ export const AdminDashboardPortal: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-gray-200 w-full sm:w-auto">
-                  {['Tous', 'candidat', 'recruteur', 'admin'].map((role) => (
+                  {['Tous', 'candidat', 'recruteur', 'admin', 'admin_manager'].map((role) => (
                     <button
                       key={role}
                       onClick={() => setUserRoleFilter(role)}
@@ -498,10 +549,21 @@ export const AdminDashboardPortal: React.FC = () => {
                         userRoleFilter === role ? 'bg-[#2D6BE4] text-white shadow-sm' : 'text-[#6B7280] hover:text-[#1A1A2E]'
                       }`}
                     >
-                      {role}
+                      {role === 'admin_manager' ? 'Manager' : role}
                     </button>
                   ))}
                 </div>
+
+                {/* Create User button — admin only */}
+                {!isAdminManager && (
+                  <button
+                    onClick={() => setShowCreateModal(true)}
+                    className="flex items-center gap-2 bg-[#2D6BE4] hover:bg-[#2D6BE4]/90 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all shadow-sm whitespace-nowrap cursor-pointer"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    Créer un compte
+                  </button>
+                )}
               </div>
             </div>
 
@@ -538,6 +600,7 @@ export const AdminDashboardPortal: React.FC = () => {
                             <option value="candidat">Candidat</option>
                             <option value="recruteur">Recruteur</option>
                             <option value="admin">Administrateur</option>
+                            <option value="admin_manager">Admin Manager</option>
                           </select>
                         </td>
                         <td className="py-3.5 px-4">
@@ -644,6 +707,117 @@ export const AdminDashboardPortal: React.FC = () => {
         )}
 
       </main>
+
+      {/* ======= Create User Modal ======= */}
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-gray-100 animate-fade-in">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-[#2D6BE4] text-white flex items-center justify-center">
+                  <UserPlus className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#1A1A2E] text-sm">Créer un nouveau compte</h3>
+                  <p className="text-xs text-[#6B7280] mt-0.5">Le compte sera immédiatement actif et vérifié.</p>
+                </div>
+              </div>
+              <button
+                onClick={() => { setShowCreateModal(false); setCreateError(null); }}
+                className="p-1.5 text-[#6B7280] hover:text-[#1A1A2E] hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Form */}
+            <form onSubmit={handleCreateUser} className="p-6 space-y-4">
+              {createError && (
+                <div className="bg-red-50 border border-red-100 text-red-700 text-xs p-3 rounded-xl flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                  <span>{createError}</span>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-semibold text-[#1A1A2E] mb-1.5">Nom complet *</label>
+                <input
+                  type="text"
+                  required
+                  value={createForm.name}
+                  onChange={(e) => setCreateForm(f => ({ ...f, name: e.target.value }))}
+                  placeholder="ex: Yacine El Idrissi"
+                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#1A1A2E] mb-1.5">Adresse email *</label>
+                <input
+                  type="email"
+                  required
+                  value={createForm.email}
+                  onChange={(e) => setCreateForm(f => ({ ...f, email: e.target.value }))}
+                  placeholder="ex: contact@example.com"
+                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#1A1A2E] mb-1.5">Mot de passe *</label>
+                <input
+                  type="password"
+                  required
+                  minLength={8}
+                  value={createForm.password}
+                  onChange={(e) => setCreateForm(f => ({ ...f, password: e.target.value }))}
+                  placeholder="Minimum 8 caractères"
+                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#1A1A2E] mb-1.5">Rôle *</label>
+                <select
+                  value={createForm.role}
+                  onChange={(e) => setCreateForm(f => ({ ...f, role: e.target.value as CreateUserPayload['role'] }))}
+                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all bg-white"
+                >
+                  <option value="candidat">Candidat — Cherche un emploi</option>
+                  <option value="recruteur">Recruteur — Publie des offres</option>
+                  <option value="admin_manager">Admin Manager — Gère les utilisateurs</option>
+                  <option value="admin">Administrateur — Accès complet</option>
+                </select>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => { setShowCreateModal(false); setCreateError(null); }}
+                  className="flex-1 border border-gray-200 text-[#6B7280] py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-50 transition-all"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={createLoading}
+                  className="flex-1 bg-[#2D6BE4] hover:bg-[#2D6BE4]/90 text-white py-2.5 rounded-xl text-sm font-semibold shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
+                >
+                  {createLoading ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <UserPlus className="w-4 h-4" />
+                  )}
+                  {createLoading ? 'Création...' : 'Créer le compte'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
