@@ -100,20 +100,42 @@ export const AuthFlowModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 md:p-6 overflow-y-auto animate-fade-in">
-      <div className="bg-white rounded-3xl max-w-xl md:max-w-2xl w-full shadow-2xl p-6 sm:p-8 md:p-10 relative border border-gray-100 my-8">
+    <div className="fixed inset-0 z-50 bg-[#0B132B]/75 backdrop-blur-md flex items-center justify-center p-4 md:p-6 overflow-y-auto animate-fade-in">
+      <div className="bg-white rounded-3xl max-w-xl md:max-w-2xl w-full shadow-2xl relative border border-slate-100 overflow-hidden my-6">
         
-        {/* Close button */}
-        <button
-          onClick={() => {
-            setAuthModalOpen(false);
-            setFeedbackMsg(null);
-          }}
-          className="absolute top-6 right-6 text-[#6B7280] hover:text-[#1A1A2E] bg-gray-100 hover:bg-gray-200 p-2 rounded-full transition-colors cursor-pointer"
-          aria-label="Fermer"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        {/* Modal Top Header (NovoRise Dark Theme) */}
+        <div className="bg-gradient-to-r from-[#0B132B] via-[#1C2541] to-[#0B132B] text-white p-6 sm:p-7 relative overflow-hidden">
+          <div className="absolute right-0 top-0 w-48 h-48 bg-[#FF9F1C]/15 rounded-full blur-2xl pointer-events-none" />
+          
+          <button
+            onClick={() => {
+              setAuthModalOpen(false);
+              setFeedbackMsg(null);
+            }}
+            className="absolute top-5 right-5 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors cursor-pointer z-20"
+            aria-label="Fermer"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          <div className="relative z-10 pr-8">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FF9F1C]/20 text-[#FF9F1C] text-[11px] font-bold uppercase tracking-wider border border-[#FF9F1C]/30 mb-2">
+              <ShieldCheck className="w-3.5 h-3.5" /> Espace Sécurisé NovoRise
+            </span>
+            <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+              {authModalStep === 'register' && 'Rejoignez la plateforme NovoRise'}
+              {authModalStep === 'login' && 'Connexion à votre compte'}
+              {authModalStep === 'email-confirmation' && 'Validation de votre adresse email'}
+              {authModalStep === 'forgot-password' && 'Récupération de mot de passe'}
+              {authModalStep === 'reset-password' && 'Nouveau mot de passe'}
+            </h3>
+            <p className="text-slate-300 text-xs sm:text-sm mt-1">
+              Plateforme de recrutement de référence • Opportunités CDI, Freelance & Remote
+            </p>
+          </div>
+        </div>
+
+        <div className="p-6 sm:p-8 md:p-10">
 
         {/* ================= STEP 1: INSCRIPTION ================= */}
         {authModalStep === 'register' && (
@@ -244,7 +266,7 @@ export const AuthFlowModal: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#2D6BE4] hover:bg-[#2D6BE4]/90 text-white py-3.5 rounded-xl font-semibold shadow-sm transition-all flex items-center justify-center gap-2 text-sm mt-4 cursor-pointer active:scale-95"
+                className="w-full bg-gradient-to-r from-[#FF9F1C] via-[#FF5E36] to-[#FF5E36] hover:from-[#e88b14] hover:to-[#e54a22] text-white py-3.5 rounded-2xl font-bold shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all flex items-center justify-center gap-2 text-sm mt-4 cursor-pointer active:scale-95 disabled:opacity-70"
               >
                 <span>Créer mon compte</span>
                 <ArrowRight className="w-4 h-4" />
@@ -433,10 +455,10 @@ export const AuthFlowModal: React.FC = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#1A1A2E] hover:bg-[#1A1A2E]/90 text-white py-3.5 rounded-xl font-semibold shadow-sm transition-all text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 mt-2"
+                  className="w-full bg-[#0B132B] hover:bg-slate-900 text-white py-3.5 rounded-2xl font-bold shadow-lg shadow-slate-900/15 transition-all text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 mt-2 disabled:opacity-70"
                 >
                   <span>Se connecter</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 text-[#FF9F1C]" />
                 </button>
               </form>
             </div>
@@ -571,6 +593,7 @@ export const AuthFlowModal: React.FC = () => {
           </div>
         )}
 
+        </div>
       </div>
     </div>
   );

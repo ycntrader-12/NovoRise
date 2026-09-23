@@ -709,64 +709,69 @@ export const AdminDashboardPortal: React.FC = () => {
       </main>
 
       {/* ======= Create User Modal ======= */}
+      {/* ======= Create User Modal ======= */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-gray-100 animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B132B]/75 backdrop-blur-md p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md border border-slate-100 overflow-hidden my-6">
             
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-100">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#2D6BE4] text-white flex items-center justify-center">
-                  <UserPlus className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-[#1A1A2E] text-sm">Créer un nouveau compte</h3>
-                  <p className="text-xs text-[#6B7280] mt-0.5">Le compte sera immédiatement actif et vérifié.</p>
-                </div>
-              </div>
+            {/* Modal Top Header (NovoRise Dark Theme) */}
+            <div className="bg-gradient-to-r from-[#0B132B] via-[#1C2541] to-[#0B132B] text-white p-6 relative overflow-hidden">
+              <div className="absolute right-0 top-0 w-36 h-36 bg-[#2D6BE4]/20 rounded-full blur-2xl pointer-events-none" />
+              
               <button
                 onClick={() => { setShowCreateModal(false); setCreateError(null); }}
-                className="p-1.5 text-[#6B7280] hover:text-[#1A1A2E] hover:bg-gray-100 rounded-lg transition-colors"
+                className="absolute top-5 right-5 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors z-20"
+                aria-label="Fermer"
               >
                 <X className="w-5 h-5" />
               </button>
+
+              <div className="flex items-center gap-3.5 relative z-10 pr-8">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#2D6BE4] to-[#5C94FF] text-white flex items-center justify-center shadow-lg border border-white/20">
+                  <UserPlus className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-white text-base">Créer un nouveau compte</h3>
+                  <p className="text-xs text-slate-300 mt-0.5">Le compte sera immédiatement actif et vérifié.</p>
+                </div>
+              </div>
             </div>
 
             {/* Modal Form */}
             <form onSubmit={handleCreateUser} className="p-6 space-y-4">
               {createError && (
-                <div className="bg-red-50 border border-red-100 text-red-700 text-xs p-3 rounded-xl flex items-center gap-2">
+                <div className="bg-red-50 border border-red-200 text-red-700 text-xs p-3 rounded-xl flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 flex-shrink-0" />
                   <span>{createError}</span>
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-semibold text-[#1A1A2E] mb-1.5">Nom complet *</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">Nom complet *</label>
                 <input
                   type="text"
                   required
                   value={createForm.name}
                   onChange={(e) => setCreateForm(f => ({ ...f, name: e.target.value }))}
                   placeholder="ex: Yacine El Idrissi"
-                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all"
+                  className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-4 py-2.5 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#1A1A2E] mb-1.5">Adresse email *</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">Adresse email *</label>
                 <input
                   type="email"
                   required
                   value={createForm.email}
                   onChange={(e) => setCreateForm(f => ({ ...f, email: e.target.value }))}
                   placeholder="ex: contact@example.com"
-                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all"
+                  className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-4 py-2.5 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#1A1A2E] mb-1.5">Mot de passe *</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">Mot de passe *</label>
                 <input
                   type="password"
                   required
@@ -774,16 +779,16 @@ export const AdminDashboardPortal: React.FC = () => {
                   value={createForm.password}
                   onChange={(e) => setCreateForm(f => ({ ...f, password: e.target.value }))}
                   placeholder="Minimum 8 caractères"
-                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all"
+                  className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-4 py-2.5 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#1A1A2E] mb-1.5">Rôle *</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">Rôle attribué *</label>
                 <select
                   value={createForm.role}
                   onChange={(e) => setCreateForm(f => ({ ...f, role: e.target.value as CreateUserPayload['role'] }))}
-                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all bg-white"
+                  className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-4 py-2.5 text-xs text-slate-800 bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all cursor-pointer font-medium"
                 >
                   <option value="candidat">Candidat — Cherche un emploi</option>
                   <option value="recruteur">Recruteur — Publie des offres</option>
@@ -792,18 +797,18 @@ export const AdminDashboardPortal: React.FC = () => {
                 </select>
               </div>
 
-              <div className="flex gap-3 pt-2">
+              <div className="flex gap-3 pt-3">
                 <button
                   type="button"
                   onClick={() => { setShowCreateModal(false); setCreateError(null); }}
-                  className="flex-1 border border-gray-200 text-[#6B7280] py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-50 transition-all"
+                  className="flex-1 border border-slate-200 text-slate-700 py-3 rounded-2xl text-xs font-bold hover:bg-slate-50 transition-all cursor-pointer"
                 >
                   Annuler
                 </button>
                 <button
                   type="submit"
                   disabled={createLoading}
-                  className="flex-1 bg-[#2D6BE4] hover:bg-[#2D6BE4]/90 text-white py-2.5 rounded-xl text-sm font-semibold shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
+                  className="flex-1 bg-gradient-to-r from-[#2D6BE4] to-[#1C4CB0] hover:from-[#255bc4] hover:to-[#173e90] text-white py-3 rounded-2xl text-xs font-extrabold shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
                 >
                   {createLoading ? (
                     <RefreshCw className="w-4 h-4 animate-spin" />

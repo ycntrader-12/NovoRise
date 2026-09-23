@@ -1,12 +1,11 @@
 import Database from 'better-sqlite3';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const dbDir = typeof __dirname !== 'undefined' ? __dirname : process.cwd();
 
 // ─── Base de données SQLite locale ───────────────────────────────────────────
-const DB_PATH = path.join(__dirname, '..', '..', 'novorise.db');
+const DB_PATH = path.join(dbDir, '..', '..', 'novorise.db');
 
 export const db = new Database(DB_PATH);
 db.pragma('journal_mode = WAL');

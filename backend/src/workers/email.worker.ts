@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-let transporter: nodemailer.Transporter;
+let transporter: any;
 
 // ─── Transporter Nodemailer — Ethereal (Test SMTP) ───────────────────────────
 nodemailer.createTestAccount().then((testAccount) => {
@@ -152,7 +152,7 @@ function templateApplicationNotification(payload: {
 }
 
 // ─── Worker Bull : consommateur de la file email ───────────────────────────
-emailQueue.process(async (job) => {
+emailQueue.process(async (job: { data: EmailJobData }) => {
   const { type, to, name, token, payload } = job.data;
   console.log(`📨 Processing email job [${type}] → ${to}`);
 

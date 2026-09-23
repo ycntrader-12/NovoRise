@@ -18,12 +18,14 @@ import {
   Play, 
   Sparkles,
   Search,
-  MessageSquare
+  MessageSquare,
+  BarChart3,
+  TrendingUp
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { RecruiterJobPost, Application } from '../../types/auth';
 import { JOB_CATEGORIES } from '../../types/categories';
-
+import { RecruiterStatsDashboard } from './RecruiterStatsDashboard';
 
 export const RecruiterDashboard: React.FC = () => {
   const { 
@@ -35,7 +37,7 @@ export const RecruiterDashboard: React.FC = () => {
     applications
   } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<'manage-jobs' | 'post-job' | 'candidates'>('manage-jobs');
+  const [activeTab, setActiveTab] = useState<'stats' | 'manage-jobs' | 'post-job' | 'candidates'>('stats');
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   // Contact candidate modal
@@ -178,10 +180,22 @@ export const RecruiterDashboard: React.FC = () => {
       </div>
 
       {/* Tabs Navigation */}
-      <div className="flex items-center gap-3 border-b border-gray-200 mb-8 pb-3">
+      <div className="flex items-center gap-3 border-b border-gray-200 mb-8 pb-3 overflow-x-auto">
+        <button
+          onClick={() => setActiveTab('stats')}
+          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'stats'
+              ? 'bg-[#0B132B] text-white shadow-sm'
+              : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+          }`}
+        >
+          <BarChart3 className="w-4 h-4 text-[#FF9F1C]" />
+          <span>Statistiques & Analyse RH</span>
+        </button>
+
         <button
           onClick={() => setActiveTab('manage-jobs')}
-          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'manage-jobs'
               ? 'bg-[#0B132B] text-white shadow-sm'
               : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
@@ -193,7 +207,7 @@ export const RecruiterDashboard: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('candidates')}
-          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'candidates'
               ? 'bg-[#0B132B] text-white shadow-sm'
               : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
@@ -205,7 +219,7 @@ export const RecruiterDashboard: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('post-job')}
-          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'post-job'
               ? 'bg-gradient-to-r from-[#FF9F1C] to-[#FF5E36] text-white shadow-sm'
               : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
@@ -215,6 +229,16 @@ export const RecruiterDashboard: React.FC = () => {
           <span>Publier une offre</span>
         </button>
       </div>
+
+      {/* ================= TAB 0: STATISTIQUES GLOBALES RH ================= */}
+      {activeTab === 'stats' && (
+        <RecruiterStatsDashboard
+          user={user}
+          recruiterJobs={recruiterJobs}
+          applications={applications}
+          onNavigateTab={(tab) => setActiveTab(tab)}
+        />
+      )}
 
       {/* ================= TAB 1: GÉRER LES ANNONCES ================= */}
       {activeTab === 'manage-jobs' && (
@@ -527,66 +551,79 @@ export const RecruiterDashboard: React.FC = () => {
 
       {/* ================= MODAL: CONTACTER UN CANDIDAT ================= */}
       {contactingCandidate && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white rounded-3xl max-w-lg w-full shadow-2xl p-6 md:p-8 relative border border-gray-100">
-            <button
-              onClick={() => setContactingCandidate(null)}
-              className="absolute top-6 right-6 text-gray-400 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 p-2 rounded-full transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
+        <div className="fixed inset-0 z-50 bg-[#0B132B]/75 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden relative border border-slate-100 my-6">
+            
+            {/* Modal Top Header (NovoRise Dark Theme) */}
+            <div className="bg-gradient-to-r from-[#0B132B] via-[#1A233A] to-[#0B132B] text-white p-6 sm:p-7 relative overflow-hidden">
+              <div className="absolute right-0 top-0 w-48 h-48 bg-[#FF5E36]/15 rounded-full blur-2xl pointer-events-none" />
+              
+              <button
+                onClick={() => setContactingCandidate(null)}
+                className="absolute top-5 right-5 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors z-20"
+                aria-label="Fermer"
+              >
+                <X className="w-5 h-5" />
+              </button>
 
-            <div className="mb-6 pr-8">
-              <span className="text-xs font-bold text-[#FF5E36] uppercase tracking-wider">Messagerie Candidat</span>
-              <h3 className="text-xl font-bold text-[#0B132B] mt-1">
-                Contacter {contactingCandidate.candidateName}
-              </h3>
-              <p className="text-gray-500 text-xs">
-                Pour le poste : <strong>{contactingCandidate.jobTitle}</strong>
-              </p>
+              <div className="relative z-10 pr-8">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FF5E36]/20 text-[#FF9F1C] text-[11px] font-bold uppercase tracking-wider border border-[#FF5E36]/30 mb-2">
+                  <Mail className="w-3 h-3" /> Messagerie Candidat RH
+                </span>
+                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                  Contacter {contactingCandidate.candidateName}
+                </h3>
+                <p className="text-slate-300 text-xs sm:text-sm mt-1">
+                  Pour le poste : <strong className="text-white">{contactingCandidate.jobTitle}</strong>
+                </p>
+              </div>
             </div>
 
-            <form onSubmit={handleSendMessage} className="space-y-4 text-xs">
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">Destinataire</label>
-                <input
-                  type="text"
-                  disabled
-                  value={`${contactingCandidate.candidateName} <${contactingCandidate.candidateEmail}>`}
-                  className="w-full border border-gray-200 bg-gray-50 rounded-xl px-3.5 py-2 text-gray-600"
-                />
-              </div>
+            <div className="p-6 sm:p-7">
+              <form onSubmit={handleSendMessage} className="space-y-4 text-xs">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1.5">Destinataire</label>
+                  <input
+                    type="text"
+                    disabled
+                    value={`${contactingCandidate.candidateName} <${contactingCandidate.candidateEmail}>`}
+                    className="w-full border border-slate-200 bg-slate-100/70 rounded-xl px-4 py-2.5 text-slate-600 font-medium"
+                  />
+                </div>
 
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">Objet</label>
-                <input
-                  type="text"
-                  required
-                  defaultValue={`Invitation à un entretien — ${contactingCandidate.jobTitle}`}
-                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#FF9F1C]"
-                />
-              </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1.5">Objet</label>
+                  <input
+                    type="text"
+                    required
+                    defaultValue={`Invitation à un entretien — ${contactingCandidate.jobTitle}`}
+                    className="w-full border border-slate-200 focus:border-[#FF9F1C] rounded-xl px-4 py-2.5 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#FF9F1C]/15"
+                  />
+                </div>
 
-              <div>
-                <label className="block font-semibold text-gray-700 mb-1">Votre message / Proposition de créneau *</label>
-                <textarea
-                  rows={4}
-                  required
-                  value={contactMessage}
-                  onChange={(e) => setContactMessage(e.target.value)}
-                  placeholder="Bonjour, votre profil a retenu toute notre attention pour ce poste. Seriez-vous disponible pour un premier échange en visioconférence cette semaine ?..."
-                  className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#FF9F1C] resize-none"
-                />
-              </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1.5">Votre message / Proposition de créneau *</label>
+                  <textarea
+                    rows={4}
+                    required
+                    value={contactMessage}
+                    onChange={(e) => setContactMessage(e.target.value)}
+                    placeholder="Bonjour, votre profil a retenu toute notre attention pour ce poste. Seriez-vous disponible pour un premier échange en visioconférence cette semaine ?..."
+                    className="w-full border border-slate-200 focus:border-[#FF9F1C] rounded-xl px-4 py-2.5 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#FF9F1C]/15 resize-none"
+                  />
+                </div>
 
-              <button
-                type="submit"
-                className="w-full bg-[#0B132B] hover:bg-slate-900 text-white py-3 rounded-full font-bold shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Send className="w-4 h-4 text-[#FF9F1C]" />
-                <span>Envoyer l'invitation</span>
-              </button>
-            </form>
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-[#FF9F1C] via-[#FF5E36] to-[#FF5E36] hover:from-[#e88b14] hover:to-[#e54a22] text-white py-3.5 rounded-2xl font-extrabold shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer text-sm"
+                  >
+                    <Send className="w-4 h-4" />
+                    <span>Envoyer l'invitation</span>
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}

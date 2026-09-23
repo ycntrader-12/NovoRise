@@ -17,10 +17,13 @@ import {
   Plus,
   Trash2,
   Calendar,
-  AlertCircle
+  AlertCircle,
+  BarChart3,
+  TrendingUp
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { ApplicationStatus } from '../../types/auth';
+import { CandidateStatsDashboard } from './CandidateStatsDashboard';
 
 interface CandidateDashboardProps {
   onBrowseJobs: () => void;
@@ -29,7 +32,7 @@ interface CandidateDashboardProps {
 export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowseJobs }) => {
   const { user, applications, updateCandidateProfile } = useAuth();
   
-  const [activeTab, setActiveTab] = useState<'applications' | 'profile' | 'saved'>('applications');
+  const [activeTab, setActiveTab] = useState<'stats' | 'applications' | 'profile' | 'saved'>('stats');
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   // Profile editable state
@@ -188,10 +191,22 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
       </div>
 
       {/* Tabs Navigation */}
-      <div className="flex items-center gap-3 border-b border-gray-200 mb-8 pb-3">
+      <div className="flex items-center gap-3 border-b border-gray-200 mb-8 pb-3 overflow-x-auto">
+        <button
+          onClick={() => setActiveTab('stats')}
+          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'stats'
+              ? 'bg-[#0B132B] text-white shadow-sm'
+              : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+          }`}
+        >
+          <BarChart3 className="w-4 h-4 text-[#FF9F1C]" />
+          <span>Statistiques & Activité</span>
+        </button>
+
         <button
           onClick={() => setActiveTab('applications')}
-          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'applications'
               ? 'bg-[#0B132B] text-white shadow-sm'
               : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
@@ -203,7 +218,7 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
 
         <button
           onClick={() => setActiveTab('profile')}
-          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'profile'
               ? 'bg-[#0B132B] text-white shadow-sm'
               : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
@@ -213,6 +228,20 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
           <span>Mon Profil & CV</span>
         </button>
       </div>
+
+      {/* ================= TAB 0: STATISTIQUES GLOBALES ================= */}
+      {activeTab === 'stats' && (
+        <CandidateStatsDashboard
+          user={user}
+          applications={applications}
+          profileTitle={profileTitle}
+          skillsCount={skills.length}
+          hasCv={Boolean(cvFile)}
+          hasCoverLetter={Boolean(coverLetterFile)}
+          onNavigateTab={(tab) => setActiveTab(tab)}
+          onBrowseJobs={onBrowseJobs}
+        />
+      )}
 
       {/* ================= TAB 1: MES CANDIDATURES ================= */}
       {activeTab === 'applications' && (
