@@ -571,7 +571,7 @@ function NovoRiseMain() {
                     onClick={() => { setAuthModalStep('register'); setAuthModalOpen(true); }}
                     className="bg-[#2D6BE4] text-white px-5 py-2 rounded-lg font-medium text-sm hover:bg-[#2D6BE4]/90 transition-colors shadow-sm cursor-pointer"
                   >
-                    Espace Recruteur
+                    Inscription
                   </button>
                 </>
               )}
@@ -630,7 +630,7 @@ function NovoRiseMain() {
                   onClick={() => { setIsMobileMenuOpen(false); setAuthModalStep('register'); setAuthModalOpen(true); }}
                   className="bg-[#2D6BE4] text-white px-4 py-2.5 rounded-lg font-medium text-xs flex items-center justify-center gap-2 shadow-sm hover:bg-[#2D6BE4]/90"
                 >
-                  Espace Recruteur
+                  Inscription
                 </button>
               </div>
             )}
@@ -1095,7 +1095,7 @@ function NovoRiseMain() {
                   className="bg-[#16A34A] hover:bg-[#16A34A]/90 text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors shadow-sm relative z-10 text-sm cursor-pointer"
                 >
                   <PlusCircle className="w-4 h-4 text-white" /> 
-                  <span>{isAuthenticated ? 'Accéder au Dashboard Recruteur' : 'Espace Recruteur'}</span>
+                  <span>{isAuthenticated ? 'Accéder au Dashboard Recruteur' : 'Inscription'}</span>
                 </button>
               </div>
 
