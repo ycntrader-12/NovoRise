@@ -11,7 +11,10 @@ import {
   KeyRound, 
   Clock, 
   AlertCircle,
-  Building2
+  Building2,
+  TrendingUp,
+  Check,
+  Sparkles
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { UserRole } from '../../types/auth';
@@ -100,500 +103,564 @@ export const AuthFlowModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#0B132B]/75 backdrop-blur-md flex items-center justify-center p-4 md:p-6 overflow-y-auto animate-fade-in">
-      <div className="bg-white rounded-3xl max-w-xl md:max-w-2xl w-full shadow-2xl relative border border-slate-100 overflow-hidden my-6">
+    <div className="fixed inset-0 z-50 bg-[#0B132B]/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto animate-fade-in">
+      <div className="bg-white rounded-3xl max-w-4xl w-full shadow-2xl relative border border-slate-100 overflow-hidden my-auto max-h-[92vh] flex flex-col md:flex-row">
         
-        {/* Modal Top Header (NovoRise Dark Theme) */}
-        <div className="bg-gradient-to-r from-[#0B132B] via-[#1C2541] to-[#0B132B] text-white p-6 sm:p-7 relative overflow-hidden">
-          <div className="absolute right-0 top-0 w-48 h-48 bg-[#FF9F1C]/15 rounded-full blur-2xl pointer-events-none" />
+        {/* ================= LEFT COLUMN: NOVORISE BRAND SHOWCASE (Desktop) ================= */}
+        <div className="hidden md:flex md:w-5/12 bg-gradient-to-br from-[#0B132B] via-[#1C2541] to-[#0B132B] text-white p-7 lg:p-8 flex-col justify-between relative overflow-hidden select-none">
+          {/* Ambient Lighting Blurs */}
+          <div className="absolute right-0 top-0 w-64 h-64 bg-[#2D6BE4]/25 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-blue-500/15 rounded-full blur-2xl pointer-events-none" />
+
+          {/* Top: Logo & Tag */}
+          <div className="relative z-10 space-y-3">
+            <div className="flex items-center gap-2.5">
+              <div className="bg-[#2D6BE4] p-1.5 rounded-xl text-white shadow-md shadow-blue-500/30">
+                <TrendingUp className="w-5 h-5" strokeWidth={2.5} />
+              </div>
+              <span className="text-2xl font-black text-white tracking-tight">
+                Novo<span className="text-[#2D6BE4]">Rise</span>
+              </span>
+            </div>
+
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2D6BE4]/20 text-[#60A5FA] text-[11px] font-bold uppercase tracking-wider border border-[#2D6BE4]/30">
+              <Sparkles className="w-3.5 h-3.5 text-[#60A5FA]" /> Plateforme RH & Talents
+            </span>
+          </div>
+
+          {/* Center: Dynamic Title & Value Propositions */}
+          <div className="relative z-10 my-4 space-y-3">
+            <div>
+              <h4 className="text-xl lg:text-2xl font-black leading-tight text-white">
+                {authModalStep === 'register' && "Propulsez votre avenir professionnel."}
+                {authModalStep === 'login' && "Ravi de vous revoir parmi nous !"}
+                {authModalStep === 'email-confirmation' && "Une étape pour valider votre profil."}
+                {authModalStep === 'forgot-password' && "Récupération sécurisée d'accès."}
+                {authModalStep === 'reset-password' && "Sécurisez votre nouveau mot de passe."}
+              </h4>
+              <p className="text-slate-300 text-xs mt-1.5 leading-relaxed">
+                Connectez-vous à l'écosystème d'emploi et de recrutement de référence au Maroc.
+              </p>
+            </div>
+
+            <div className="space-y-2 pt-1">
+              <div className="flex items-center gap-2.5 text-xs text-slate-200">
+                <div className="w-4 h-4 rounded-full bg-[#2D6BE4]/30 text-[#60A5FA] flex items-center justify-center flex-shrink-0">
+                  <Check className="w-3 h-3 stroke-[3]" />
+                </div>
+                <span>+5 000 offres d'entreprises vérifiées</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-xs text-slate-200">
+                <div className="w-4 h-4 rounded-full bg-[#2D6BE4]/30 text-[#60A5FA] flex items-center justify-center flex-shrink-0">
+                  <Check className="w-3 h-3 stroke-[3]" />
+                </div>
+                <span>Candidatures directes & suivi en temps réel</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-xs text-slate-200">
+                <div className="w-4 h-4 rounded-full bg-[#2D6BE4]/30 text-[#60A5FA] flex items-center justify-center flex-shrink-0">
+                  <Check className="w-3 h-3 stroke-[3]" />
+                </div>
+                <span>Contact direct avec les recruteurs</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom: Trust & Security */}
+          <div className="relative z-10 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
+            <span className="flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> 100% Conforme RGPD
+            </span>
+            <span className="font-semibold text-slate-300">NovoRise v2.0</span>
+          </div>
+        </div>
+
+        {/* ================= RIGHT COLUMN: INTERACTIVE FORM (Compact & Optimized) ================= */}
+        <div className="w-full md:w-7/12 p-5 sm:p-6 lg:p-7 flex flex-col justify-between overflow-y-auto relative">
           
+          {/* Close Button */}
           <button
             onClick={() => {
               setAuthModalOpen(false);
               setFeedbackMsg(null);
             }}
-            className="absolute top-5 right-5 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors cursor-pointer z-20"
+            className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors cursor-pointer z-30"
             aria-label="Fermer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
 
-          <div className="relative z-10 pr-8">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FF9F1C]/20 text-[#FF9F1C] text-[11px] font-bold uppercase tracking-wider border border-[#FF9F1C]/30 mb-2">
-              <ShieldCheck className="w-3.5 h-3.5" /> Espace Sécurisé NovoRise
-            </span>
-            <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-              {authModalStep === 'register' && 'Rejoignez la plateforme NovoRise'}
-              {authModalStep === 'login' && 'Connexion à votre compte'}
-              {authModalStep === 'email-confirmation' && 'Validation de votre adresse email'}
-              {authModalStep === 'forgot-password' && 'Récupération de mot de passe'}
-              {authModalStep === 'reset-password' && 'Nouveau mot de passe'}
-            </h3>
-            <p className="text-slate-300 text-xs sm:text-sm mt-1">
-              Plateforme de recrutement de référence • Opportunités CDI, Freelance & Remote
-            </p>
-          </div>
-        </div>
-
-        <div className="p-6 sm:p-8 md:p-10">
-
-        {/* ================= STEP 1: INSCRIPTION ================= */}
-        {authModalStep === 'register' && (
           <div>
-            {/* Header / Tabs */}
-            <div className="flex bg-[#F8F7F5] p-1.5 rounded-xl mb-8 border border-gray-200/60 max-w-md mx-auto">
-              <button
-                type="button"
-                onClick={() => setAuthModalStep('login')}
-                className="flex-1 py-2 text-xs font-semibold rounded-lg transition-all text-[#6B7280] hover:text-[#1A1A2E]"
-              >
-                Connexion
-              </button>
-              <button
-                type="button"
-                className="flex-1 py-2 text-xs font-semibold rounded-lg transition-all bg-white text-[#1A1A2E] shadow-sm"
-              >
-                Inscription
-              </button>
-            </div>
-
-            <div className="text-center mb-8">
-              <div className="inline-flex p-3 rounded-2xl bg-blue-50 text-[#2D6BE4] mb-3">
-                <UserIcon className="w-6 h-6" />
-              </div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-[#1A1A2E]">Rejoignez NovoRise</h3>
-              <p className="text-[#6B7280] text-sm mt-1.5 font-medium max-w-md mx-auto">
-                Créez votre compte pour explorer les meilleures offres d'emploi ou recruter des talents d'exception.
-              </p>
-            </div>
-
-            {apiError && (
-              <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 flex items-center gap-3 text-sm">
-                <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                <p>{apiError}</p>
+            {/* Top Switcher Tabs (For Register & Login) */}
+            {(authModalStep === 'register' || authModalStep === 'login') && (
+              <div className="flex bg-slate-100/90 p-1 rounded-xl mb-4 max-w-[260px]">
+                <button
+                  type="button"
+                  onClick={() => setAuthModalStep('login')}
+                  className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    authModalStep === 'login' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  Connexion
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAuthModalStep('register')}
+                  className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    authModalStep === 'register' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  Inscription
+                </button>
               </div>
             )}
 
-            <form onSubmit={handleRegister} className="space-y-5 text-sm max-w-lg mx-auto">
-              
-              {/* Role Selection */}
-              <div>
-                <label className="block font-semibold text-[#1A1A2E] mb-2 text-xs uppercase tracking-wider">Choisissez votre rôle *</label>
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setRole('candidat')}
-                    className={`p-4 rounded-2xl border-2 text-left transition-all flex items-center gap-3 cursor-pointer ${
-                      role === 'candidat'
-                        ? 'border-[#2D6BE4] bg-blue-50/50 text-[#1A1A2E] shadow-sm'
-                        : 'border-gray-200 text-[#6B7280] hover:border-gray-300'
-                    }`}
-                  >
-                    <div className={`p-2.5 rounded-xl ${role === 'candidat' ? 'bg-[#2D6BE4] text-white' : 'bg-gray-100 text-[#6B7280]'}`}>
-                      <Briefcase className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div className="font-bold text-sm text-[#1A1A2E]">Candidat</div>
-                      <div className="text-xs text-[#6B7280]">Chercher un emploi</div>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setRole('recruteur')}
-                    className={`p-4 rounded-2xl border-2 text-left transition-all flex items-center gap-3 cursor-pointer ${
-                      role === 'recruteur'
-                        ? 'border-[#16A34A] bg-emerald-50/50 text-[#1A1A2E] shadow-sm'
-                        : 'border-gray-200 text-[#6B7280] hover:border-gray-300'
-                    }`}
-                  >
-                    <div className={`p-2.5 rounded-xl ${role === 'recruteur' ? 'bg-[#16A34A] text-white' : 'bg-gray-100 text-[#6B7280]'}`}>
-                      <Building2 className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div className="font-bold text-sm text-[#1A1A2E]">Recruteur</div>
-                      <div className="text-xs text-[#6B7280]">Publier des offres</div>
-                    </div>
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-[#1A1A2E] mb-1.5 text-xs">Nom complet *</label>
-                <div className="relative">
-                  <UserIcon className="w-4 h-4 text-[#6B7280] absolute left-3.5 top-3.5" />
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Ex: Sarah Alami"
-                    className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all text-sm"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-[#1A1A2E] mb-1.5 text-xs">Email professionnel ou personnel *</label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 text-[#6B7280] absolute left-3.5 top-3.5" />
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="sarah@exemple.com"
-                    className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all text-sm"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-[#1A1A2E] mb-1.5 text-xs">Mot de passe *</label>
-                <div className="relative">
-                  <Lock className="w-4 h-4 text-[#6B7280] absolute left-3.5 top-3.5" />
-                  <input
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Au moins 8 caractères"
-                    className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all text-sm"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-[#FF9F1C] via-[#FF5E36] to-[#FF5E36] hover:from-[#e88b14] hover:to-[#e54a22] text-white py-3.5 rounded-2xl font-bold shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all flex items-center justify-center gap-2 text-sm mt-4 cursor-pointer active:scale-95 disabled:opacity-70"
-              >
-                <span>Créer mon compte</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </form>
-
-            <div className="mt-6 pt-5 border-t border-gray-100 text-center">
-              <p className="text-[#6B7280] text-xs">
-                Déjà inscrit ?{' '}
-                <button
-                  onClick={() => setAuthModalStep('login')}
-                  className="font-semibold text-[#2D6BE4] hover:underline"
-                >
-                  Se connecter
-                </button>
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* ================= STEP 2: EMAIL DE CONFIRMATION (TOKEN 24H) ================= */}
-        {authModalStep === 'email-confirmation' && (
-          <div className="text-center py-4 max-w-lg mx-auto">
-            <div className="w-16 h-16 bg-blue-50 text-[#2D6BE4] rounded-2xl flex items-center justify-center mx-auto mb-4 relative">
-              <Mail className="w-8 h-8" />
-              <div className="absolute -bottom-1 -right-1 bg-[#16A34A] text-white p-1 rounded-full">
-                <CheckCircle2 className="w-4 h-4" />
-              </div>
-            </div>
-
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-50 text-[#2D6BE4] text-xs font-semibold mb-3">
-              <Clock className="w-3.5 h-3.5" /> Lien de confirmation envoyé (Expiration 24h)
-            </span>
-
-            <h3 className="text-2xl font-bold text-[#1A1A2E] mb-2">Vérifiez votre boîte mail</h3>
-            <p className="text-[#6B7280] text-sm leading-relaxed max-w-md mx-auto mb-6 font-medium">
-              Nous venons d'envoyer un lien de vérification sécurisé à l'adresse :<br />
-              <strong className="text-[#1A1A2E] font-semibold">{pendingEmail || 'votre email'}</strong>
-            </p>
-
-            <div className="bg-[#F8F7F5] border border-gray-200/60 rounded-2xl p-4 text-left text-xs mb-6 space-y-2">
-              <div className="flex items-center justify-between text-[#6B7280]">
-                <span>Rôle sélectionné :</span>
-                <span className="font-bold uppercase text-[#2D6BE4]">{pendingRole}</span>
-              </div>
-              <div className="flex items-center justify-between text-[#6B7280]">
-                <span>Validité du jeton :</span>
-                <span className="text-[#16A34A] font-semibold">24 heures</span>
-              </div>
-            </div>
-
-            {/* Simulation button */}
-            <button
-              onClick={() => confirmEmailToken('mock_24h_token_valid')}
-              className="w-full bg-[#16A34A] hover:bg-[#16A34A]/90 text-white py-3.5 rounded-xl font-semibold shadow-sm transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
-            >
-              <ShieldCheck className="w-4 h-4" />
-              <span>Confirmer l'email (Simuler clic)</span>
-            </button>
-
-            <div className="mt-6 flex items-center justify-center gap-3 text-xs text-[#6B7280]">
-              <button 
-                onClick={() => setAuthModalStep('register')}
-                className="hover:text-[#1A1A2E] font-medium"
-              >
-                Modifier l'adresse email
-              </button>
-              <span>•</span>
-              <button 
-                onClick={() => setAuthModalStep('login')}
-                className="hover:text-[#1A1A2E] font-medium"
-              >
-                Retour à la connexion
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ================= STEP 3: CONNEXION ================= */}
-        {authModalStep === 'login' && (
-          <div>
-            {/* Header / Tabs */}
-            <div className="flex bg-[#F8F7F5] p-1.5 rounded-xl mb-8 border border-gray-200/60 max-w-md mx-auto">
-              <button
-                type="button"
-                className="flex-1 py-2 text-xs font-semibold rounded-lg transition-all bg-white text-[#1A1A2E] shadow-sm"
-              >
-                Connexion
-              </button>
-              <button
-                type="button"
-                onClick={() => setAuthModalStep('register')}
-                className="flex-1 py-2 text-xs font-semibold rounded-lg transition-all text-[#6B7280] hover:text-[#1A1A2E]"
-              >
-                Inscription
-              </button>
-            </div>
-
+            {/* Notification / Feedback Messages */}
             {feedbackMsg && (
-              <div className="mb-6 bg-emerald-50 text-emerald-800 text-xs p-3.5 rounded-xl flex items-center gap-2 border border-emerald-100 max-w-lg mx-auto">
+              <div className="mb-3 bg-emerald-50 text-emerald-800 text-xs p-3 rounded-xl flex items-center gap-2 border border-emerald-100 font-medium animate-fade-in">
                 <CheckCircle2 className="w-4 h-4 text-[#16A34A] flex-shrink-0" />
                 <span>{feedbackMsg}</span>
               </div>
             )}
 
             {apiError && (
-              <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 flex items-center gap-3 text-sm max-w-lg mx-auto">
-                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <div className="mb-3 p-3 bg-red-50 text-red-600 rounded-xl border border-red-100 flex items-center gap-2.5 text-xs font-medium animate-fade-in">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 <p>{apiError}</p>
               </div>
             )}
 
-            <div className="text-center mb-8">
-              <h3 className="text-2xl sm:text-3xl font-bold text-[#1A1A2E]">Bon retour sur NovoRise</h3>
-              <p className="text-[#6B7280] text-sm mt-1.5 font-medium">
-                Connectez-vous pour accéder à votre espace dédié.
-              </p>
-            </div>
-
-            <div className="max-w-lg mx-auto space-y-5">
-              {/* Google OAuth Button */}
-              <button
-                type="button"
-                onClick={handleGoogleOAuth}
-                disabled={loading}
-                className="w-full bg-white border border-gray-200 hover:bg-gray-50 text-[#1A1A2E] py-3 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-3 shadow-sm cursor-pointer"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24">
-                  <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
-                  <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
-                  <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
-                  <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
-                </svg>
-                <span>Continuer avec Google</span>
-              </button>
-
-              <div className="flex items-center my-4">
-                <div className="flex-1 border-t border-gray-200"></div>
-                <span className="px-3 text-[#6B7280] text-xs font-semibold uppercase tracking-wider">ou par email</span>
-                <div className="flex-1 border-t border-gray-200"></div>
-              </div>
-
-              <form onSubmit={handleLogin} className="space-y-4 text-sm">
-                <div>
-                  <label className="block font-semibold text-[#1A1A2E] mb-1.5 text-xs">Email</label>
-                  <div className="relative">
-                    <Mail className="w-4 h-4 text-[#6B7280] absolute left-3.5 top-3.5" />
-                    <input
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="nom@exemple.com"
-                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all text-sm"
-                    />
-                  </div>
+            {/* ================= STEP 1: INSCRIPTION ================= */}
+            {authModalStep === 'register' && (
+              <div>
+                <div className="mb-3">
+                  <h3 className="text-xl font-black text-[#0B132B]">Rejoignez NovoRise</h3>
+                  <p className="text-slate-500 text-xs mt-0.5">
+                    Créez votre compte gratuit en moins d'une minute.
+                  </p>
                 </div>
 
-                <div>
-                  <div className="flex justify-between items-center mb-1.5">
-                    <label className="font-semibold text-[#1A1A2E] text-xs">Mot de passe</label>
+                <form onSubmit={handleRegister} className="space-y-3 text-xs">
+                  {/* Role Selector (Compact 2 cards) */}
+                  <div>
+                    <label className="block font-bold text-slate-600 mb-1 text-[11px] uppercase tracking-wider">
+                      Votre profil *
+                    </label>
+                    <div className="grid grid-cols-2 gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => setRole('candidat')}
+                        className={`px-3 py-2 rounded-xl border-2 text-left transition-all flex items-center gap-2.5 cursor-pointer ${
+                          role === 'candidat'
+                            ? 'border-[#2D6BE4] bg-blue-50/60 text-[#0B132B] shadow-sm ring-1 ring-[#2D6BE4]/30'
+                            : 'border-slate-200 text-slate-500 hover:border-slate-300 bg-slate-50/50'
+                        }`}
+                      >
+                        <div className={`p-1.5 rounded-lg ${role === 'candidat' ? 'bg-[#2D6BE4] text-white shadow-sm' : 'bg-slate-200 text-slate-600'}`}>
+                          <Briefcase className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <div className="font-extrabold text-xs text-[#0B132B]">Candidat</div>
+                          <div className="text-[10px] text-slate-500 leading-none mt-0.5">Chercher un emploi</div>
+                        </div>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setRole('recruteur')}
+                        className={`px-3 py-2 rounded-xl border-2 text-left transition-all flex items-center gap-2.5 cursor-pointer ${
+                          role === 'recruteur'
+                            ? 'border-[#0B132B] bg-slate-100 text-[#0B132B] shadow-sm ring-1 ring-slate-900/20'
+                            : 'border-slate-200 text-slate-500 hover:border-slate-300 bg-slate-50/50'
+                        }`}
+                      >
+                        <div className={`p-1.5 rounded-lg ${role === 'recruteur' ? 'bg-[#0B132B] text-white shadow-sm' : 'bg-slate-200 text-slate-600'}`}>
+                          <Building2 className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <div className="font-extrabold text-xs text-[#0B132B]">Recruteur</div>
+                          <div className="text-[10px] text-slate-500 leading-none mt-0.5">Publier des offres</div>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Google OAuth Button */}
+                  <button
+                    type="button"
+                    onClick={handleGoogleOAuth}
+                    disabled={loading}
+                    className="w-full bg-white border border-slate-200 hover:border-[#2D6BE4] hover:bg-blue-50/20 text-slate-800 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2.5 shadow-sm hover:shadow-md cursor-pointer group active:scale-[0.99]"
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                      <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+                      <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                      <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                    </svg>
+                    <span>S'inscrire avec Google ({role === 'candidat' ? 'Candidat' : 'Recruteur'})</span>
+                  </button>
+
+                  <div className="flex items-center my-1.5">
+                    <div className="flex-1 border-t border-slate-200"></div>
+                    <span className="px-2.5 text-slate-400 text-[10px] font-bold uppercase tracking-wider">ou par email</span>
+                    <div className="flex-1 border-t border-slate-200"></div>
+                  </div>
+
+                  {/* Horizontal 2-column input fields */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1 text-[11px]">Nom complet *</label>
+                      <div className="relative">
+                        <UserIcon className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                        <input
+                          type="text"
+                          required
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder="Ex: Sarah Alami"
+                          className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl pl-8 pr-3 py-2 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1 text-[11px]">Email *</label>
+                      <div className="relative">
+                        <Mail className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                        <input
+                          type="email"
+                          required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="sarah@exemple.com"
+                          className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl pl-8 pr-3 py-2 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1 text-[11px]">Mot de passe *</label>
+                    <div className="relative">
+                      <Lock className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                      <input
+                        type="password"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Au moins 8 caractères"
+                        className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl pl-8 pr-3 py-2 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-[#2D6BE4] hover:bg-[#2563EB] text-white py-2.5 rounded-xl font-bold shadow-md shadow-blue-600/25 hover:shadow-blue-600/40 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 text-xs cursor-pointer disabled:opacity-70 mt-1"
+                  >
+                    <span>Créer mon compte</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </form>
+
+                <div className="pt-2 text-center">
+                  <p className="text-slate-500 text-[11px]">
+                    Déjà inscrit ?{' '}
                     <button
                       type="button"
-                      onClick={() => {
-                        setFeedbackMsg(null);
-                        setAuthModalStep('forgot-password');
-                      }}
-                      className="text-[#2D6BE4] hover:underline text-xs font-semibold"
+                      onClick={() => setAuthModalStep('login')}
+                      className="font-bold text-[#2D6BE4] hover:text-[#1D4ED8] hover:underline cursor-pointer"
                     >
-                      Mot de passe oublié ?
+                      Se connecter
                     </button>
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* ================= STEP 2: EMAIL DE CONFIRMATION ================= */}
+            {authModalStep === 'email-confirmation' && (
+              <div className="text-center py-2">
+                <div className="w-12 h-12 bg-blue-50 text-[#2D6BE4] rounded-2xl flex items-center justify-center mx-auto mb-3 relative">
+                  <Mail className="w-6 h-6" />
+                  <div className="absolute -bottom-1 -right-1 bg-[#16A34A] text-white p-0.5 rounded-full">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
                   </div>
-                  <div className="relative">
-                    <Lock className="w-4 h-4 text-[#6B7280] absolute left-3.5 top-3.5" />
+                </div>
+
+                <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-blue-50 text-[#2D6BE4] text-[11px] font-semibold mb-2">
+                  <Clock className="w-3 h-3" /> Lien valide 24h
+                </span>
+
+                <h3 className="text-lg font-black text-[#0B132B] mb-1">Vérifiez votre boîte mail</h3>
+                <p className="text-slate-500 text-xs leading-relaxed max-w-sm mx-auto mb-4">
+                  Un email avec un lien de confirmation sécurisé a été envoyé à :<br />
+                  <strong className="text-slate-900 font-bold">{pendingEmail || 'votre email'}</strong>
+                </p>
+
+                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3 text-left text-xs mb-4 space-y-1.5">
+                  <div className="flex items-center justify-between text-slate-600">
+                    <span>Rôle sélectionné :</span>
+                    <span className="font-bold uppercase text-[#2D6BE4]">{pendingRole}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-600">
+                    <span>Statut :</span>
+                    <span className="text-[#16A34A] font-semibold flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" /> En attente de validation
+                    </span>
+                  </div>
+                </div>
+
+                {/* Simulation button for demo */}
+                <button
+                  onClick={() => confirmEmailToken('mock_24h_token_valid')}
+                  className="w-full bg-[#16A34A] hover:bg-[#15803D] text-white py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>Confirmer l'email (Simuler clic)</span>
+                </button>
+
+                <div className="mt-3 flex items-center justify-center gap-3 text-xs text-slate-500">
+                  <button 
+                    onClick={() => setAuthModalStep('register')}
+                    className="hover:text-slate-900 font-medium"
+                  >
+                    Modifier l'email
+                  </button>
+                  <span>•</span>
+                  <button 
+                    onClick={() => setAuthModalStep('login')}
+                    className="hover:text-slate-900 font-medium"
+                  >
+                    Retour à la connexion
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ================= STEP 3: CONNEXION ================= */}
+            {authModalStep === 'login' && (
+              <div>
+                <div className="mb-3">
+                  <h3 className="text-xl font-black text-[#0B132B]">Bon retour sur NovoRise</h3>
+                  <p className="text-slate-500 text-xs mt-0.5">
+                    Connectez-vous pour accéder à votre espace dédié.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  {/* Google OAuth Button */}
+                  <button
+                    type="button"
+                    onClick={handleGoogleOAuth}
+                    disabled={loading}
+                    className="w-full bg-white border border-slate-200 hover:border-[#2D6BE4] hover:bg-blue-50/20 text-slate-800 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2.5 shadow-sm hover:shadow-md cursor-pointer group active:scale-[0.99]"
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                      <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+                      <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                      <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                    </svg>
+                    <span>Continuer avec Google</span>
+                  </button>
+
+                  <div className="flex items-center my-1.5">
+                    <div className="flex-1 border-t border-slate-200"></div>
+                    <span className="px-2.5 text-slate-400 text-[10px] font-bold uppercase tracking-wider">ou par email</span>
+                    <div className="flex-1 border-t border-slate-200"></div>
+                  </div>
+
+                  <form onSubmit={handleLogin} className="space-y-3 text-xs">
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1 text-[11px]">Email</label>
+                      <div className="relative">
+                        <Mail className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                        <input
+                          type="email"
+                          required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="nom@exemple.com"
+                          className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl pl-8 pr-3 py-2 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between items-center mb-1">
+                        <label className="font-bold text-slate-700 text-[11px]">Mot de passe</label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFeedbackMsg(null);
+                            setAuthModalStep('forgot-password');
+                          }}
+                          className="text-[#2D6BE4] hover:text-[#1D4ED8] hover:underline text-[11px] font-bold cursor-pointer"
+                        >
+                          Mot de passe oublié ?
+                        </button>
+                      </div>
+                      <div className="relative">
+                        <Lock className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                        <input
+                          type="password"
+                          required
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="••••••••"
+                          className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl pl-8 pr-3 py-2 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full bg-[#2D6BE4] hover:bg-[#2563EB] text-white py-2.5 rounded-xl font-bold shadow-md shadow-blue-600/25 hover:shadow-blue-600/40 hover:scale-[1.01] active:scale-[0.99] transition-all text-xs flex items-center justify-center gap-2 cursor-pointer mt-1 disabled:opacity-70"
+                    >
+                      <span>Se connecter</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </form>
+                </div>
+
+                <div className="pt-3 text-center">
+                  <p className="text-slate-500 text-[11px]">
+                    Pas encore de compte ?{' '}
+                    <button
+                      type="button"
+                      onClick={() => setAuthModalStep('register')}
+                      className="font-bold text-[#2D6BE4] hover:text-[#1D4ED8] hover:underline cursor-pointer"
+                    >
+                      S'inscrire gratuitement
+                    </button>
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* ================= STEP 4: MOT DE PASSE OUBLIÉ ================= */}
+            {authModalStep === 'forgot-password' && (
+              <div>
+                <div className="mb-3">
+                  <div className="inline-flex p-2 rounded-xl bg-blue-50 text-[#2D6BE4] mb-2">
+                    <KeyRound className="w-4 h-4" />
+                  </div>
+                  <h3 className="text-lg font-black text-[#0B132B]">Mot de passe oublié</h3>
+                  <p className="text-slate-500 text-xs mt-0.5">
+                    Saisissez votre email pour recevoir un lien de réinitialisation sécurisé.
+                  </p>
+                </div>
+
+                <form onSubmit={handleForgotRequest} className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1 text-[11px]">Email du compte *</label>
+                    <div className="relative">
+                      <Mail className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                      <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="votre.email@domaine.com"
+                        className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl pl-8 pr-3 py-2 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="bg-blue-50/60 border border-blue-100 rounded-xl p-3 text-xs text-blue-900 flex items-start gap-2 font-medium">
+                    <AlertCircle className="w-3.5 h-3.5 text-[#2D6BE4] flex-shrink-0 mt-0.5" />
+                    <span>Un token temporaire valide 1 heure sera généré pour choisir votre nouveau mot de passe.</span>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-[#2D6BE4] hover:bg-[#2563EB] text-white py-2.5 rounded-xl font-bold shadow-md shadow-blue-600/25 transition-all text-xs flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
+                  >
+                    <span>Envoyer le lien</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </form>
+
+                <div className="pt-3 text-center">
+                  <button
+                    onClick={() => setAuthModalStep('login')}
+                    className="text-slate-500 hover:text-slate-900 text-xs font-bold cursor-pointer"
+                  >
+                    ← Retour à la connexion
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ================= STEP 5: RÉINITIALISATION MOT DE PASSE ================= */}
+            {authModalStep === 'reset-password' && (
+              <div>
+                <div className="mb-3">
+                  <div className="inline-flex p-2 rounded-xl bg-blue-50 text-[#2D6BE4] mb-2">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <h3 className="text-lg font-black text-[#0B132B]">Nouveau mot de passe</h3>
+                  <p className="text-slate-500 text-xs mt-0.5">
+                    Choisissez votre nouveau mot de passe de connexion.
+                  </p>
+                </div>
+
+                <form onSubmit={handleResetSubmit} className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1 text-[11px]">Jeton de réinitialisation</label>
                     <input
-                      type="password"
+                      type="text"
                       required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all text-sm"
+                      value={tokenInput || resetToken || ''}
+                      onChange={(e) => setTokenInput(e.target.value)}
+                      className="w-full border border-slate-200 bg-slate-50/50 rounded-xl px-3 py-2 outline-none font-mono text-xs text-slate-800"
                     />
                   </div>
-                </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-[#0B132B] hover:bg-slate-900 text-white py-3.5 rounded-2xl font-bold shadow-lg shadow-slate-900/15 transition-all text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 mt-2 disabled:opacity-70"
-                >
-                  <span>Se connecter</span>
-                  <ArrowRight className="w-4 h-4 text-[#FF9F1C]" />
-                </button>
-              </form>
-            </div>
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1 text-[11px]">Nouveau mot de passe *</label>
+                    <div className="relative">
+                      <Lock className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                      <input
+                        type="password"
+                        required
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="Au moins 8 caractères"
+                        className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl pl-8 pr-3 py-2 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15"
+                      />
+                    </div>
+                  </div>
 
-            <div className="mt-6 pt-5 border-t border-gray-100 text-center">
-              <p className="text-[#6B7280] text-xs">
-                Pas encore de compte ?{' '}
-                <button
-                  onClick={() => setAuthModalStep('register')}
-                  className="font-semibold text-[#2D6BE4] hover:underline"
-                >
-                  S'inscrire gratuitement
-                </button>
-              </p>
-            </div>
-          </div>
-        )}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-[#2D6BE4] hover:bg-[#2563EB] text-white py-2.5 rounded-xl font-bold shadow-md shadow-blue-600/25 transition-all text-xs flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
+                  >
+                    <span>Mettre à jour le mot de passe</span>
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  </button>
+                </form>
 
-        {/* ================= STEP 4: MOT DE PASSE OUBLIÉ ================= */}
-        {authModalStep === 'forgot-password' && (
-          <div className="max-w-lg mx-auto">
-            <div className="text-center mb-8">
-              <div className="inline-flex p-3 rounded-2xl bg-blue-50 text-[#2D6BE4] mb-3">
-                <KeyRound className="w-6 h-6" />
-              </div>
-              <h3 className="text-2xl font-bold text-[#1A1A2E]">Mot de passe oublié</h3>
-              <p className="text-[#6B7280] text-sm mt-1.5 font-medium">
-                Saisissez votre email pour recevoir un lien de réinitialisation sécurisé.
-              </p>
-            </div>
-
-            <form onSubmit={handleForgotRequest} className="space-y-4 text-sm">
-              <div>
-                <label className="block font-semibold text-[#1A1A2E] mb-1.5 text-xs">Email du compte *</label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 text-[#6B7280] absolute left-3.5 top-3.5" />
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="votre.email@domaine.com"
-                    className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all text-sm"
-                  />
+                <div className="pt-3 text-center">
+                  <button
+                    onClick={() => setAuthModalStep('login')}
+                    className="text-slate-500 hover:text-slate-900 text-xs font-bold cursor-pointer"
+                  >
+                    ← Annuler et revenir à la connexion
+                  </button>
                 </div>
               </div>
+            )}
 
-              <div className="bg-blue-50/60 border border-blue-100 rounded-xl p-3.5 text-xs text-[#2D6BE4] flex items-start gap-2.5 font-medium">
-                <AlertCircle className="w-4 h-4 text-[#2D6BE4] flex-shrink-0 mt-0.5" />
-                <span>Un token temporaire valide 1 heure sera généré pour choisir votre nouveau mot de passe.</span>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-[#2D6BE4] hover:bg-[#2D6BE4]/90 text-white py-3.5 rounded-xl font-semibold shadow-sm transition-all text-sm flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <span>Envoyer le lien</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </form>
-
-            <div className="mt-6 pt-5 border-t border-gray-100 text-center">
-              <button
-                onClick={() => setAuthModalStep('login')}
-                className="text-[#6B7280] hover:text-[#1A1A2E] text-xs font-semibold"
-              >
-                ← Retour à la connexion
-              </button>
-            </div>
           </div>
-        )}
-
-        {/* ================= STEP 5: RÉINITIALISATION MOT DE PASSE (TOKEN 1H) ================= */}
-        {authModalStep === 'reset-password' && (
-          <div className="max-w-lg mx-auto">
-            <div className="text-center mb-8">
-              <div className="inline-flex p-3 rounded-2xl bg-emerald-50 text-[#16A34A] mb-3">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <h3 className="text-2xl font-bold text-[#1A1A2E]">Nouveau mot de passe</h3>
-              <p className="text-[#6B7280] text-sm mt-1.5 font-medium">
-                Choisissez votre nouveau mot de passe de connexion.
-              </p>
-            </div>
-
-            <form onSubmit={handleResetSubmit} className="space-y-4 text-sm">
-              <div>
-                <label className="block font-semibold text-[#1A1A2E] mb-1.5 text-xs">Jeton de réinitialisation</label>
-                <input
-                  type="text"
-                  required
-                  value={tokenInput || resetToken || ''}
-                  onChange={(e) => setTokenInput(e.target.value)}
-                  className="w-full border border-gray-200 bg-[#F8F7F5] rounded-xl px-4 py-3 outline-none font-mono text-xs text-[#1A1A2E]"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-[#1A1A2E] mb-1.5 text-xs">Nouveau mot de passe *</label>
-                <div className="relative">
-                  <Lock className="w-4 h-4 text-[#6B7280] absolute left-3.5 top-3.5" />
-                  <input
-                    type="password"
-                    required
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Au moins 8 caractères"
-                    className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 outline-none focus:border-[#2D6BE4] focus:ring-2 focus:ring-[#2D6BE4]/20 transition-all text-sm"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-[#16A34A] hover:bg-[#16A34A]/90 text-white py-3.5 rounded-xl font-semibold shadow-sm transition-all text-sm flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <span>Mettre à jour le mot de passe</span>
-                <CheckCircle2 className="w-4 h-4" />
-              </button>
-            </form>
-
-            <div className="mt-6 pt-5 border-t border-gray-100 text-center">
-              <button
-                onClick={() => setAuthModalStep('login')}
-                className="text-[#6B7280] hover:text-[#1A1A2E] text-xs font-semibold"
-              >
-                ← Annuler et revenir à la connexion
-              </button>
-            </div>
-          </div>
-        )}
 
         </div>
+
       </div>
     </div>
   );

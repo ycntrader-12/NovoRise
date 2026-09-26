@@ -66,13 +66,13 @@ export const RecruiterStatsDashboard: React.FC<RecruiterStatsDashboardProps> = (
       
       {/* ─── BANDEAU OBJECTIF & APERÇU RECRUTEUR ─── */}
       <div className="bg-gradient-to-r from-[#0B132B] via-[#1A233A] to-[#0B132B] rounded-3xl p-6 sm:p-8 text-white border border-slate-700/50 shadow-xl relative overflow-hidden">
-        <div className="absolute -right-10 -bottom-10 w-64 h-64 bg-[#FF5E36]/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-0 right-1/4 w-40 h-40 bg-[#FF9F1C]/15 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -right-10 -bottom-10 w-64 h-64 bg-[#2D6BE4]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-40 h-40 bg-blue-500/15 rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-orange-300 text-xs font-semibold backdrop-blur-sm border border-orange-500/20">
-              <Sparkles className="w-3.5 h-3.5 text-[#FF9F1C]" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2D6BE4]/20 text-[#60A5FA] text-xs font-semibold backdrop-blur-sm border border-[#2D6BE4]/30">
+              <Sparkles className="w-3.5 h-3.5 text-[#60A5FA]" />
               <span>Pilotage RH & Performance des Offres</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
@@ -87,14 +87,14 @@ export const RecruiterStatsDashboard: React.FC<RecruiterStatsDashboardProps> = (
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => onNavigateTab('post-job')}
-              className="bg-gradient-to-r from-[#FF9F1C] to-[#FF5E36] hover:from-[#e88b14] hover:to-[#e54a22] text-white px-5 py-3 rounded-2xl text-xs font-bold shadow-lg shadow-orange-500/20 hover:scale-105 transition-all flex items-center gap-2"
+              className="bg-[#2D6BE4] hover:bg-[#2563EB] text-white px-5 py-3 rounded-2xl text-xs font-bold shadow-lg shadow-blue-500/20 hover:scale-105 transition-all flex items-center gap-2 cursor-pointer"
             >
               <PlusCircle className="w-4 h-4" />
               <span>Publier une offre</span>
             </button>
             <button
               onClick={() => onNavigateTab('candidates')}
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/15 px-4 py-3 rounded-2xl text-xs font-semibold transition-all flex items-center gap-2"
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/15 px-4 py-3 rounded-2xl text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer"
             >
               <Users className="w-4 h-4" />
               <span>Voir le vivier ({totalApplications})</span>
@@ -126,12 +126,12 @@ export const RecruiterStatsDashboard: React.FC<RecruiterStatsDashboardProps> = (
         <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Candidatures reçues</span>
-            <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#FF5E36] flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#2D6BE4] flex items-center justify-center group-hover:scale-110 transition-transform">
               <Users className="w-5 h-5" />
             </div>
           </div>
           <div className="mt-4">
-            <div className="text-3xl font-black text-[#FF5E36]">{totalApplications}</div>
+            <div className="text-3xl font-black text-[#2D6BE4]">{totalApplications}</div>
             <div className="text-xs font-semibold text-emerald-600 mt-1 flex items-center gap-1">
               <TrendingUp className="w-3.5 h-3.5" />
               <span>{pendingApps} en attente de revue</span>

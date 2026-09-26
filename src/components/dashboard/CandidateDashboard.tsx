@@ -123,11 +123,11 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
 
       {/* Top Banner: User Profile Overview */}
       <div className="bg-gradient-to-r from-[#0B132B] via-[#1C2541] to-[#0B132B] rounded-3xl p-6 md:p-10 text-white shadow-xl mb-8 relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-[#FF9F1C]/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute right-0 top-0 w-96 h-96 bg-[#2D6BE4]/15 rounded-full blur-3xl pointer-events-none"></div>
         
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="flex items-center gap-5">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-[#FF9F1C] to-[#FF5E36] text-white flex items-center justify-center font-extrabold text-2xl shadow-lg border-2 border-white/20">
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-[#2D6BE4] to-[#1E40AF] text-white flex items-center justify-center font-extrabold text-2xl shadow-lg border-2 border-white/20">
               {user?.name.charAt(0).toUpperCase() || 'C'}
             </div>
             <div>
@@ -149,14 +149,14 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={onBrowseJobs}
-              className="bg-gradient-to-r from-[#FF9F1C] to-[#FF5E36] text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-lg shadow-orange-500/20 hover:scale-105 transition-all flex items-center gap-2"
+              className="bg-[#2D6BE4] hover:bg-[#2563EB] text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-lg shadow-blue-500/20 hover:scale-105 transition-all flex items-center gap-2 cursor-pointer"
             >
               <Search className="w-4 h-4" />
               <span>Explorer les offres</span>
             </button>
             <button
               onClick={() => setActiveTab('profile')}
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/15 px-4 py-2.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2"
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/15 px-4 py-2.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer"
             >
               <User className="w-4 h-4" />
               <span>Mon Profil & CV</span>
@@ -255,7 +255,7 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
             </div>
             <button
               onClick={onBrowseJobs}
-              className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-[#FF5E36] hover:text-[#FF9F1C] transition-colors"
+              className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-[#2D6BE4] hover:text-[#2563EB] transition-colors cursor-pointer"
             >
               <span>Postuler à de nouveaux postes</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -264,7 +264,7 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
 
           {applications.length === 0 ? (
             <div className="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-sm">
-              <div className="w-16 h-16 bg-orange-50 text-[#FF9F1C] rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-blue-50 text-[#2D6BE4] rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Briefcase className="w-8 h-8" />
               </div>
               <h3 className="text-lg font-bold text-[#0B132B] mb-1">Aucune candidature pour le moment</h3>
@@ -273,7 +273,7 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
               </p>
               <button
                 onClick={onBrowseJobs}
-                className="bg-gradient-to-r from-[#FF9F1C] to-[#FF5E36] text-white px-6 py-2.5 rounded-full text-xs font-bold shadow-md hover:shadow-orange-500/20 transition-all"
+                className="bg-[#2D6BE4] hover:bg-[#2563EB] text-white px-6 py-2.5 rounded-full text-xs font-bold shadow-md shadow-blue-500/20 hover:scale-105 transition-all cursor-pointer"
               >
                 Parcourir les offres
               </button>
@@ -397,7 +397,7 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
                 {skills.map(sk => (
                   <span
                     key={sk}
-                    className="bg-orange-50 text-[#FF5E36] font-semibold px-3 py-1 rounded-lg flex items-center gap-1.5 border border-orange-100"
+                    className="bg-blue-50 text-[#2D6BE4] font-semibold px-3 py-1 rounded-lg flex items-center gap-1.5 border border-blue-100"
                   >
                     {sk}
                     <button
@@ -416,7 +416,7 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
                   value={newSkillInput}
                   onChange={(e) => setNewSkillInput(e.target.value)}
                   placeholder="Ajouter une compétence (ex: Kubernetes, GraphQL)..."
-                  className="flex-1 border border-gray-200 rounded-xl px-3.5 py-2 outline-none focus:border-[#FF9F1C]"
+                  className="flex-1 border border-gray-200 rounded-xl px-3.5 py-2 outline-none focus:border-[#2D6BE4]"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
@@ -427,7 +427,7 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
                 <button
                   type="button"
                   onClick={addSkill}
-                  className="bg-[#0B132B] text-white px-4 py-2 rounded-xl font-bold flex items-center gap-1 hover:bg-slate-900 transition-colors"
+                  className="bg-[#0B132B] text-white px-4 py-2 rounded-xl font-bold flex items-center gap-1 hover:bg-slate-900 transition-colors cursor-pointer"
                 >
                   <Plus className="w-4 h-4" /> Ajouter
                 </button>
@@ -438,13 +438,13 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
             <div className="space-y-4 pt-2">
               <div className="flex items-center justify-between">
                 <label className="block font-semibold text-gray-800 text-sm">Documents Candidat (Tous formats acceptés)</label>
-                <span className="text-[11px] text-[#FF5E36] font-medium">PDF, DOC, DOCX, ODT, RTF, TXT, Images...</span>
+                <span className="text-[11px] text-[#2D6BE4] font-medium">PDF, DOC, DOCX, ODT, RTF, TXT, Images...</span>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 
                 {/* CV Box */}
-                <div className="border-2 border-dashed border-gray-200 rounded-2xl p-5 text-center hover:border-[#FF9F1C] bg-gray-50/50 hover:bg-white transition-all relative cursor-pointer">
+                <div className="border-2 border-dashed border-blue-200 rounded-2xl p-5 text-center hover:border-[#2D6BE4] bg-blue-50/20 hover:bg-blue-50/50 transition-all relative cursor-pointer">
                   <input
                     type="file"
                     accept=".pdf,.doc,.docx,.odt,.rtf,.txt,.jpg,.jpeg,.png,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
@@ -454,13 +454,13 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
                     }}
                     className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10"
                   />
-                  <div className="w-10 h-10 bg-orange-50 text-[#FF9F1C] rounded-xl flex items-center justify-center mx-auto mb-2">
+                  <div className="w-10 h-10 bg-blue-100 text-[#2D6BE4] rounded-xl flex items-center justify-center mx-auto mb-2">
                     <FileText className="w-5 h-5" />
                   </div>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Document 1 • CV</span>
                   <div className="font-bold text-[#0B132B] text-xs truncate max-w-[240px] mx-auto">{cvFile}</div>
                   <div className="text-[11px] text-gray-500 mt-1 flex items-center justify-center gap-1">
-                    <Upload className="w-3 h-3 text-[#FF9F1C]" />
+                    <Upload className="w-3 h-3 text-[#2D6BE4]" />
                     <span>Cliquez ou déposez votre CV (Tous formats)</span>
                   </div>
                 </div>
@@ -493,7 +493,7 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
             <div className="pt-2">
               <button
                 type="submit"
-                className="bg-gradient-to-r from-[#FF9F1C] to-[#FF5E36] hover:from-[#e88b14] hover:to-[#e54a22] text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-orange-500/20 transition-all text-xs"
+                className="bg-[#2D6BE4] hover:bg-[#2563EB] text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-blue-500/20 transition-all text-xs cursor-pointer"
               >
                 Enregistrer les modifications
               </button>

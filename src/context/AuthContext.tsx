@@ -230,7 +230,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // ─── Google OAuth — redirect vers le backend ────────────────────────────────
   const loginWithGoogle = (preferredRole: UserRole = 'candidat') => {
-    const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+    const apiBase = import.meta.env.VITE_API_URL || '';
     window.location.href = `${apiBase}/api/auth/google?role=${preferredRole}`;
   };
 

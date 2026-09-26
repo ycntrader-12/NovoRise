@@ -113,16 +113,16 @@ export const RecruiterDashboard: React.FC = () => {
 
       {/* Top Banner: Recruiter Overview */}
       <div className="bg-gradient-to-r from-[#0B132B] via-[#1A233A] to-[#0B132B] rounded-3xl p-6 md:p-10 text-white shadow-xl mb-8 relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-[#FF5E36]/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute right-0 top-0 w-96 h-96 bg-[#2D6BE4]/15 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="flex items-center gap-5">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-[#FF5E36] to-[#FF9F1C] text-white flex items-center justify-center font-extrabold text-2xl shadow-lg border-2 border-white/20">
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-[#2D6BE4] to-[#1E40AF] text-white flex items-center justify-center font-extrabold text-2xl shadow-lg border-2 border-white/20">
               <Building2 className="w-10 h-10" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="bg-[#FF5E36]/20 text-[#FF9F1C] text-xs font-semibold px-2.5 py-0.5 rounded-full border border-[#FF5E36]/30">
+                <span className="bg-[#2D6BE4]/20 text-[#60A5FA] text-xs font-semibold px-2.5 py-0.5 rounded-full border border-[#2D6BE4]/30">
                   Espace Recruteur Entreprise
                 </span>
                 <span className="text-gray-400 text-xs">• Session active</span>
@@ -139,14 +139,14 @@ export const RecruiterDashboard: React.FC = () => {
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => setActiveTab('post-job')}
-              className="bg-gradient-to-r from-[#FF9F1C] to-[#FF5E36] hover:from-[#e88b14] hover:to-[#e54a22] text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-lg shadow-orange-500/20 hover:scale-105 transition-all flex items-center gap-2"
+              className="bg-[#2D6BE4] hover:bg-[#2563EB] text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-lg shadow-blue-500/20 hover:scale-105 transition-all flex items-center gap-2 cursor-pointer"
             >
               <PlusCircle className="w-4 h-4" />
               <span>Publier une offre</span>
             </button>
             <button
               onClick={() => setActiveTab('candidates')}
-              className="bg-white/10 hover:bg-white/20 text-white border border-white/15 px-4 py-2.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2"
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/15 px-4 py-2.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer"
             >
               <Users className="w-4 h-4" />
               <span>Voir candidatures ({applications.length})</span>
@@ -219,9 +219,9 @@ export const RecruiterDashboard: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('post-job')}
-          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
             activeTab === 'post-job'
-              ? 'bg-gradient-to-r from-[#FF9F1C] to-[#FF5E36] text-white shadow-sm'
+              ? 'bg-[#2D6BE4] text-white shadow-sm'
               : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
           }`}
         >
@@ -525,21 +525,21 @@ export const RecruiterDashboard: React.FC = () => {
                 value={newJob.description}
                 onChange={(e) => setNewJob({...newJob, description: e.target.value})}
                 placeholder="Décrivez les objectifs clés, les responsabilités et l'équipe..."
-                className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#FF9F1C] resize-none"
+                className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#2D6BE4] resize-none"
               />
             </div>
 
             <div className="pt-2 flex items-center gap-3">
               <button
                 type="submit"
-                className="bg-gradient-to-r from-[#FF9F1C] to-[#FF5E36] hover:from-[#e88b14] hover:to-[#e54a22] text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-orange-500/20 transition-all text-xs"
+                className="bg-[#2D6BE4] hover:bg-[#2563EB] text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-blue-500/20 transition-all text-xs cursor-pointer"
               >
                 Diffuser l'offre en ligne
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab('manage-jobs')}
-                className="text-gray-500 hover:text-gray-800 font-semibold px-4 py-3"
+                className="text-gray-500 hover:text-gray-800 font-semibold px-4 py-3 cursor-pointer"
               >
                 Annuler
               </button>
@@ -556,18 +556,18 @@ export const RecruiterDashboard: React.FC = () => {
             
             {/* Modal Top Header (NovoRise Dark Theme) */}
             <div className="bg-gradient-to-r from-[#0B132B] via-[#1A233A] to-[#0B132B] text-white p-6 sm:p-7 relative overflow-hidden">
-              <div className="absolute right-0 top-0 w-48 h-48 bg-[#FF5E36]/15 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute right-0 top-0 w-48 h-48 bg-[#2D6BE4]/20 rounded-full blur-2xl pointer-events-none" />
               
               <button
                 onClick={() => setContactingCandidate(null)}
-                className="absolute top-5 right-5 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors z-20"
+                className="absolute top-5 right-5 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors z-20 cursor-pointer"
                 aria-label="Fermer"
               >
                 <X className="w-5 h-5" />
               </button>
 
               <div className="relative z-10 pr-8">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FF5E36]/20 text-[#FF9F1C] text-[11px] font-bold uppercase tracking-wider border border-[#FF5E36]/30 mb-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#2D6BE4]/20 text-[#60A5FA] text-[11px] font-bold uppercase tracking-wider border border-[#2D6BE4]/30 mb-2">
                   <Mail className="w-3 h-3" /> Messagerie Candidat RH
                 </span>
                 <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
@@ -597,7 +597,7 @@ export const RecruiterDashboard: React.FC = () => {
                     type="text"
                     required
                     defaultValue={`Invitation à un entretien — ${contactingCandidate.jobTitle}`}
-                    className="w-full border border-slate-200 focus:border-[#FF9F1C] rounded-xl px-4 py-2.5 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#FF9F1C]/15"
+                    className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-4 py-2.5 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15"
                   />
                 </div>
 
@@ -609,14 +609,14 @@ export const RecruiterDashboard: React.FC = () => {
                     value={contactMessage}
                     onChange={(e) => setContactMessage(e.target.value)}
                     placeholder="Bonjour, votre profil a retenu toute notre attention pour ce poste. Seriez-vous disponible pour un premier échange en visioconférence cette semaine ?..."
-                    className="w-full border border-slate-200 focus:border-[#FF9F1C] rounded-xl px-4 py-2.5 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#FF9F1C]/15 resize-none"
+                    className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-4 py-2.5 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 resize-none"
                   />
                 </div>
 
                 <div className="pt-2">
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-[#FF9F1C] via-[#FF5E36] to-[#FF5E36] hover:from-[#e88b14] hover:to-[#e54a22] text-white py-3.5 rounded-2xl font-extrabold shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer text-sm"
+                    className="w-full bg-[#2D6BE4] hover:bg-[#2563EB] text-white py-3.5 rounded-2xl font-extrabold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer text-sm"
                   >
                     <Send className="w-4 h-4" />
                     <span>Envoyer l'invitation</span>

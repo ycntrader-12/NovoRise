@@ -37,8 +37,7 @@ export const GoogleCallbackPage: React.FC = () => {
         setMessage(`Bienvenue ${user.name} !`);
         // Rediriger vers le bon dashboard
         setTimeout(() => {
-          setActiveView(user.role === 'candidat' ? 'candidate-dashboard' : 'recruiter-dashboard');
-          window.history.replaceState({}, '', '/');
+          window.location.replace('/');
         }, 1500);
       })
       .catch(() => {
@@ -49,39 +48,61 @@ export const GoogleCallbackPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 flex items-center justify-center p-4">
-      <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-10 max-w-md w-full text-center">
-        {status === 'loading' && (
-          <>
-            <Loader2 className="w-16 h-16 text-indigo-400 animate-spin mx-auto mb-6" />
-            <h2 className="text-white text-xl font-semibold mb-2">Connexion Google…</h2>
-            <p className="text-white/60">Finalisation de votre session NovoRise</p>
-          </>
-        )}
-        {status === 'success' && (
-          <>
-            <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle2 className="w-10 h-10 text-emerald-400" />
-            </div>
-            <h2 className="text-white text-2xl font-bold mb-3">{message}</h2>
-            <p className="text-white/60">Redirection vers votre dashboard…</p>
-          </>
-        )}
-        {status === 'error' && (
-          <>
-            <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <XCircle className="w-10 h-10 text-red-400" />
-            </div>
-            <h2 className="text-white text-2xl font-bold mb-3">Erreur OAuth</h2>
-            <p className="text-white/70 mb-6">{message}</p>
-            <button
-              onClick={() => window.location.href = '/'}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
-            >
-              Retour à l'accueil
-            </button>
-          </>
-        )}
+    <div className="min-h-screen bg-gradient-to-br from-[#0B132B] via-[#1C2541] to-[#0B132B] flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#FF9F1C]/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-[#2D6BE4]/10 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl relative border border-slate-100 overflow-hidden my-6 z-10">
+        
+        {/* Header bar matching NovoRise modal top */}
+        <div className="bg-gradient-to-r from-[#0B132B] via-[#1C2541] to-[#0B132B] text-white p-6 relative overflow-hidden text-center">
+          <div className="absolute right-0 top-0 w-32 h-32 bg-[#FF9F1C]/20 rounded-full blur-xl pointer-events-none" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FF9F1C]/20 text-[#FF9F1C] text-[11px] font-bold uppercase tracking-wider border border-[#FF9F1C]/30 mb-2">
+            NovoRise Auth
+          </span>
+          <h3 className="text-xl font-extrabold text-white tracking-tight">Authentification Google</h3>
+        </div>
+
+        <div className="p-8 sm:p-10 text-center">
+          {status === 'loading' && (
+            <>
+              <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center mx-auto mb-5">
+                <Loader2 className="w-8 h-8 text-[#FF9F1C] animate-spin" />
+              </div>
+              <h2 className="text-lg font-extrabold text-[#0B132B] mb-1.5">Connexion en cours…</h2>
+              <p className="text-slate-500 text-xs">Finalisation et sécurisation de votre session NovoRise</p>
+            </>
+          )}
+
+          {status === 'success' && (
+            <>
+              <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-emerald-100">
+                <CheckCircle2 className="w-8 h-8 text-[#16A34A]" />
+              </div>
+              <h2 className="text-lg font-extrabold text-[#0B132B] mb-1.5">{message}</h2>
+              <p className="text-slate-500 text-xs mt-1">Connexion réussie ! Redirection vers votre espace dédié…</p>
+              <div className="mt-4 flex justify-center">
+                <div className="w-6 h-6 border-2 border-[#2D6BE4] border-t-transparent rounded-full animate-spin" />
+              </div>
+            </>
+          )}
+
+          {status === 'error' && (
+            <>
+              <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-red-100">
+                <XCircle className="w-8 h-8 text-red-500" />
+              </div>
+              <h2 className="text-lg font-extrabold text-[#0B132B] mb-1.5">Échec de la connexion</h2>
+              <p className="text-slate-500 text-xs mb-6">{message}</p>
+              <button
+                onClick={() => window.location.href = '/'}
+                className="w-full bg-[#2D6BE4] hover:bg-[#2563EB] text-white py-3.5 rounded-2xl font-extrabold shadow-lg shadow-blue-500/25 transition-all text-xs cursor-pointer"
+              >
+                Retour à l'accueil
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
