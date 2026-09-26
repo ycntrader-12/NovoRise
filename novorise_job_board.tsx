@@ -1054,52 +1054,106 @@ function NovoRiseMain() {
           <section id="solutions-section" className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               
-              <div className="bg-[#1A1A2E] rounded-2xl p-8 lg:p-12 relative overflow-hidden group shadow-sm border border-gray-100">
-                <h3 className="text-2xl lg:text-3xl font-bold text-white mb-4 relative z-10">
-                  Pour les candidats
-                </h3>
-                <p className="text-gray-300 mb-8 max-w-sm relative z-10 text-sm leading-relaxed font-medium">
-                  Faites-vous repérer directement par les meilleurs recruteurs. Déposez votre CV dans notre vivier de talents vérifiés.
-                </p>
-                
-                <button 
-                  onClick={() => {
-                    if (isAuthenticated && user?.role === 'candidat') {
-                      setActiveView('candidate-dashboard');
-                    } else {
-                      setAuthModalStep('register');
-                      setAuthModalOpen(true);
-                    }
-                  }}
-                  className="bg-[#2D6BE4] text-white hover:bg-[#2D6BE4]/90 px-6 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors shadow-sm relative z-10 text-sm cursor-pointer"
-                >
-                  <Upload className="w-4 h-4 text-white" /> 
-                  <span>{isAuthenticated ? 'Accéder à mon espace CV' : 'Créer un profil Candidat'}</span>
-                </button>
+              {/* Carte 1 : Pour les candidats */}
+              <div className="bg-gradient-to-br from-[#0B132B] via-[#162040] to-[#0B132B] rounded-3xl p-8 lg:p-10 relative overflow-hidden group shadow-xl border border-slate-700/50 flex flex-col justify-between transition-all hover:border-[#2D6BE4]/50">
+                <div className="absolute right-0 top-0 w-64 h-64 bg-[#2D6BE4]/20 rounded-full blur-3xl pointer-events-none group-hover:bg-[#2D6BE4]/30 transition-all duration-500" />
+                <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-blue-600/10 rounded-full blur-2xl pointer-events-none" />
+
+                <div className="relative z-10">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2D6BE4]/20 text-[#60A5FA] text-xs font-bold uppercase tracking-wider border border-[#2D6BE4]/30 mb-4">
+                    <UserCheck className="w-3.5 h-3.5 text-[#60A5FA]" /> Espace Candidats
+                  </div>
+                  <h3 className="text-2xl lg:text-3xl font-black text-white mb-3 tracking-tight">
+                    Pour les candidats
+                  </h3>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-6 font-medium max-w-md">
+                    Faites-vous repérer directement par les meilleurs recruteurs. Déposez votre CV dans notre vivier de talents vérifiés.
+                  </p>
+
+                  <div className="space-y-2 mb-8">
+                    <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
+                      <div className="w-4 h-4 rounded-full bg-[#2D6BE4]/30 text-[#60A5FA] flex items-center justify-center flex-shrink-0">
+                        <Check className="w-3 h-3 stroke-[3]" />
+                      </div>
+                      <span>Candidature directe en 1 clic sans formulaire lourd</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
+                      <div className="w-4 h-4 rounded-full bg-[#2D6BE4]/30 text-[#60A5FA] flex items-center justify-center flex-shrink-0">
+                        <Check className="w-3 h-3 stroke-[3]" />
+                      </div>
+                      <span>Suivi en temps réel de vos candidatures</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="relative z-10">
+                  <button 
+                    onClick={() => {
+                      if (isAuthenticated && user?.role === 'candidat') {
+                        setActiveView('candidate-dashboard');
+                      } else {
+                        setAuthModalStep('register');
+                        setAuthModalOpen(true);
+                      }
+                    }}
+                    className="bg-[#2D6BE4] hover:bg-[#2563EB] text-white px-6 py-3.5 rounded-2xl font-bold flex items-center gap-2.5 transition-all shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 hover:scale-105 active:scale-95 text-xs sm:text-sm cursor-pointer"
+                  >
+                    <Upload className="w-4 h-4 text-white" /> 
+                    <span>{isAuthenticated && user?.role === 'candidat' ? 'Accéder à mon espace CV' : 'Créer un profil Candidat'}</span>
+                    <ArrowRight className="w-4 h-4 text-white/80 ml-1" />
+                  </button>
+                </div>
               </div>
 
-              <div className="bg-[#2D6BE4] rounded-2xl p-8 lg:p-12 relative overflow-hidden group shadow-sm text-white">
-                <h3 className="text-2xl lg:text-3xl font-bold text-white mb-4 relative z-10">
-                  Pour les recruteurs
-                </h3>
-                <p className="text-white/90 mb-8 max-w-sm relative z-10 text-sm leading-relaxed font-medium">
-                  Accédez à un vivier de talents qualifiés et diffusez vos offres d'emploi à la bonne audience en un clic.
-                </p>
-                
-                <button 
-                  onClick={() => {
-                    if (isAuthenticated && user?.role === 'recruteur') {
-                      setActiveView('recruiter-dashboard');
-                    } else {
-                      setAuthModalStep('register');
-                      setAuthModalOpen(true);
-                    }
-                  }}
-                  className="bg-[#16A34A] hover:bg-[#16A34A]/90 text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors shadow-sm relative z-10 text-sm cursor-pointer"
-                >
-                  <PlusCircle className="w-4 h-4 text-white" /> 
-                  <span>{isAuthenticated ? 'Accéder au Dashboard Recruteur' : 'Inscription'}</span>
-                </button>
+              {/* Carte 2 : Pour les recruteurs */}
+              <div className="bg-gradient-to-br from-[#0B132B] via-[#1A2548] to-[#0B132B] rounded-3xl p-8 lg:p-10 relative overflow-hidden group shadow-xl border border-slate-700/50 flex flex-col justify-between transition-all hover:border-[#2D6BE4]/50">
+                <div className="absolute right-0 top-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none group-hover:bg-indigo-500/30 transition-all duration-500" />
+                <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-[#2D6BE4]/15 rounded-full blur-2xl pointer-events-none" />
+
+                <div className="relative z-10">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-[#60A5FA] text-xs font-bold uppercase tracking-wider border border-blue-500/30 mb-4">
+                    <Building2 className="w-3.5 h-3.5 text-[#60A5FA]" /> Espace Entreprises
+                  </div>
+                  <h3 className="text-2xl lg:text-3xl font-black text-white mb-3 tracking-tight">
+                    Pour les recruteurs
+                  </h3>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-6 font-medium max-w-md">
+                    Accédez à un vivier de talents qualifiés et diffusez vos offres d'emploi à la bonne audience en un clic.
+                  </p>
+
+                  <div className="space-y-2 mb-8">
+                    <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
+                      <div className="w-4 h-4 rounded-full bg-indigo-500/30 text-[#60A5FA] flex items-center justify-center flex-shrink-0">
+                        <Check className="w-3 h-3 stroke-[3]" />
+                      </div>
+                      <span>Diffusion instantanée et ciblage précis des profils</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
+                      <div className="w-4 h-4 rounded-full bg-indigo-500/30 text-[#60A5FA] flex items-center justify-center flex-shrink-0">
+                        <Check className="w-3 h-3 stroke-[3]" />
+                      </div>
+                      <span>Gestion des candidatures et contact direct</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="relative z-10">
+                  <button 
+                    onClick={() => {
+                      if (isAuthenticated && user?.role === 'recruteur') {
+                        setActiveView('recruiter-dashboard');
+                      } else {
+                        setAuthModalStep('register');
+                        setAuthModalOpen(true);
+                      }
+                    }}
+                    className="bg-white hover:bg-slate-100 text-[#0B132B] px-6 py-3.5 rounded-2xl font-extrabold flex items-center gap-2.5 transition-all shadow-lg shadow-white/10 hover:shadow-white/20 hover:scale-105 active:scale-95 text-xs sm:text-sm cursor-pointer"
+                  >
+                    <PlusCircle className="w-4 h-4 text-[#2D6BE4]" /> 
+                    <span>{isAuthenticated && user?.role === 'recruteur' ? 'Accéder au Dashboard Recruteur' : 'Publier une annonce / Inscription'}</span>
+                    <ArrowRight className="w-4 h-4 text-[#0B132B]/70 ml-1" />
+                  </button>
+                </div>
               </div>
 
             </div>
