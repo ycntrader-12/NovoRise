@@ -247,9 +247,11 @@ router.patch('/profile', requireAuth, async (req: Request, res: Response) => {
 // GET /api/auth/google?role=candidat|recruteur
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/google', (req: Request, res: Response, next) => {
-  const role = (req.query.role as string) || 'candidat';
+  const rawRole = (req.query.role as string) || 'candidat';
+  const role = (rawRole === 'recruteur' || rawRole === 'candidat') ? rawRole : 'candidat';
   passport.authenticate('google', {
     scope: ['profile', 'email'],
+    prompt: 'select_account',
     state: role,  // Passer le rôle via state OAuth
   })(req, res, next);
 });
@@ -258,9 +260,14 @@ router.get('/google', (req: Request, res: Response, next) => {
 // Google OAuth 2.0 — Callback
 // GET /api/auth/google/callback
 // ─────────────────────────────────────────────────────────────────────────────
+const frontendBaseUrl = process.env.FRONTEND_URL || 'http://localhost:3005';
+
 router.get(
   '/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: `${process.env.FRONTEND_URL}/login?error=google_failed` }),
+  passport.authenticate('google', { 
+    session: false, 
+    failureRedirect: `${frontendBaseUrl}/auth/google/success?error=google_failed` 
+  }),
   (req: Request, res: Response) => {
     const user = req.user as any;
     const token = signJwt({
@@ -271,8 +278,7 @@ router.get(
     });
 
     // Redirect vers le frontend avec le token dans l'URL
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    res.redirect(`${frontendUrl}/auth/google/success?token=${token}&role=${user.role}`);
+    res.redirect(`${frontendBaseUrl}/auth/google/success?token=${token}&role=${user.role}`);
   }
 );
 

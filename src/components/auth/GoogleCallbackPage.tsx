@@ -19,6 +19,17 @@ export const GoogleCallbackPage: React.FC = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     const role = urlParams.get('role') as UserRole | null;
+    const error = urlParams.get('error');
+
+    if (error) {
+      setStatus('error');
+      if (error === 'access_denied') {
+        setMessage('Connexion annulée : vous avez fermé ou refusé la fenêtre Google.');
+      } else {
+        setMessage('Échec de la connexion Google. Assurez-vous que votre compte est autorisé ou réessayez.');
+      }
+      return;
+    }
 
     if (!token) {
       setStatus('error');
@@ -35,10 +46,11 @@ export const GoogleCallbackPage: React.FC = () => {
         localStorage.setItem('novorise_user', JSON.stringify(user));
         setStatus('success');
         setMessage(`Bienvenue ${user.name} !`);
-        // Rediriger vers le bon dashboard
+        // Rediriger vers le dashboard correspondant au rôle
+        const targetView = (user.role || role) === 'recruteur' ? 'recruiter' : 'candidate';
         setTimeout(() => {
-          window.location.replace('/');
-        }, 1500);
+          window.location.replace(`/?view=${targetView}`);
+        }, 1200);
       })
       .catch(() => {
         localStorage.removeItem('novorise_jwt_token');

@@ -1652,7 +1652,7 @@ export default function NovoRise() {
   }
 
   // Route: /auth/google/success?token=...&role=... → callback Google OAuth
-  if (path === '/auth/google/success') {
+  if (path.startsWith('/auth/google')) {
     return (
       <AuthProvider>
         <GoogleCallbackPage />

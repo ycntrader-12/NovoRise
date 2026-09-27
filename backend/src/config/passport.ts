@@ -22,7 +22,8 @@ passport.use(
         const avatarUrl = profile.photos?.[0]?.value;
         
         // Rôle passé via le state OAuth (candidat par défaut)
-        const role = (req.query.state as string) || 'candidat';
+        const rawRole = (req.query?.state as string) || 'candidat';
+        const role = (rawRole === 'recruteur' || rawRole === 'candidat') ? rawRole : 'candidat';
 
         if (!email) {
           return done(new Error('NO_EMAIL_FROM_GOOGLE'), undefined);

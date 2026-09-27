@@ -121,6 +121,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // ─── Restaurer la session depuis localStorage au montage ───────────────────
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewParam = urlParams.get('view') || urlParams.get('dashboard');
+    if (viewParam === 'candidate') {
+      setActiveView('candidate-dashboard');
+      window.history.replaceState({}, '', window.location.pathname);
+    } else if (viewParam === 'recruiter') {
+      setActiveView('recruiter-dashboard');
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
     const savedToken = localStorage.getItem('novorise_jwt_token');
     const savedUser = localStorage.getItem('novorise_user');
 
