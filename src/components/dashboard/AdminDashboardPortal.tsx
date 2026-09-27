@@ -974,327 +974,344 @@ export const AdminDashboardPortal: React.FC = () => {
         </div>
       )}
 
-      {/* ================= EDIT USER MODAL ================= */}
+      {/* ================= EDIT USER MODAL (NOVORISE THEME) ================= */}
       {editUser && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-gray-100 p-6 sm:p-8 relative my-8 max-h-[92vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
-            {/* Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-gray-100">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-blue-50 text-[#2D6BE4] flex items-center justify-center font-bold shadow-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B132B]/75 backdrop-blur-md p-4 animate-fade-in overflow-y-auto">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl border border-slate-100 overflow-hidden my-6 max-h-[92vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Header — NovoRise Signature Dark Theme */}
+            <div className="bg-gradient-to-r from-[#0B132B] via-[#1C2541] to-[#0B132B] text-white p-6 relative overflow-hidden flex-shrink-0">
+              <div className="absolute right-0 top-0 w-36 h-36 bg-[#2D6BE4]/25 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -left-10 -bottom-10 w-28 h-28 bg-[#5C94FF]/15 rounded-full blur-xl pointer-events-none" />
+
+              <button
+                onClick={() => { setEditUser(null); setEditError(null); }}
+                className="absolute top-5 right-5 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors z-20 cursor-pointer"
+                aria-label="Fermer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-3.5 relative z-10 pr-8">
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#2D6BE4] to-[#5C94FF] text-white flex items-center justify-center shadow-lg shadow-blue-500/30 border border-white/20 flex-shrink-0">
                   <Pencil className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900">Modifier l'utilisateur</h3>
-                  <p className="text-xs text-slate-500 font-medium truncate max-w-sm sm:max-w-md">
-                    {editUser.name} • <span className="font-mono text-slate-600">{editUser.email}</span>
+                  <h3 className="font-extrabold text-white text-base">Modifier l'utilisateur</h3>
+                  <p className="text-xs text-slate-300 mt-0.5 font-medium truncate max-w-sm sm:max-w-md">
+                    {editUser.name} • <span className="font-mono text-blue-200">{editUser.email}</span>
                   </p>
                 </div>
               </div>
-              <button
-                onClick={() => { setEditUser(null); setEditError(null); }}
-                className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-all cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
             </div>
 
-            {/* Error banner */}
-            {editError && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2 font-medium">
-                <AlertTriangle className="w-4 h-4 flex-shrink-0" />
-                <span>{editError}</span>
-              </div>
-            )}
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto pr-3 space-y-4">
+              {/* Error banner */}
+              {editError && (
+                <div className="p-3.5 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2 font-medium">
+                  <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                  <span>{editError}</span>
+                </div>
+              )}
 
-            {/* Form */}
-            <form onSubmit={handleEditUserSubmit} className="mt-4 space-y-4 overflow-y-auto pr-1">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Full Name */}
+              {/* Form */}
+              <form onSubmit={handleEditUserSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Full Name */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                      <UserIcon className="w-3.5 h-3.5 text-[#2D6BE4]" /> Nom complet *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={editForm.name}
+                      onChange={(e) => setEditForm(f => ({ ...f, name: e.target.value }))}
+                      placeholder="Nom complet"
+                      className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2.5 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
+                    />
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                      <Mail className="w-3.5 h-3.5 text-[#2D6BE4]" /> Adresse email *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={editForm.email}
+                      onChange={(e) => setEditForm(f => ({ ...f, email: e.target.value }))}
+                      placeholder="adresse@email.com"
+                      className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2.5 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
+                    />
+                  </div>
+
+                  {/* Role */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#2D6BE4]" /> Rôle attribué *
+                    </label>
+                    <select
+                      value={editForm.role}
+                      onChange={(e) => setEditForm(f => ({ ...f, role: e.target.value as AdminUser['role'] }))}
+                      className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2.5 text-xs text-slate-800 bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all cursor-pointer font-medium"
+                    >
+                      <option value="candidat">Candidat — Cherche un emploi</option>
+                      <option value="recruteur">Recruteur — Publie des offres</option>
+                      <option value="admin_manager">Admin Manager — Gère les utilisateurs</option>
+                      <option value="admin">Administrateur — Accès complet</option>
+                    </select>
+                  </div>
+
+                  {/* Email Verification Status */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" /> Statut du compte
+                    </label>
+                    <select
+                      value={editForm.is_verified ? 'verified' : 'pending'}
+                      onChange={(e) => setEditForm(f => ({ ...f, is_verified: e.target.value === 'verified' }))}
+                      className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2.5 text-xs text-slate-800 bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all cursor-pointer font-medium"
+                    >
+                      <option value="verified">✓ Vérifié (Accès complet)</option>
+                      <option value="pending">⏳ En attente de vérification</option>
+                    </select>
+                  </div>
+
+                  {/* Phone */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                      <Phone className="w-3.5 h-3.5 text-slate-400" /> Numéro de téléphone
+                    </label>
+                    <input
+                      type="tel"
+                      value={editForm.phone}
+                      onChange={(e) => setEditForm(f => ({ ...f, phone: e.target.value }))}
+                      placeholder="ex: +212 600-000000"
+                      className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2.5 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
+                    />
+                  </div>
+
+                  {/* Title / Profession */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                      <Briefcase className="w-3.5 h-3.5 text-slate-400" /> Titre / Métier
+                    </label>
+                    <input
+                      type="text"
+                      value={editForm.title}
+                      onChange={(e) => setEditForm(f => ({ ...f, title: e.target.value }))}
+                      placeholder="ex: Développeur Full-Stack, RH..."
+                      className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2.5 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
+                    />
+                  </div>
+
+                  {/* Company Name */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                      <Building2 className="w-3.5 h-3.5 text-slate-400" /> Nom de l'entreprise
+                    </label>
+                    <input
+                      type="text"
+                      value={editForm.company_name}
+                      onChange={(e) => setEditForm(f => ({ ...f, company_name: e.target.value }))}
+                      placeholder="ex: NovoTech SARL"
+                      className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2.5 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
+                    />
+                  </div>
+
+                  {/* Company Website */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                      <Building2 className="w-3.5 h-3.5 text-slate-400" /> Site web entreprise
+                    </label>
+                    <input
+                      type="url"
+                      value={editForm.company_website}
+                      onChange={(e) => setEditForm(f => ({ ...f, company_website: e.target.value }))}
+                      placeholder="https://entreprise.ma"
+                      className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2.5 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
+                    />
+                  </div>
+
+                  {/* Location */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-slate-400" /> Localisation / Ville
+                    </label>
+                    <input
+                      type="text"
+                      value={editForm.location}
+                      onChange={(e) => setEditForm(f => ({ ...f, location: e.target.value }))}
+                      placeholder="ex: Casablanca, Maroc"
+                      className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2.5 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
+                    />
+                  </div>
+
+                  {/* Optional New Password */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                      <Lock className="w-3.5 h-3.5 text-slate-400" /> Nouveau mot de passe (optionnel)
+                    </label>
+                    <input
+                      type="password"
+                      value={editForm.password}
+                      onChange={(e) => setEditForm(f => ({ ...f, password: e.target.value }))}
+                      placeholder="Laisser vide pour ne pas modifier"
+                      minLength={6}
+                      className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2.5 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                {/* Bio */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                    <UserIcon className="w-3.5 h-3.5 text-[#2D6BE4]" /> Nom complet *
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Bio / Présentation
                   </label>
-                  <input
-                    type="text"
-                    required
-                    value={editForm.name}
-                    onChange={(e) => setEditForm(f => ({ ...f, name: e.target.value }))}
-                    placeholder="Nom complet"
+                  <textarea
+                    rows={2}
+                    value={editForm.bio}
+                    onChange={(e) => setEditForm(f => ({ ...f, bio: e.target.value }))}
+                    placeholder="Courte présentation de l'utilisateur..."
                     className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
                   />
                 </div>
 
-                {/* Email */}
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-[#2D6BE4]" /> Adresse email *
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={editForm.email}
-                    onChange={(e) => setEditForm(f => ({ ...f, email: e.target.value }))}
-                    placeholder="adresse@email.com"
-                    className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
-                  />
-                </div>
-
-                {/* Role */}
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-[#2D6BE4]" /> Rôle attribué *
-                  </label>
-                  <select
-                    value={editForm.role}
-                    onChange={(e) => setEditForm(f => ({ ...f, role: e.target.value as AdminUser['role'] }))}
-                    className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2 text-xs text-slate-800 bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all cursor-pointer font-medium"
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-3 border-t border-gray-100">
+                  <button
+                    type="button"
+                    onClick={() => { setEditUser(null); setEditError(null); }}
+                    className="flex-1 border border-slate-200 text-slate-700 py-3 rounded-2xl text-xs font-bold hover:bg-slate-50 transition-all cursor-pointer"
                   >
-                    <option value="candidat">Candidat</option>
-                    <option value="recruteur">Recruteur</option>
-                    <option value="admin_manager">Admin Manager</option>
-                    <option value="admin">Administrateur</option>
-                  </select>
-                </div>
-
-                {/* Email Verification Status */}
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" /> Statut email
-                  </label>
-                  <select
-                    value={editForm.is_verified ? 'verified' : 'pending'}
-                    onChange={(e) => setEditForm(f => ({ ...f, is_verified: e.target.value === 'verified' }))}
-                    className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2 text-xs text-slate-800 bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all cursor-pointer font-medium"
+                    Annuler
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={editLoading}
+                    className="flex-1 bg-gradient-to-r from-[#2D6BE4] to-[#1C4CB0] hover:from-[#255bc4] hover:to-[#173e90] text-white py-3 rounded-2xl text-xs font-extrabold shadow-md shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
                   >
-                    <option value="verified">Vérifié (Accès complet)</option>
-                    <option value="pending">En attente de vérification</option>
-                  </select>
+                    {editLoading ? (
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <CheckCircle2 className="w-4 h-4" />
+                    )}
+                    {editLoading ? 'Enregistrement...' : 'Enregistrer les modifications'}
+                  </button>
                 </div>
-
-                {/* Phone */}
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-slate-400" /> Numéro de téléphone
-                  </label>
-                  <input
-                    type="tel"
-                    value={editForm.phone}
-                    onChange={(e) => setEditForm(f => ({ ...f, phone: e.target.value }))}
-                    placeholder="ex: +212 600-000000"
-                    className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
-                  />
-                </div>
-
-                {/* Title / Profession */}
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                    <Briefcase className="w-3.5 h-3.5 text-slate-400" /> Titre / Métier
-                  </label>
-                  <input
-                    type="text"
-                    value={editForm.title}
-                    onChange={(e) => setEditForm(f => ({ ...f, title: e.target.value }))}
-                    placeholder="ex: Développeur Full-Stack, RH..."
-                    className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
-                  />
-                </div>
-
-                {/* Company Name */}
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                    <Building2 className="w-3.5 h-3.5 text-slate-400" /> Nom de l'entreprise
-                  </label>
-                  <input
-                    type="text"
-                    value={editForm.company_name}
-                    onChange={(e) => setEditForm(f => ({ ...f, company_name: e.target.value }))}
-                    placeholder="ex: NovoTech SARL"
-                    className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
-                  />
-                </div>
-
-                {/* Company Website */}
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                    <Building2 className="w-3.5 h-3.5 text-slate-400" /> Site web entreprise
-                  </label>
-                  <input
-                    type="url"
-                    value={editForm.company_website}
-                    onChange={(e) => setEditForm(f => ({ ...f, company_website: e.target.value }))}
-                    placeholder="https://entreprise.ma"
-                    className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
-                  />
-                </div>
-
-                {/* Location */}
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-slate-400" /> Localisation / Ville
-                  </label>
-                  <input
-                    type="text"
-                    value={editForm.location}
-                    onChange={(e) => setEditForm(f => ({ ...f, location: e.target.value }))}
-                    placeholder="ex: Casablanca, Maroc"
-                    className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
-                  />
-                </div>
-
-                {/* Optional New Password */}
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                    <Lock className="w-3.5 h-3.5 text-slate-400" /> Nouveau mot de passe (optionnel)
-                  </label>
-                  <input
-                    type="password"
-                    value={editForm.password}
-                    onChange={(e) => setEditForm(f => ({ ...f, password: e.target.value }))}
-                    placeholder="Laisser vide pour ne pas modifier"
-                    minLength={6}
-                    className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
-                  />
-                </div>
-              </div>
-
-              {/* Bio */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Bio / Description
-                </label>
-                <textarea
-                  rows={2}
-                  value={editForm.bio}
-                  onChange={(e) => setEditForm(f => ({ ...f, bio: e.target.value }))}
-                  placeholder="Courte présentation de l'utilisateur..."
-                  className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3.5 py-2 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all"
-                />
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-3 pt-3 border-t border-gray-100">
-                <button
-                  type="button"
-                  onClick={() => { setEditUser(null); setEditError(null); }}
-                  className="flex-1 border border-slate-200 text-slate-700 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-50 transition-all cursor-pointer"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="submit"
-                  disabled={editLoading}
-                  className="flex-1 bg-gradient-to-r from-[#2D6BE4] to-[#1C4CB0] hover:from-[#255bc4] hover:to-[#173e90] text-white py-2.5 rounded-xl text-xs font-extrabold shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
-                >
-                  {editLoading ? (
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <CheckCircle2 className="w-4 h-4" />
-                  )}
-                  {editLoading ? 'Enregistrement...' : 'Enregistrer les modifications'}
-                </button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       )}
 
-      {/* ================= RESET PASSWORD MODAL ================= */}
+      {/* ================= RESET PASSWORD MODAL (NOVORISE THEME) ================= */}
       {pwdUser && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-gray-100 p-6 sm:p-7 relative animate-in fade-in zoom-in-95 duration-200">
-            {/* Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-gray-100">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shadow-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B132B]/75 backdrop-blur-md p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md border border-slate-100 overflow-hidden my-6 relative animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Top Header — NovoRise Signature Dark Theme */}
+            <div className="bg-gradient-to-r from-[#0B132B] via-[#1C2541] to-[#0B132B] text-white p-6 relative overflow-hidden">
+              <div className="absolute right-0 top-0 w-36 h-36 bg-[#2D6BE4]/25 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -left-10 -bottom-10 w-28 h-28 bg-[#5C94FF]/15 rounded-full blur-xl pointer-events-none" />
+
+              <button
+                onClick={() => { setPwdUser(null); setPwdError(null); }}
+                className="absolute top-5 right-5 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors z-20 cursor-pointer"
+                aria-label="Fermer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-3.5 relative z-10 pr-8">
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#2D6BE4] to-[#5C94FF] text-white flex items-center justify-center shadow-lg shadow-blue-500/30 border border-white/20 flex-shrink-0">
                   <KeyRound className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">Modifier le mot de passe</h3>
-                  <p className="text-xs text-slate-500 font-medium truncate max-w-[240px]">
+                  <h3 className="font-extrabold text-white text-base">Modifier le mot de passe</h3>
+                  <p className="text-xs text-slate-300 mt-0.5 font-medium truncate max-w-[240px]">
                     {pwdUser.name}
                   </p>
                 </div>
               </div>
-              <button
-                onClick={() => { setPwdUser(null); setPwdError(null); }}
-                className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-all cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
             </div>
 
-            {/* Error banner */}
-            {pwdError && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2 font-medium">
-                <AlertTriangle className="w-4 h-4 flex-shrink-0" />
-                <span>{pwdError}</span>
-              </div>
-            )}
+            {/* Modal Body */}
+            <div className="p-6 space-y-4">
+              {/* Error banner */}
+              {pwdError && (
+                <div className="p-3.5 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2 font-medium">
+                  <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                  <span>{pwdError}</span>
+                </div>
+              )}
 
-            {/* Form */}
-            <form onSubmit={handleResetPasswordSubmit} className="mt-4 space-y-4">
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-bold text-slate-700">
-                    Nouveau mot de passe *
-                  </label>
+              {/* Form */}
+              <form onSubmit={handleResetPasswordSubmit} className="space-y-4">
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-bold text-slate-700">
+                      Nouveau mot de passe *
+                    </label>
+                    <button
+                      type="button"
+                      onClick={generateStrongPassword}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#2D6BE4] border border-blue-200/60 text-[11px] font-bold transition-all shadow-xs cursor-pointer"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-[#2D6BE4]" />
+                      <span>Générer sécurisé</span>
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type={showPasswordText ? 'text' : 'password'}
+                      required
+                      minLength={6}
+                      value={newPasswordInput}
+                      onChange={(e) => setNewPasswordInput(e.target.value)}
+                      placeholder="Entrez le nouveau mot de passe"
+                      className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl pl-3.5 pr-10 py-2.5 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/20 outline-none transition-all font-mono"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPasswordText(!showPasswordText)}
+                      className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                      title={showPasswordText ? 'Masquer' : 'Afficher'}
+                    >
+                      {showPasswordText ? <EyeOff className="w-4 h-4 text-[#2D6BE4]" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-2 text-[11px] text-slate-500 font-medium">
+                    <Lock className="w-3.5 h-3.5 text-[#2D6BE4] flex-shrink-0" />
+                    <span>Hachage sécurisé (bcrypt) appliqué automatiquement.</span>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-3 border-t border-gray-100">
                   <button
                     type="button"
-                    onClick={generateStrongPassword}
-                    className="inline-flex items-center gap-1 text-[11px] font-bold text-[#2D6BE4] hover:text-[#1C4CB0] transition-colors cursor-pointer"
+                    onClick={() => { setPwdUser(null); setPwdError(null); }}
+                    className="flex-1 border border-slate-200 text-slate-700 py-3 rounded-2xl text-xs font-bold hover:bg-slate-50 transition-all cursor-pointer"
                   >
-                    <Sparkles className="w-3 h-3 text-amber-500" />
-                    Générer sécurisé
+                    Annuler
                   </button>
-                </div>
-                <div className="relative">
-                  <input
-                    type={showPasswordText ? 'text' : 'password'}
-                    required
-                    minLength={6}
-                    value={newPasswordInput}
-                    onChange={(e) => setNewPasswordInput(e.target.value)}
-                    placeholder="Entrez le nouveau mot de passe"
-                    className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl pl-3.5 pr-10 py-2.5 text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 outline-none transition-all font-mono"
-                  />
                   <button
-                    type="button"
-                    onClick={() => setShowPasswordText(!showPasswordText)}
-                    className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
-                    title={showPasswordText ? 'Masquer' : 'Afficher'}
+                    type="submit"
+                    disabled={pwdLoading}
+                    className="flex-1 bg-gradient-to-r from-[#2D6BE4] to-[#1C4CB0] hover:from-[#255bc4] hover:to-[#173e90] text-white py-3 rounded-2xl text-xs font-extrabold shadow-md shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
                   >
-                    {showPasswordText ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {pwdLoading ? (
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <KeyRound className="w-4 h-4" />
+                    )}
+                    {pwdLoading ? 'Mise à jour...' : 'Modifier mot de passe'}
                   </button>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
-                  Le mot de passe sera automatiquement haché de manière sécurisée (bcrypt) dès l'enregistrement.
-                </p>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-3 pt-3 border-t border-gray-100">
-                <button
-                  type="button"
-                  onClick={() => { setPwdUser(null); setPwdError(null); }}
-                  className="flex-1 border border-slate-200 text-slate-700 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-50 transition-all cursor-pointer"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="submit"
-                  disabled={pwdLoading}
-                  className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white py-2.5 rounded-xl text-xs font-extrabold shadow-md shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
-                >
-                  {pwdLoading ? (
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <KeyRound className="w-4 h-4" />
-                  )}
-                  {pwdLoading ? 'Mise à jour...' : 'Modifier mot de passe'}
-                </button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       )}
