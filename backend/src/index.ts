@@ -8,6 +8,7 @@ import authRoutes from './routes/auth.routes';
 import jobsRoutes from './routes/jobs.routes';
 import applicationsRoutes from './routes/applications.routes';
 import adminRoutes from './routes/admin.routes';
+import aiRoutes from './routes/ai.routes';
 
 // Worker email (démarre Bull consumer dès le lancement)
 import './workers/email.worker';
@@ -42,6 +43,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobsRoutes);
 app.use('/api/applications', applicationsRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/ai', aiRoutes);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/api/health', (_req, res) => {

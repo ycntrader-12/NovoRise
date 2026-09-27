@@ -251,7 +251,8 @@ router.get('/google', (req: Request, res: Response, next) => {
   const role = (rawRole === 'recruteur' || rawRole === 'candidat') ? rawRole : 'candidat';
   passport.authenticate('google', {
     scope: ['profile', 'email'],
-    prompt: 'select_account',
+    prompt: 'select_account consent',
+    accessType: 'offline',
     state: role,  // Passer le rôle via state OAuth
   })(req, res, next);
 });
