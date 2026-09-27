@@ -31,6 +31,27 @@ export interface AdminUser {
   is_verified: boolean;
   created_at: string;
   avatar_url?: string;
+  phone?: string;
+  title?: string;
+  location?: string;
+  company_name?: string;
+  company_website?: string;
+  bio?: string;
+  google_id?: string;
+}
+
+export interface UpdateUserPayload {
+  name?: string;
+  email?: string;
+  role?: 'candidat' | 'recruteur' | 'admin' | 'admin_manager';
+  is_verified?: boolean;
+  password?: string;
+  phone?: string;
+  title?: string;
+  location?: string;
+  company_name?: string;
+  company_website?: string;
+  bio?: string;
 }
 
 export interface CreateUserPayload {
@@ -68,9 +89,17 @@ export const adminApi = {
     return apiGet<AdminUser[]>(`/admin/users${queryString ? `?${queryString}` : ''}`);
   },
 
-  // Update user role or verification status
-  async updateUser(id: string, role?: string, is_verified?: boolean): Promise<AdminUser> {
-    return apiPatch<AdminUser>(`/admin/users/${id}`, { role, is_verified });
+  // Update user role or full user information (including password)
+  async updateUser(id: string, payload: UpdateUserPayload | string, is_verified?: boolean): Promise<AdminUser> {
+    if (typeof payload === 'string') {
+      return apiPatch<AdminUser>(`/admin/users/${id}`, { role: payload, is_verified });
+    }
+    return apiPatch<AdminUser>(`/admin/users/${id}`, payload);
+  },
+
+  // Direct password reset by admin
+  async resetUserPassword(id: string, newPassword: string): Promise<{ success: boolean; message: string }> {
+    return apiPost<{ success: boolean; message: string }>(`/admin/users/${id}/reset-password`, { newPassword });
   },
 
   // Delete user account

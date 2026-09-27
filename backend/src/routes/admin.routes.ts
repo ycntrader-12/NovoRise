@@ -65,7 +65,8 @@ router.get('/users', async (req: Request, res: Response) => {
     const { role, search } = req.query;
 
     let query = `
-      SELECT id, email, name, role, verified as is_verified, created_at, avatar_url
+      SELECT id, email, name, role, verified as is_verified, created_at, avatar_url,
+             phone, title, location, company_name, company_website, bio, google_id
       FROM users
       WHERE 1=1
     `;
@@ -93,36 +94,146 @@ router.get('/users', async (req: Request, res: Response) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PATCH /api/admin/users/:id — Modifier le rôle d'un utilisateur
+// PATCH /api/admin/users/:id — Modifier un utilisateur (profil, rôle, mot de passe)
 // ─────────────────────────────────────────────────────────────────────────────
 router.patch('/users/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { role, is_verified } = req.body;
+    const { 
+      name, 
+      email, 
+      role, 
+      is_verified, 
+      password, 
+      phone, 
+      title, 
+      location, 
+      company_name, 
+      company_website, 
+      bio 
+    } = req.body;
+
+    const existingUser = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+    if (existingUser.rows.length === 0) {
+      res.status(404).json({ error: 'USER_NOT_FOUND', message: 'Utilisateur introuvable' });
+      return;
+    }
+    const current = existingUser.rows[0];
+
+    // Vérifier l'email si modifié
+    if (email && email.toLowerCase().trim() !== current.email.toLowerCase().trim()) {
+      const emailCheck = await pool.query('SELECT id FROM users WHERE email = $1 AND id != $2', [email.toLowerCase().trim(), id]);
+      if (emailCheck.rows.length > 0) {
+        res.status(409).json({ error: 'EMAIL_ALREADY_EXISTS', message: 'Cet email est déjà utilisé par un autre compte.' });
+        return;
+      }
+    }
 
     if (role && !['candidat', 'recruteur', 'admin', 'admin_manager'].includes(role)) {
-      res.status(400).json({ error: 'INVALID_ROLE' });
+      res.status(400).json({ error: 'INVALID_ROLE', message: 'Rôle invalide' });
       return;
     }
 
-    const result = await pool.query(
+    let passwordHash = current.password_hash;
+    if (password && typeof password === 'string' && password.trim().length > 0) {
+      if (password.trim().length < 6) {
+        res.status(400).json({ error: 'PASSWORD_TOO_SHORT', message: 'Le mot de passe doit comporter au moins 6 caractères.' });
+        return;
+      }
+      passwordHash = await bcrypt.hash(password.trim(), 12);
+    }
+
+    const updatedName = name !== undefined ? name.trim() : current.name;
+    const updatedEmail = email !== undefined ? email.toLowerCase().trim() : current.email;
+    const updatedRole = role !== undefined ? role : current.role;
+    const updatedVerified = is_verified !== undefined ? (is_verified ? 1 : 0) : current.verified;
+    const updatedPhone = phone !== undefined ? phone : current.phone;
+    const updatedTitle = title !== undefined ? title : current.title;
+    const updatedLocation = location !== undefined ? location : current.location;
+    const updatedCompany = company_name !== undefined ? company_name : current.company_name;
+    const updatedWebsite = company_website !== undefined ? company_website : current.company_website;
+    const updatedBio = bio !== undefined ? bio : current.bio;
+
+    await pool.query(
       `UPDATE users 
-       SET role = COALESCE($1, role),
-           verified = COALESCE($2, verified)
-       WHERE id = $3
-       RETURNING id, email, name, role, verified as is_verified, created_at`,
-      [role || null, is_verified !== undefined ? (is_verified ? 1 : 0) : null, id]
+       SET name = $1,
+           email = $2,
+           role = $3,
+           verified = $4,
+           password_hash = $5,
+           phone = $6,
+           title = $7,
+           location = $8,
+           company_name = $9,
+           company_website = $10,
+           bio = $11,
+           updated_at = datetime('now')
+       WHERE id = $12`,
+      [
+        updatedName,
+        updatedEmail,
+        updatedRole,
+        updatedVerified,
+        passwordHash,
+        updatedPhone,
+        updatedTitle,
+        updatedLocation,
+        updatedCompany,
+        updatedWebsite,
+        updatedBio,
+        id
+      ]
     );
 
-    if (result.rowCount === 0) {
-      res.status(404).json({ error: 'USER_NOT_FOUND' });
+    const result = await pool.query(
+      `SELECT id, email, name, role, verified as is_verified, created_at, avatar_url,
+              phone, title, location, company_name, company_website, bio, google_id
+       FROM users WHERE id = $1`,
+      [id]
+    );
+
+    res.json(result.rows[0]);
+  } catch (err: any) {
+    console.error('PATCH /admin/users/:id error:', err);
+    res.status(500).json({ error: 'SERVER_ERROR', message: err.message });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /api/admin/users/:id/reset-password — Réinitialiser le mot de passe
+// ─────────────────────────────────────────────────────────────────────────────
+router.post('/users/:id/reset-password', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { newPassword } = req.body;
+
+    if (!newPassword || typeof newPassword !== 'string' || newPassword.trim().length < 6) {
+      res.status(400).json({ error: 'PASSWORD_TOO_SHORT', message: 'Le mot de passe doit comporter au moins 6 caractères.' });
       return;
     }
 
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error('PATCH /admin/users/:id error:', err);
-    res.status(500).json({ error: 'SERVER_ERROR' });
+    const userCheck = await pool.query('SELECT id, name, email FROM users WHERE id = $1', [id]);
+    if (userCheck.rows.length === 0) {
+      res.status(404).json({ error: 'USER_NOT_FOUND', message: 'Utilisateur introuvable.' });
+      return;
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword.trim(), 12);
+    await pool.query(
+      `UPDATE users 
+       SET password_hash = $1, 
+           updated_at = datetime('now') 
+       WHERE id = $2`,
+      [passwordHash, id]
+    );
+
+    res.json({ 
+      success: true, 
+      message: `Mot de passe de ${userCheck.rows[0].name} mis à jour avec succès.` 
+    });
+  } catch (err: any) {
+    console.error('POST /admin/users/:id/reset-password error:', err);
+    res.status(500).json({ error: 'SERVER_ERROR', message: err.message });
   }
 });
 
