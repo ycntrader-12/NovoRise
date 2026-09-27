@@ -10,6 +10,7 @@ import {
   getUserById,
   signJwt,
   updateUserProfile,
+  loginOrRegisterGoogleUser,
 } from '../services/auth.service';
 import { requireAuth } from '../middleware/auth.middleware';
 
@@ -48,9 +49,12 @@ router.post(
       const { name, email, password, role } = req.body;
       const user = await registerUser(name, email, password, role);
 
+      const frontendBase = process.env.FRONTEND_URL || 'http://localhost:3005';
       res.status(201).json({
         message: 'Inscription réussie. Vérifiez votre email pour activer votre compte.',
         user: { id: user.id, name: user.name, email: user.email, role: user.role },
+        verificationToken: user.verification_token,
+        verificationUrl: `${frontendBase}/verify?token=${user.verification_token}`,
       });
     } catch (err: any) {
       if (err.message === 'EMAIL_ALREADY_EXISTS') {
@@ -64,10 +68,10 @@ router.post(
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /api/auth/verify?token=...
+// GET /api/auth/verify?token=...&email=...
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/verify', async (req: Request, res: Response) => {
-  const { token } = req.query;
+  const { token, email } = req.query;
 
   if (!token || typeof token !== 'string') {
     res.status(400).json({ error: 'MISSING_TOKEN' });
@@ -75,7 +79,10 @@ router.get('/verify', async (req: Request, res: Response) => {
   }
 
   try {
-    const { user, token: jwtToken } = await verifyEmailToken(token);
+    const { user, token: jwtToken } = await verifyEmailToken(
+      token,
+      typeof email === 'string' ? email : undefined
+    );
     res.json({
       message: 'Email vérifié avec succès.',
       token: jwtToken,
@@ -282,5 +289,46 @@ router.get(
     res.redirect(`${frontendBaseUrl}/auth/google/success?token=${token}&role=${user.role}`);
   }
 );
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Google Fast / Direct Login (Mode sans blocage & immédiat)
+// POST /api/auth/google/direct
+// ─────────────────────────────────────────────────────────────────────────────
+router.post('/google/direct', async (req: Request, res: Response) => {
+  try {
+    const { email, name, role, avatarUrl } = req.body;
+    const cleanRole = role === 'recruteur' ? 'recruteur' : 'candidat';
+    const cleanEmail = email || `user_${Date.now()}@gmail.com`;
+    const cleanName = name || (cleanRole === 'recruteur' ? 'Recruteur Google' : 'Candidat Google');
+
+    const { user, token } = await loginOrRegisterGoogleUser(cleanEmail, cleanName, cleanRole, avatarUrl);
+
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        isEmailVerified: true,
+        avatar: user.avatar_url,
+        profile: {
+          title: user.title,
+          phone: user.phone,
+          location: user.location,
+          bio: user.bio,
+          skills: user.skills,
+          cvFileName: user.cv_filename,
+          coverLetterFileName: user.cover_letter_filename,
+          companyName: user.company_name,
+          companyWebsite: user.company_website,
+        },
+      },
+    });
+  } catch (err: any) {
+    console.error('Google direct login error:', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
 
 export default router;

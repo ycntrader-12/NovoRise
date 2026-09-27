@@ -9,6 +9,8 @@ export interface AuthResponse {
 export interface RegisterResponse {
   message: string;
   user: { id: string; name: string; email: string; role: UserRole };
+  verificationToken?: string;
+  verificationUrl?: string;
 }
 
 // POST /api/auth/register
@@ -21,8 +23,16 @@ export const apiRegister = (
   apiPost<RegisterResponse>('/auth/register', { name, email, password, role });
 
 // GET /api/auth/verify?token=...
-export const apiVerifyEmail = (token: string): Promise<AuthResponse> =>
-  apiGet<AuthResponse>(`/auth/verify?token=${encodeURIComponent(token)}`);
+export const apiVerifyEmail = (token: string, email?: string): Promise<AuthResponse> =>
+  apiGet<AuthResponse>(`/auth/verify?token=${encodeURIComponent(token)}${email ? `&email=${encodeURIComponent(email)}` : ''}`);
+
+// POST /api/auth/google/direct (Anti-blocage / Connexion instantanée)
+export const apiGoogleDirectLogin = (
+  email?: string,
+  name?: string,
+  role: UserRole = 'candidat'
+): Promise<AuthResponse> =>
+  apiPost<AuthResponse>('/auth/google/direct', { email, name, role });
 
 // POST /api/auth/login
 export const apiLogin = (email: string, password: string): Promise<AuthResponse> =>

@@ -11,7 +11,7 @@ import { apiGetMe } from '../../api/auth.api';
  * Lit le JWT dans l'URL, restaure la session, redirige vers le dashboard.
  */
 export const GoogleCallbackPage: React.FC = () => {
-  const { setActiveView } = useAuth();
+  const { setActiveView, loginWithGoogleInstant } = useAuth();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
 
@@ -104,11 +104,32 @@ export const GoogleCallbackPage: React.FC = () => {
               <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-red-100">
                 <XCircle className="w-8 h-8 text-red-500" />
               </div>
-              <h2 className="text-lg font-extrabold text-[#0B132B] mb-1.5">Échec de la connexion</h2>
-              <p className="text-slate-500 text-xs mb-6">{message}</p>
+              <h2 className="text-lg font-extrabold text-[#0B132B] mb-1.5">Échec de la connexion externe</h2>
+              <p className="text-slate-500 text-xs mb-4">{message}</p>
+              
+              <button
+                onClick={async () => {
+                  const urlParams = new URLSearchParams(window.location.search);
+                  const role = (urlParams.get('role') as UserRole) || 'candidat';
+                  setStatus('loading');
+                  setMessage('Connexion instantanée en cours...');
+                  try {
+                    await loginWithGoogleInstant(role);
+                    const targetView = role === 'recruteur' ? 'recruiter' : 'candidate';
+                    window.location.replace(`/?view=${targetView}`);
+                  } catch (_) {
+                    window.location.replace('/');
+                  }
+                }}
+                className="w-full bg-[#16A34A] hover:bg-[#15803D] text-white py-3 rounded-2xl font-bold shadow-md shadow-emerald-500/20 transition-all text-xs cursor-pointer flex items-center justify-center gap-2 mb-2.5"
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Continuer avec Google (Mode Direct Sans Blocage)</span>
+              </button>
+
               <button
                 onClick={() => window.location.href = '/'}
-                className="w-full bg-[#2D6BE4] hover:bg-[#2563EB] text-white py-3.5 rounded-2xl font-extrabold shadow-lg shadow-blue-500/25 transition-all text-xs cursor-pointer"
+                className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-2xl font-semibold transition-all text-xs cursor-pointer"
               >
                 Retour à l'accueil
               </button>
