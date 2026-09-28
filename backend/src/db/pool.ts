@@ -93,9 +93,17 @@ function normalizeRow(row: any): any {
   return row;
 }
 
-function convertParams(sql: string): string {
-  // Converts $1, $2... PostgreSQL placeholders to ? SQLite placeholders
-  return sql.replace(/\$\d+/g, '?');
+function convertAndRemapParams(rawSql: string, rawParams: any[]): { sql: string; params: any[] } {
+  const paramIndices: number[] = [];
+  const sql = rawSql.replace(/\$(\d+)/g, (_, num) => {
+    paramIndices.push(parseInt(num, 10) - 1);
+    return '?';
+  });
+  if (paramIndices.length === 0) {
+    return { sql, params: rawParams };
+  }
+  const params = paramIndices.map(idx => rawParams[idx]);
+  return { sql, params };
 }
 
 function normalizeParams(params: any[]): any[] {
@@ -111,8 +119,8 @@ function normalizeParams(params: any[]): any[] {
 // Mimics the pg Pool interface (pool.query(sql, params)) for drop-in replacement
 export const pool = {
   query: async (rawSql: string, rawParams: any[] = []): Promise<{ rows: any[]; rowCount: number }> => {
-    const sql = convertParams(rawSql);
-    const params = normalizeParams(rawParams);
+    const { sql, params: remappedParams } = convertAndRemapParams(rawSql, rawParams);
+    const params = normalizeParams(remappedParams);
     const upper = sql.trim().toUpperCase();
 
     try {

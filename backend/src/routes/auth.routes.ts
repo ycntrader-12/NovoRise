@@ -14,6 +14,7 @@ import {
   loginOrRegisterGoogleUser,
 } from '../services/auth.service';
 import { requireAuth } from '../middleware/auth.middleware';
+import { authRateLimiter } from '../middleware/security.middleware';
 
 const router = Router();
 
@@ -33,6 +34,7 @@ const handleValidationErrors = (req: Request, res: Response): boolean => {
 // ─────────────────────────────────────────────────────────────────────────────
 router.post(
   '/register',
+  authRateLimiter,
   [
     body('name').trim().notEmpty().withMessage('Le nom est requis'),
     body('email').isEmail().normalizeEmail().withMessage('Email invalide'),
@@ -50,12 +52,15 @@ router.post(
       const { name, email, password, role } = req.body;
       const user = await registerUser(name, email, password, role);
 
+      const isDev = process.env.NODE_ENV !== 'production';
       const frontendBase = process.env.FRONTEND_URL || 'http://localhost:3005';
       res.status(201).json({
         message: 'Inscription réussie. Vérifiez votre email pour activer votre compte.',
         user: { id: user.id, name: user.name, email: user.email, role: user.role },
-        verificationToken: user.verification_token,
-        verificationUrl: `${frontendBase}/verify?token=${user.verification_token}`,
+        ...(isDev && {
+          verificationToken: user.verification_token,
+          verificationUrl: `${frontendBase}/verify?token=${user.verification_token}`,
+        }),
       });
     } catch (err: any) {
       if (err.message === 'EMAIL_ALREADY_EXISTS') {
@@ -110,6 +115,7 @@ router.get('/verify', async (req: Request, res: Response) => {
 // ─────────────────────────────────────────────────────────────────────────────
 router.post(
   '/login',
+  authRateLimiter,
   [
     body('email').trim().notEmpty().withMessage('Identifiant ou email requis'),
     body('password').notEmpty().withMessage('Mot de passe requis'),
@@ -160,6 +166,7 @@ router.post(
 // ─────────────────────────────────────────────────────────────────────────────
 router.post(
   '/forgot-password',
+  authRateLimiter,
   [body('email').isEmail().normalizeEmail()],
   async (req: Request, res: Response) => {
     if (handleValidationErrors(req, res)) return;
@@ -180,6 +187,7 @@ router.post(
 // ─────────────────────────────────────────────────────────────────────────────
 router.post(
   '/reset-password',
+  authRateLimiter,
   [
     body('token').notEmpty(),
     body('newPassword').isLength({ min: 8 }),
@@ -298,7 +306,7 @@ const googleOAuthClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 // Google Fast / Direct Login (Standard Google Identity Services GIS)
 // POST /api/auth/google/direct
 // ─────────────────────────────────────────────────────────────────────────────
-router.post('/google/direct', async (req: Request, res: Response) => {
+router.post('/google/direct', authRateLimiter, async (req: Request, res: Response) => {
   try {
     const { credential, email, name, role, avatarUrl } = req.body;
     const cleanRole = role === 'recruteur' ? 'recruteur' : 'candidat';
@@ -307,10 +315,10 @@ router.post('/google/direct', async (req: Request, res: Response) => {
     let finalName = name;
     let finalAvatar = avatarUrl;
     let googleId: string | undefined = undefined;
+    let verified = false;
 
     // Standard Google Identity Services: Vérification cryptographique via google-auth-library
     if (credential) {
-      let verified = false;
       try {
         const ticket = await googleOAuthClient.verifyIdToken({
           idToken: credential,
@@ -345,6 +353,15 @@ router.post('/google/direct', async (req: Request, res: Response) => {
           console.warn('Failed to verify Google token via tokeninfo:', fetchErr);
         }
       }
+    }
+
+    // En production, exiger impérativement une vérification cryptographique valide du token Google
+    if (!verified && process.env.NODE_ENV === 'production') {
+      res.status(401).json({
+        error: 'INVALID_CREDENTIAL',
+        message: 'Échec de la validation cryptographique du jeton Google.',
+      });
+      return;
     }
 
     if (!finalEmail) {
