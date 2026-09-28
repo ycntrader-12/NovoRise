@@ -35,12 +35,12 @@ timeout /t 3 /nobreak >nul
 
 :: ─── Lancement Frontend Public sur port 3005 ─────────────────────────────────
 echo [4/5] Démarrage du Frontend Public (port 3005)...
-start "NovoRise — Frontend :3005" cmd /k "cd /d "%~dp0" && npm run dev"
+start "NovoRise — Frontend :3005" cmd /k "cd /d "%~dp0frontend" && npm run dev"
 timeout /t 3 /nobreak >nul
 
 :: ─── Lancement Portail Admin sur port 3007 ────────────────────────────────────
 echo [5/5] Démarrage du Portail Admin (port 3007)...
-start "NovoRise — Admin Portal :3007" cmd /k "cd /d "%~dp0" && npm run dev:admin"
+start "NovoRise — Admin Portal :3007" cmd /k "cd /d "%~dp0frontend" && npm run dev:admin"
 timeout /t 3 /nobreak >nul
 
 :: ─── Ouverture des navigateurs ───────────────────────────────────────────────

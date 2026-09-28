@@ -67,7 +67,7 @@ NovoRise/
 
 ```
 NovoRise/
-├── frontend (racine)          → React 18 + Vite + TypeScript + Tailwind CSS
+├── frontend/                  → React 18 + Vite + TypeScript + Tailwind CSS
 │   ├── src/
 │   │   ├── api/               → client.ts, auth.api.ts, jobs.api.ts, ai.api.ts, admin.api.ts
 │   │   ├── context/           → AuthContext.tsx (état global auth & session)
@@ -136,7 +136,9 @@ cd NovoRise
 
 ```bash
 # Frontend
+cd frontend
 npm install
+cd ..
 
 # Backend
 cd backend
@@ -146,7 +148,7 @@ cd ..
 
 ### 3. Fichiers d'environnement
 
-Créez le fichier `.env` à la racine :
+Créez le fichier `frontend/.env` :
 ```env
 VITE_API_URL=http://localhost:3006
 VITE_GOOGLE_CLIENT_ID=835055005645-14vp9a34co61gd6f4em3l0k5rh86fq2r.apps.googleusercontent.com
@@ -189,9 +191,11 @@ cd backend
 npm run dev
 
 # Terminal 2 — Frontend Public (port 3005)
+cd frontend
 npm run dev
 
 # Terminal 3 — Portail Admin (port 3007)
+cd frontend
 npm run dev:admin
 ```
 
