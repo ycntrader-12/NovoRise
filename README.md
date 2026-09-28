@@ -1,15 +1,18 @@
-# NovoRise — Plateforme Moderne de Recrutement & Job Board
+# NovoRise — Plateforme Moderne de Recrutement & Job Board Intelligent
 
 <div align="center">
 
-![NovoRise](https://img.shields.io/badge/NovoRise-Job%20Board-6366f1?style=for-the-badge&logo=briefcase&logoColor=white)
-![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![NovoRise](https://img.shields.io/badge/NovoRise-Job%20Board-2D6BE4?style=for-the-badge&logo=briefcase&logoColor=white)
+![React](https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Express](https://img.shields.io/badge/Express-4-000000?style=for-the-badge&logo=express&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-336791?style=for-the-badge&logo=postgresql&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-Bull%20Queue-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+![Express](https://img.shields.io/badge/Express-5-000000?style=for-the-badge&logo=express&logoColor=white)
+![Gemini AI](https://img.shields.io/badge/Google%20Gemini-AI%20Power-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![Google Auth](https://img.shields.io/badge/Google-Identity%20Services-34A853?style=for-the-badge&logo=google&logoColor=white)
+![SQLite / PostgreSQL](https://img.shields.io/badge/Database-SQLite%20%2F%20Postgres-336791?style=for-the-badge&logo=postgresql&logoColor=white)
 
-**La plateforme nouvelle génération qui connecte talents ambitieux et entreprises innovantes.**
+**La plateforme nouvelle génération qui connecte les talents ambitieux et les entreprises innovantes, propulsée par l'Intelligence Artificielle.**
+
+[Fonctionnalités](#-fonctionnalités) • [Architecture](#-architecture) • [Stack Technique](#-stack-technique) • [Démarrage Rapide](#-démarrage-rapide) • [Google Auth](#-authentification-google) • [API](#-api-endpoints)
 
 </div>
 
@@ -18,78 +21,72 @@
 ## ✨ Fonctionnalités
 
 ### 🎯 Pour les Candidats
-- **Moteur de recherche & filtres multi-critères** — Recherche en direct par intitulé, compétences et localisation
-- **Filtres avancés** — Par secteur (*Tech & IT*, *Marketing & Com*, *Vente & Business*, *Ingénierie & R&D*), contrat (*CDI*, *CDD*, *Freelance*, *Stage*) et modalité (*Remote*, *Hybride*, *Présentiel*)
-- **Fiche détaillée de poste** — Missions clés, profil requis, avantages et rémunération
-- **Candidature rapide** — Formulaire avec téléversement de CV et confirmation interactive
-- **Favoris** — Enregistrement des offres préférées avec compteur
-- **Dashboard candidat** — Suivi de toutes ses candidatures et statuts en temps réel
+- **Moteur de recherche & filtres multi-critères** — Recherche en direct par intitulé, compétences, localisation, salaire et mots-clés.
+- **Filtres avancés** — Secteurs (*Tech & IT*, *Design & Créa*, *Marketing*, *Finance*, etc.), types de contrat (*CDI*, *CDD*, *Freelance*, *Stage*) et modalités (*Télétravail*, *Hybride*, *Sur site*).
+- **Fiche détaillée de poste** — Description complète, compétences requises, salaire, type de contrat et fiche entreprise.
+- **Candidature rapide** — Téléversement de CV et lettre de motivation en temps réel.
+- **✨ Assistant IA de Lettre de Motivation (Gemini)** — Génération instantanée d'une lettre de motivation sur-mesure adaptée à l'offre ciblée et au profil du candidat.
+- **Favoris & Sauvegardes** — Mise en favoris des offres préférées avec persistance locale et compteur dans le dashboard.
+- **Dashboard candidat dédié** — Suivi en temps réel de toutes ses candidatures (*En attente*, *En cours*, *Acceptée*, *Refusée*) et gestion du profil.
 
 ### 🏢 Pour les Recruteurs
-- **Publication d'offres** — Formulaire complet de diffusion d'annonces
-- **Dashboard recruteur** — Gestion des offres (Actif / Pause / Clôturé) et des candidatures reçues
-- **Notifications email** — Alerte automatique à chaque nouvelle candidature
+- **Publication d'offres intuitive** — Formulaire complet de publication d'annonces avec prévisualisation.
+- **✨ Générateur d'Annonces par IA (Gemini)** — Rédaction automatique de descriptions de poste percutantes et structurées à partir du titre et des mots-clés.
+- **Dashboard recruteur complet** — Pilotage des offres publiées (Actif / Pause / Clôturé), statistiques de vues et candidatures reçues.
+- **Gestion du pipeline de candidats** — Changement de statut des candidatures en un clic avec notifications.
+- **Profil entreprise** — Logo, site web, bio et coordonnées.
 
-### 🔐 Authentification Complète
-- **Inscription** avec confirmation email (lien tokenisé UUID v4, valable 24h)
-- **Connexion** email/mot de passe ou **Google OAuth 2.0**
-- **Mot de passe oublié** — Lien de reset expirant en 1 heure
-- **JWT** signé côté serveur, stocké côté client, revalidé à chaque session
+### 👑 Portail Administration Dédié (`:3007`)
+- **Portail Admin indépendant** accessible sur le port dédié **3007** (`http://localhost:3007`).
+- **Tableau de bord KPI en direct** — Total utilisateurs, offres actives, candidatures déposées, taux de conversion.
+- **Modération des offres** — Consultation, validation, mise en pause ou suppression d'annonces.
+- **Gestion des utilisateurs** — Activation, suspension et suppression de comptes candidats ou recruteurs.
+
+### 🔐 Authentification & Sécurité
+- **Inscription & Connexion standard** avec validation d'email (jeton sécurisé UUID v4 valable 24h).
+- **Inscription & Connexion Directe avec Google** — Conforme aux standards **Google Identity Services (GIS)** et **OpenID Connect**.
+- **Authentification sans friction** — Ouverture de la fenêtre native Google, récupération du profil réel (nom, email, photo) et connexion immédiate.
+- **Vérification cryptographique backend** via la bibliothèque officielle `google-auth-library` (`OAuth2Client`).
+- **Mot de passe oublié** — Réinitialisation par jeton temporaire expirant en 1 heure.
+- **Sessions sécurisées par JWT** — Signature HS256 côté serveur avec expiration configurable.
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Architecture des Services
+
+Le projet est structuré en **3 services synchronisés** :
+
+```
+NovoRise/
+├── 🌐 Frontend Public   →  http://localhost:3005  (Vite + React 18 + Tailwind)
+├── ⚙️  Backend API       →  http://localhost:3006  (Express + TypeScript + Bull/Redis + Gemini)
+└── 🔐 Portail Admin     →  http://localhost:3007  (Interface d'administration dédiée)
+```
+
+### Arborescence détaillée
 
 ```
 NovoRise/
 ├── frontend (racine)          → React 18 + Vite + TypeScript + Tailwind CSS
 │   ├── src/
-│   │   ├── api/               → Couche HTTP (client fetch + auth/jobs/applications)
-│   │   ├── context/           → AuthContext branché sur l'API réelle
+│   │   ├── api/               → client.ts, auth.api.ts, jobs.api.ts, ai.api.ts, admin.api.ts
+│   │   ├── context/           → AuthContext.tsx (état global auth & session)
 │   │   ├── components/
-│   │   │   ├── auth/          → AuthFlowModal, VerifyEmailPage, GoogleCallbackPage
-│   │   │   └── dashboard/     → CandidateDashboard, RecruiterDashboard
-│   │   └── types/             → Types TypeScript partagés
-│   └── novorise_job_board.tsx → App principale + routing URL simple
+│   │   │   ├── auth/          → AuthFlowModal.tsx, VerifyEmailPage.tsx, GoogleCallbackPage.tsx
+│   │   │   └── dashboard/     → CandidateDashboard.tsx, RecruiterDashboard.tsx, AdminDashboardPortal.tsx
+│   │   └── types/             → auth.ts, jobs.ts, admin.ts
+│   ├── index.html             → Application publique principale
+│   ├── admin.html             → Portail administrateur dédié
+│   └── novorise_job_board.tsx → Orchestrateur principal de l'application
 │
-└── backend/                   → Express 4 + TypeScript
+└── backend/                   → Express 5 + TypeScript
     └── src/
-        ├── routes/            → auth, jobs, applications
-        ├── services/          → auth.service (bcrypt/JWT/UUID), email.queue (Bull)
-        ├── workers/           → email.worker (Nodemailer SMTP)
-        ├── middleware/        → JWT requireAuth + requireRole
-        ├── config/            → passport.ts (Google OAuth)
-        └── db/                → pool PostgreSQL + migrations.sql
-```
-
-### Flux d'architecture
-
-```
-Client (React)
-    │ HTTPS
-    ▼
-API Routes (Express :3006)
-    │  POST /register · POST /login · POST /reset-password
-    ▼
-Auth Service
-    ├── Hash bcrypt (12 rounds) + JWT signé (HS256)
-    ├── UUID v4 → token email
-    │
-    ├──► PostgreSQL (Supabase)
-    │      users · job_posts · applications
-    │
-    └──► File de tâches (Bull/Redis)
-             Job: type + destinataire + token
-             Retry exponentiel · 3 tentatives
-                  │
-                  ▼
-             SMTP Worker (Nodemailer)
-             Port 587 · STARTTLS · Mailtrap
-                  │
-         ┌────────┼────────┐
-         ▼        ▼        ▼
-    Confirmation  Reset   Notif
-      email       mdp   recruteur
+        ├── routes/            → auth.routes.ts, jobs.routes.ts, applications.routes.ts, admin.routes.ts, ai.routes.ts
+        ├── services/          → auth.service.ts, ai.service.ts, email.queue.ts
+        ├── workers/           → email.worker.ts (Nodemailer SMTP asynchrone)
+        ├── middleware/        → auth.middleware.ts (JWT verify + requireRole)
+        ├── config/            → passport.ts (Google OAuth 2.0 Strategy)
+        └── db/                → pool.ts (Adapter SQLite hybride / Supabase PostgreSQL)
 ```
 
 ---
@@ -97,38 +94,36 @@ Auth Service
 ## 🛠️ Stack Technique
 
 ### Frontend
-| Technologie | Version | Usage |
-|-------------|---------|-------|
-| **React** | 18.3 | UI Framework |
-| **TypeScript** | 5.7 | Typage statique |
-| **Vite** | 6.1 | Bundler & Dev Server (port 3005) |
-| **Tailwind CSS** | 3.4 | Styling |
-| **Lucide React** | 0.475 | Icônes |
+| Technologie | Version | Rôle |
+| :--- | :--- | :--- |
+| **React** | 18.3 | Bibliothèque UI interactive |
+| **TypeScript** | 5.7 | Typage statique strict |
+| **Vite** | 6.1 | Bundler ultra-rapide et serveur de dev multi-entrées |
+| **Tailwind CSS** | 3.4 | Framework utilitaire CSS responsive |
+| **Lucide React** | 0.475 | Pack d'icônes vectorielles modernes |
+| **Google Identity Services** | v1 | SDK officiel Google Sign-In |
 
 ### Backend
-| Technologie | Version | Usage |
-|-------------|---------|-------|
-| **Express** | 4 | HTTP Server (port 3006) |
-| **PostgreSQL / Supabase** | — | Base de données principale |
-| **bcryptjs** | — | Hash mots de passe (12 rounds) |
-| **jsonwebtoken** | — | JWT HS256 (sign/verify) |
-| **uuid** | — | Tokens email UUID v4 |
-| **Bull + Redis** | — | File de tâches asynchrones |
-| **Nodemailer** | — | Envoi SMTP port 587 STARTTLS |
-| **passport-google-oauth20** | — | Google OAuth 2.0 |
-| **express-validator** | — | Validation des inputs |
+| Technologie | Version | Rôle |
+| :--- | :--- | :--- |
+| **Express** | 5.2 | Serveur d'API REST |
+| **google-auth-library** | 9.x | Validation cryptographique des jetons d'identité Google |
+| **@google/genai** | — | Intégration de l'Intelligence Artificielle Google Gemini |
+| **better-sqlite3** | 13.0 | Moteur de base de données ultra-rapide pour le dev local |
+| **pg (PostgreSQL)** | 8.23 | Connecteur PostgreSQL pour production (Supabase) |
+| **jsonwebtoken** | 9.0 | Génération et vérification des jetons de session JWT |
+| **bcryptjs** | 3.0 | Hachage sécurisé des mots de passe (12 tours) |
+| **passport / passport-google-oauth20** | 0.7 / 2.0 | Stratégie d'authentification OAuth 2.0 |
+| **Bull + Redis** | 4.16 / 6.0 | File d'attente asynchrone pour les envois d'emails |
+| **Nodemailer** | 10.0 | Client SMTP avec templates HTML |
 
 ---
 
 ## 🚀 Démarrage Rapide
 
 ### Prérequis
-
-- [Node.js](https://nodejs.org/) v18+
-- [Redis](https://redis.io/) installé localement (port 6379)
-- Compte [Supabase](https://supabase.com/) (PostgreSQL gratuit)
-- Compte [Mailtrap](https://mailtrap.io/) (SMTP sandbox gratuit)
-- Compte [Google Cloud Console](https://console.cloud.google.com/) pour OAuth
+- [Node.js](https://nodejs.org/) v18 ou plus récent
+- Système Windows, macOS ou Linux
 
 ### 1. Cloner le dépôt
 
@@ -140,189 +135,158 @@ cd NovoRise
 ### 2. Installer les dépendances
 
 ```bash
-# Dépendances frontend
+# Frontend
 npm install
 
-# Dépendances backend
+# Backend
 cd backend
 npm install
 cd ..
 ```
 
-### 3. Configurer le backend
+### 3. Fichiers d'environnement
 
-```bash
-# Copier le fichier d'exemple
-copy backend\.env.example backend\.env
+Créez le fichier `.env` à la racine :
+```env
+VITE_API_URL=http://localhost:3006
+VITE_GOOGLE_CLIENT_ID=835055005645-14vp9a34co61gd6f4em3l0k5rh86fq2r.apps.googleusercontent.com
 ```
 
-Remplissez `backend/.env` :
-
+Créez le fichier `backend/.env` :
 ```env
-# PostgreSQL — Supabase
-DATABASE_URL=postgresql://postgres:[MOT_DE_PASSE]@db.[PROJET].supabase.co:5432/postgres
-
-# JWT
-JWT_SECRET=votre_secret_min_32_caracteres
-JWT_EXPIRES_IN=7d
-
-# Serveur
 PORT=3006
 FRONTEND_URL=http://localhost:3005
+JWT_SECRET=votre_super_secret_jwt_min_32_caracteres
+JWT_EXPIRES_IN=7d
 
-# Redis (local)
-REDIS_HOST=127.0.0.1
-REDIS_PORT=6379
-
-# SMTP — Mailtrap
-SMTP_HOST=sandbox.smtp.mailtrap.io
-SMTP_PORT=587
-SMTP_USER=votre_username_mailtrap
-SMTP_PASS=votre_password_mailtrap
-
-# Google OAuth
-GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=xxx
+# Google OAuth 2.0
+GOOGLE_CLIENT_ID=835055005645-14vp9a34co61gd6f4em3l0k5rh86fq2r.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=votre_google_client_secret
 GOOGLE_CALLBACK_URL=http://localhost:3006/api/auth/google/callback
+
+# Google Gemini AI API
+GEMINI_API_KEY=votre_cle_gemini_api
+GOOGLE_API_KEY=votre_cle_gemini_api
+
+# Base de données locale (SQLite activé automatiquement par défaut)
+# DATABASE_URL=postgresql://... (optionnel pour Supabase)
 ```
 
-### 4. Créer les tables PostgreSQL
+### 4. Démarrage des services
 
-Dans **Supabase → SQL Editor**, exécutez le contenu de :
+#### ⚡ Option 1 : Démarrage en 1 clic (Windows)
+Double-cliquez simplement sur le script :
+```cmd
+start_all.bat
 ```
-backend/src/db/migrations.sql
-```
+Ce script libère automatiquement les ports 3005, 3006 et 3007, démarre les trois processus et ouvre vos navigateurs !
 
-### 5. Lancer le projet
+#### 🛠️ Option 2 : Démarrage manuel
 
-#### ⚡ Démarrage en un clic (Windows)
-```
-Double-cliquez sur start_all.bat
-```
-
-#### Ou manuellement
 ```bash
-# Terminal 1 — Backend
+# Terminal 1 — Backend API (port 3006)
 cd backend
 npm run dev
-# → http://localhost:3006/api/health ✅
 
-# Terminal 2 — Frontend
+# Terminal 2 — Frontend Public (port 3005)
 npm run dev
-# → http://localhost:3005 ✅
+
+# Terminal 3 — Portail Admin (port 3007)
+npm run dev:admin
 ```
+
+---
+
+## 🔑 Authentification Google
+
+NovoRise applique les **standards officiels Google Identity Services (GIS)** :
+
+### 1. Inscription & Connexion Directe en 1 clic
+- Dans la modale d'inscription ou de connexion, cliquez sur le bouton officiel Google.
+- Google affiche l'invite native de sélection de compte.
+- NovoRise valide l'ID Token via `google-auth-library` et connecte l'utilisateur avec son vrai profil Google.
+
+### 2. Configuration dans Google Cloud Console
+Pour autoriser votre environnement local, configurez votre Client OAuth dans [Google Cloud Console — Identifiants](https://console.cloud.google.com/apis/credentials) :
+
+1. **Origines JavaScript autorisées** :
+   ```
+   http://localhost:3005
+   http://localhost:3006
+   ```
+2. **URIs de redirection autorisés** :
+   ```
+   http://localhost:3006/api/auth/google/callback
+   http://localhost:3005/api/auth/google/callback
+   ```
 
 ---
 
 ## 📡 API Endpoints
 
-### Auth (`/api/auth`)
+### 🔐 Authentification (`/api/auth`)
 | Méthode | Route | Description |
-|---------|-------|-------------|
-| `POST` | `/register` | Inscription + envoi email de confirmation |
-| `GET` | `/verify?token=` | Vérification email avec token UUID |
+| :--- | :--- | :--- |
+| `POST` | `/register` | Inscription email + envoi jeton de validation |
+| `GET` | `/verify?token=` | Confirmation d'email par jeton UUID |
 | `POST` | `/login` | Connexion email/mot de passe → JWT |
-| `POST` | `/forgot-password` | Demande reset mdp → email avec token 1h |
-| `POST` | `/reset-password` | Nouveau mot de passe avec token valide |
+| `POST` | `/google/direct` | Connexion/Inscription directe Google avec validation de jeton |
+| `GET` | `/google` | Initiation de la redirection OAuth Google |
+| `GET` | `/google/callback` | Callback OAuth Google → JWT |
+| `POST` | `/forgot-password` | Demande de réinitialisation de mot de passe |
+| `POST` | `/reset-password` | Réinitialisation avec jeton valide |
 | `GET` | `/me` | Profil de l'utilisateur connecté 🔒 |
-| `PATCH` | `/profile` | Mise à jour du profil 🔒 |
-| `GET` | `/google` | Initiation Google OAuth 2.0 |
-| `GET` | `/google/callback` | Callback Google → JWT → redirect frontend |
+| `PATCH` | `/profile` | Mise à jour des informations de profil 🔒 |
 
-### Jobs (`/api/jobs`)
+### 💼 Offres d'emploi (`/api/jobs`)
 | Méthode | Route | Description |
-|---------|-------|-------------|
+| :--- | :--- | :--- |
 | `GET` | `/` | Liste publique des offres actives |
-| `GET` | `/mine` | Offres du recruteur connecté 🔒 |
-| `POST` | `/` | Créer une offre 🔒 recruteur |
-| `PUT` | `/:id` | Modifier une offre 🔒 recruteur |
-| `DELETE` | `/:id` | Supprimer une offre 🔒 recruteur |
+| `GET` | `/:id` | Détail d'une offre spécifique |
+| `GET` | `/mine` | Offres créées par le recruteur connecté 🔒 |
+| `POST` | `/` | Création d'une nouvelle offre 🔒 (Recruteur) |
+| `PUT` | `/:id` | Modification d'une offre 🔒 (Recruteur) |
+| `DELETE` | `/:id` | Suppression d'une offre 🔒 (Recruteur) |
 
-### Applications (`/api/applications`)
+### 📄 Candidatures (`/api/applications`)
 | Méthode | Route | Description |
-|---------|-------|-------------|
-| `POST` | `/` | Soumettre une candidature 🔒 candidat |
-| `GET` | `/me` | Mes candidatures 🔒 candidat |
-| `GET` | `/job/:jobId` | Candidatures d'une offre 🔒 recruteur |
-| `PATCH` | `/:id/status` | Changer le statut d'une candidature 🔒 recruteur |
+| :--- | :--- | :--- |
+| `POST` | `/` | Dépôt d'une candidature avec CV 🔒 (Candidat) |
+| `GET` | `/me` | Liste de mes candidatures 🔒 (Candidat) |
+| `GET` | `/job/:jobId` | Candidatures reçues pour une offre 🔒 (Recruteur) |
+| `PATCH` | `/:id/status` | Mise à jour du statut d'une candidature 🔒 (Recruteur) |
 
-> 🔒 = Route protégée par JWT Bearer token
+### 🤖 Intelligence Artificielle (`/api/ai`)
+| Méthode | Route | Description |
+| :--- | :--- | :--- |
+| `POST` | `/generate-job-description` | Génération IA Gemini d'une fiche de poste complète |
+| `POST` | `/generate-cover-letter` | Rédaction IA Gemini d'une lettre de motivation ciblée |
 
----
+### 👑 Administration (`/api/admin`)
+| Méthode | Route | Description |
+| :--- | :--- | :--- |
+| `GET` | `/stats` | Statistiques globales & KPIs de la plateforme 🔒 |
+| `GET` | `/users` | Liste complète de tous les utilisateurs 🔒 |
+| `PATCH` | `/users/:id/status` | Modification du statut utilisateur (Actif / Suspendu) 🔒 |
+| `GET` | `/jobs` | Liste globale de toutes les annonces publiées 🔒 |
+| `PATCH` | `/jobs/:id/status` | Modération du statut de l'offre 🔒 |
+| `DELETE` | `/jobs/:id` | Suppression administrative d'une offre 🔒 |
 
-## 📧 Emails automatiques
-
-Tous les emails sont envoyés de façon **asynchrone** via Bull/Redis (jamais dans la requête HTTP) :
-
-| Type | Déclencheur | Contenu |
-|------|-------------|---------|
-| **Confirmation** | Inscription | Lien `/verify?token=UUID` valable 24h |
-| **Reset mdp** | Mot de passe oublié | Lien `/reset-password?token=` expirant en 1h |
-| **Notif recruteur** | Nouvelle candidature | Nom, email candidat + lien dashboard |
-
----
-
-## 📁 Structure des fichiers clés
-
-```
-backend/
-├── src/
-│   ├── db/
-│   │   ├── migrations.sql      ← Schéma PostgreSQL (users, job_posts, applications)
-│   │   └── pool.ts             ← Pool pg avec SSL Supabase
-│   ├── services/
-│   │   ├── auth.service.ts     ← bcrypt · JWT · UUID · CRUD users
-│   │   └── email.queue.ts      ← File Bull/Redis (retry exponentiel)
-│   ├── workers/
-│   │   └── email.worker.ts     ← Consumer Bull + templates HTML Nodemailer
-│   ├── middleware/
-│   │   └── auth.middleware.ts  ← requireAuth + requireRole(...)
-│   ├── routes/
-│   │   ├── auth.routes.ts
-│   │   ├── jobs.routes.ts
-│   │   └── applications.routes.ts
-│   ├── config/
-│   │   └── passport.ts         ← Stratégie Google OAuth 2.0
-│   └── index.ts                ← Entrée Express
-├── .env.example                ← Variables à remplir (ne pas commiter .env !)
-└── tsconfig.json
-
-src/ (frontend)
-├── api/
-│   ├── client.ts               ← fetch + Bearer JWT + auto-logout 401
-│   ├── auth.api.ts
-│   ├── jobs.api.ts
-│   └── applications.api.ts
-├── context/
-│   └── AuthContext.tsx         ← État global auth branché sur l'API
-├── components/
-│   ├── auth/
-│   │   ├── AuthFlowModal.tsx   ← Modal inscription/connexion/reset
-│   │   ├── VerifyEmailPage.tsx ← Page /verify?token=
-│   │   └── GoogleCallbackPage.tsx
-│   └── dashboard/
-│       ├── CandidateDashboard.tsx
-│       └── RecruiterDashboard.tsx
-└── types/
-    └── auth.ts                 ← Types TypeScript partagés
-
-start_all.bat                   ← Lance frontend:3005 + backend:3006
-```
+> 🔒 = Requiert un en-tête `Authorization: Bearer <token_jwt>`
 
 ---
 
-## 🔒 Sécurité
+## 🔒 Sécurité & Bonnes Pratiques
 
-- ✅ Mots de passe hashés **bcrypt** (12 rounds) — jamais stockés en clair
-- ✅ JWT signé avec secret env — jamais hardcodé
-- ✅ Emails envoyés **hors de la requête HTTP** (Bull/Redis) — pas de timeout
-- ✅ Token reset mdp expirant en **1 heure**
-- ✅ Route `/forgot-password` répond toujours 200 — ne révèle pas si l'email existe
-- ✅ Variables sensibles dans `.env` — non commité (`.gitignore`)
-- ✅ CORS configuré pour le domaine frontend uniquement
+- **Hashage fort** : Mots de passe hashés avec **bcrypt** (12 rounds).
+- **Vérification Google cryptographique** : Utilisation de la clé publique Google via `google-auth-library` sans stockage de secrets tiers.
+- **Protection CSRF / CORS** : CORS restreint aux origines autorisées (`3005`, `3006`, `3007`).
+- **Isolation du Portail Admin** : Serveur et middleware dédiés sur le port 3007 avec barrières de rôle strictes.
+- **Envois asynchrones** : Notifications email gérées hors thread principal par worker Bull/Redis.
+- **Protection des données sensibles** : Tous les identifiants et clés API sont isolés dans des fichiers `.env` ignorés par Git.
 
 ---
 
-## 📄 License
+## 📄 Licence
 
-© 2026 NovoRise. Tous droits réservés.
+Ce projet est sous licence MIT. Développé pour **NovoRise** — Tous droits réservés © 2026.
