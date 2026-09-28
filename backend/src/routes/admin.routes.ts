@@ -375,6 +375,72 @@ router.get('/database/table/:name', requireRole('admin'), async (req: Request, r
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// GET /api/admin/jobs — Liste de toutes les offres d'emploi (admin uniquement)
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/jobs', requireRole('admin'), async (req: Request, res: Response) => {
+  try {
+    const { status, search } = req.query;
+
+    let query = `
+      SELECT j.*, u.name as recruiter_name, u.email as recruiter_email, u.company_name as recruiter_company
+      FROM job_posts j
+      LEFT JOIN users u ON j.recruiter_id = u.id
+      WHERE 1=1
+    `;
+    const params: string[] = [];
+    let count = 0;
+
+    if (status && status !== 'Tous') {
+      params.push(status as string);
+      query += ` AND j.status = $${++count}`;
+    }
+
+    if (search) {
+      params.push(`%${search}%`);
+      query += ` AND (j.title LIKE $${++count} OR j.company LIKE $${count} OR u.name LIKE $${count} OR u.email LIKE $${count})`;
+    }
+
+    query += ' ORDER BY j.created_at DESC';
+
+    const result = await pool.query(query, params);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('GET /admin/jobs error:', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PATCH /api/admin/jobs/:id/status — Modifier le statut d'une offre (admin)
+// ─────────────────────────────────────────────────────────────────────────────
+router.patch('/jobs/:id/status', requireRole('admin'), async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const validStatuses = ['Actif', 'Pause', 'Clôturé'];
+    if (!validStatuses.includes(status)) {
+      res.status(400).json({ error: 'INVALID_STATUS', message: 'Statut invalide' });
+      return;
+    }
+
+    const result = await pool.query(
+      'UPDATE job_posts SET status = $1 WHERE id = $2 RETURNING *',
+      [status, id]
+    );
+
+    if (result.rowCount === 0) {
+      res.status(404).json({ error: 'JOB_NOT_FOUND', message: 'Offre introuvable' });
+      return;
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('PATCH /admin/jobs/:id/status error:', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // DELETE /api/admin/jobs/:id — Supprimer une offre (admin uniquement)
 // ─────────────────────────────────────────────────────────────────────────────
 router.delete('/jobs/:id', requireRole('admin'), async (req: Request, res: Response) => {

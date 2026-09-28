@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { User, UserRole, UserProfile, Application, RecruiterJobPost, AuthModalStep } from '../types/auth';
+import { User, UserRole, UserProfile, Application, ApplicationStatus, RecruiterJobPost, AuthModalStep } from '../types/auth';
 import {
   apiRegister,
   apiVerifyEmail,
@@ -13,6 +13,7 @@ import {
 import {
   apiGetMyApplications,
   apiSubmitApplication,
+  apiUpdateApplicationStatus,
 } from '../api/applications.api';
 import {
   apiGetMyJobs,
@@ -77,6 +78,7 @@ interface AuthContextType {
   }) => Promise<void>;
   toggleJobStatus: (id: string) => Promise<void>;
   deleteRecruiterJob: (id: string) => Promise<void>;
+  updateApplicationStatus: (id: string, status: ApplicationStatus) => Promise<void>;
   refreshApplications: () => Promise<void>;
   refreshJobs: () => Promise<void>;
 }
@@ -435,6 +437,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // ─── Mettre à jour statut candidature ───────────────────────────────────────
+  const updateApplicationStatus = async (id: string, status: ApplicationStatus) => {
+    try {
+      const updated = await apiUpdateApplicationStatus(id, status);
+      setApplications(prev => prev.map(a => a.id === id ? { ...a, status: updated.status } : a));
+    } catch (_err) {
+      // Fallback local
+      setApplications(prev => prev.map(a => a.id === id ? { ...a, status } : a));
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -468,6 +481,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         createRecruiterJob,
         toggleJobStatus,
         deleteRecruiterJob,
+        updateApplicationStatus,
         refreshApplications,
         refreshJobs,
       }}

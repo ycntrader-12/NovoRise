@@ -1,14 +1,25 @@
 import { Router, Request, Response } from 'express';
 import { generateWithGemini } from '../services/gemini.service';
-import { requireAuth } from '../middleware/auth.middleware';
+import { verifyJwt } from '../services/auth.service';
 
 const router = Router();
+
+const optionalAuth = (req: Request, _res: Response, next: () => void) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    try {
+      const token = authHeader.split(' ')[1];
+      (req as any).user = verifyJwt(token);
+    } catch (_) {}
+  }
+  next();
+};
 
 /**
  * POST /api/ai/generate-job-description
  * Génère ou enrichit une description de poste avec Gemini
  */
-router.post('/generate-job-description', requireAuth, async (req: Request, res: Response) => {
+router.post('/generate-job-description', optionalAuth, async (req: Request, res: Response) => {
   const { title, company, category, contract, keywords } = req.body;
 
   if (!title) {
@@ -46,7 +57,7 @@ Adopte un ton moderne, motivant et direct, sans fioritures inutiles.`;
  * POST /api/ai/generate-cover-letter
  * Aide le candidat à générer ou améliorer sa lettre de motivation
  */
-router.post('/generate-cover-letter', requireAuth, async (req: Request, res: Response) => {
+router.post('/generate-cover-letter', optionalAuth, async (req: Request, res: Response) => {
   const { jobTitle, company, candidateSkills, candidateBio } = req.body;
 
   const prompt = `Tu es un conseiller carrière pour talents ambitieux sur la plateforme NovoRise.

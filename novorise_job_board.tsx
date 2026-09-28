@@ -35,7 +35,8 @@ import {
   ChevronDown,
   User,
   Mail,
-  Phone
+  Phone,
+  Loader2
 } from 'lucide-react';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { AuthFlowModal } from './src/components/auth/AuthFlowModal';
@@ -44,6 +45,8 @@ import { RecruiterDashboard } from './src/components/dashboard/RecruiterDashboar
 import { VerifyEmailPage } from './src/components/auth/VerifyEmailPage';
 import { GoogleCallbackPage } from './src/components/auth/GoogleCallbackPage';
 import { JOB_CATEGORIES, FEATURED_CATEGORIES, CATEGORY_GROUPS, type JobCategory } from './src/types/categories';
+import { apiGenerateCoverLetter } from './src/api/ai.api';
+import { apiGetJobs } from './src/api/jobs.api';
 
 // Job Type
 export interface Job {
@@ -311,6 +314,35 @@ const INITIAL_JOBS: Job[] = [
   }
 ];
 
+// Convertir une offre backend en format Job affichable
+const mapBackendJobToJob = (backendJob: any): Job => ({
+  id: String(backendJob.id),
+  title: backendJob.title || 'Opportunité Professionnelle',
+  company: backendJob.company || 'Entreprise Partenaire',
+  logoBg: 'bg-gradient-to-tr from-blue-600 to-indigo-600',
+  logoText: (backendJob.company || 'NR').substring(0, 2).toUpperCase(),
+  category: (backendJob.category || 'Informatique & Numérique') as JobCategory,
+  contract: (backendJob.contract || 'CDI') as any,
+  workplace: (backendJob.workplace || 'Remote') as any,
+  location: backendJob.location || 'Casablanca',
+  salary: backendJob.salary || 'Selon profil',
+  postedTime: backendJob.postedAt || 'Récemment',
+  featured: true,
+  isNew: true,
+  tags: Array.isArray(backendJob.tags) ? backendJob.tags : (typeof backendJob.tags === 'string' ? JSON.parse(backendJob.tags || '[]') : []),
+  description: backendJob.description || '',
+  missions: [
+    'Piloter et délivrer les missions clés du poste avec rigueur et autonomie',
+    'Collaborer étroitement avec les équipes pluridisciplinaires',
+    'Participer activement à la performance collective'
+  ],
+  requirements: [
+    'Expérience probante dans le domaine concerné',
+    'Excellentes qualités relationnelles et rigueur opérationnelle'
+  ],
+  benefits: ['Package salarial attractif', 'Couverture santé complète', 'Possibilités d\'évolution rapide']
+});
+
 function NovoRiseMain() {
   const { 
     user, 
@@ -320,8 +352,33 @@ function NovoRiseMain() {
     setAuthModalOpen, 
     setAuthModalStep,
     logout,
-    submitApplication
+    submitApplication,
+    recruiterJobs
   } = useAuth();
+
+  // Dynamic jobs synced from backend
+  const [allJobs, setAllJobs] = useState<Job[]>(INITIAL_JOBS);
+  const [isGeneratingCoverLetter, setIsGeneratingCoverLetter] = useState(false);
+
+  React.useEffect(() => {
+    let active = true;
+    apiGetJobs()
+      .then(fetchedJobs => {
+        if (!active || !Array.isArray(fetchedJobs) || fetchedJobs.length === 0) return;
+        const converted = fetchedJobs.map(mapBackendJobToJob);
+        setAllJobs(prev => {
+          const map = new Map<string, Job>();
+          converted.forEach(j => map.set(j.id, j));
+          prev.forEach(j => {
+            if (!map.has(j.id)) map.set(j.id, j);
+          });
+          return Array.from(map.values());
+        });
+      })
+      .catch(() => {});
+
+    return () => { active = false; };
+  }, [recruiterJobs]);
 
   // Navigation & Modals
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -337,7 +394,14 @@ function NovoRiseMain() {
   const [activeWorkplace, setActiveWorkplace] = useState<string>('Tous');
 
   // Bookmarks
-  const [savedJobs, setSavedJobs] = useState<string[]>(['job-1']);
+  const [savedJobs, setSavedJobs] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem('novorise_saved_jobs');
+      return raw ? JSON.parse(raw) : ['job-1'];
+    } catch (_) {
+      return ['job-1'];
+    }
+  });
   const [showOnlySaved, setShowOnlySaved] = useState(false);
 
   // Toast
@@ -360,21 +424,44 @@ function NovoRiseMain() {
     }, 4000);
   };
 
+  const handleGenerateAICoverLetter = async () => {
+    if (!applyJob) return;
+    setIsGeneratingCoverLetter(true);
+    try {
+      const res = await apiGenerateCoverLetter({
+        jobTitle: applyJob.title,
+        company: applyJob.company,
+        candidateSkills: user?.profile?.skills?.join(', ') || 'Rigueur, dynamisme et autonomie',
+        candidateBio: user?.profile?.bio || `Candidat motivé postulant au poste de ${applyJob.title}`,
+      });
+      setApplyForm(prev => ({ ...prev, note: res.coverLetter }));
+      showToast('Lettre de motivation personnalisée générée par l\'IA Gemini ! ✨');
+    } catch (err: any) {
+      showToast(err.message || 'Erreur lors de la génération avec l\'IA.');
+    } finally {
+      setIsGeneratingCoverLetter(false);
+    }
+  };
+
   // Toggle Bookmark
   const toggleBookmark = (id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     if (savedJobs.includes(id)) {
-      setSavedJobs(savedJobs.filter(j => j !== id));
+      const updated = savedJobs.filter(j => j !== id);
+      setSavedJobs(updated);
+      try { localStorage.setItem('novorise_saved_jobs', JSON.stringify(updated)); } catch (_) {}
       showToast('Offre retirée de vos favoris.');
     } else {
-      setSavedJobs([...savedJobs, id]);
+      const updated = [...savedJobs, id];
+      setSavedJobs(updated);
+      try { localStorage.setItem('novorise_saved_jobs', JSON.stringify(updated)); } catch (_) {}
       showToast('Offre ajoutée à vos favoris ⭐');
     }
   };
 
   // Filtered jobs
   const filteredJobs = useMemo(() => {
-    return INITIAL_JOBS.filter(job => {
+    return allJobs.filter(job => {
       if (showOnlySaved && !savedJobs.includes(job.id)) return false;
       if (activeCategory !== 'Tous' && job.category !== activeCategory) return false;
       if (activeContract !== 'Tous' && job.contract !== activeContract) return false;
@@ -398,7 +485,7 @@ function NovoRiseMain() {
 
       return true;
     });
-  }, [searchKeyword, locationKeyword, activeCategory, activeContract, activeWorkplace, showOnlySaved, savedJobs]);
+  }, [allJobs, searchKeyword, locationKeyword, activeCategory, activeContract, activeWorkplace, showOnlySaved, savedJobs]);
 
   const handleSearchSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -1608,13 +1695,34 @@ function NovoRiseMain() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1 text-[11px]">Message pour le recruteur (optionnel)</label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block font-bold text-slate-700 text-[11px]">Message pour le recruteur (optionnel)</label>
+                    <button
+                      type="button"
+                      onClick={handleGenerateAICoverLetter}
+                      disabled={isGeneratingCoverLetter}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-[#2D6BE4] text-white text-[10px] font-bold shadow-sm hover:from-blue-700 hover:to-indigo-700 transition-all cursor-pointer disabled:opacity-50"
+                      title="Générer une lettre de motivation personnalisée avec l'IA Gemini"
+                    >
+                      {isGeneratingCoverLetter ? (
+                        <>
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                          <span>Rédaction IA…</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-3 h-3 text-amber-300" />
+                          <span>Rédiger avec l'IA Gemini</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                   <textarea 
-                    rows={2}
+                    rows={4}
                     value={applyForm.note}
                     onChange={(e) => setApplyForm({...applyForm, note: e.target.value})}
-                    placeholder="Présentez brièvement vos motivations pour ce poste..."
-                    className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3 py-2 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 resize-none"
+                    placeholder="Présentez brièvement vos motivations pour ce poste (ou cliquez sur 'Rédiger avec l'IA Gemini')..."
+                    className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3 py-2 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 resize-none leading-relaxed"
                   />
                 </div>
 

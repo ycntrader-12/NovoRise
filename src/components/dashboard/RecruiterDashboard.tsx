@@ -20,12 +20,14 @@ import {
   Search,
   MessageSquare,
   BarChart3,
-  TrendingUp
+  TrendingUp,
+  Loader2
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { RecruiterJobPost, Application } from '../../types/auth';
+import { RecruiterJobPost, Application, ApplicationStatus } from '../../types/auth';
 import { JOB_CATEGORIES } from '../../types/categories';
 import { RecruiterStatsDashboard } from './RecruiterStatsDashboard';
+import { apiGenerateJobDescription } from '../../api/ai.api';
 
 export const RecruiterDashboard: React.FC = () => {
   const { 
@@ -34,7 +36,8 @@ export const RecruiterDashboard: React.FC = () => {
     createRecruiterJob, 
     toggleJobStatus, 
     deleteRecruiterJob,
-    applications
+    applications,
+    updateApplicationStatus
   } = useAuth();
 
   const [activeTab, setActiveTab] = useState<'stats' | 'manage-jobs' | 'post-job' | 'candidates'>('stats');
@@ -57,9 +60,34 @@ export const RecruiterDashboard: React.FC = () => {
     tags: 'React, TypeScript, Next.js'
   });
 
+  const [aiGenerating, setAiGenerating] = useState(false);
+
   const showToast = (msg: string) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(null), 3500);
+  };
+
+  const handleGenerateAIDescription = async () => {
+    if (!newJob.title.trim()) {
+      showToast('Veuillez d\'abord saisir l\'intitulé du poste pour guider l\'IA.');
+      return;
+    }
+    setAiGenerating(true);
+    try {
+      const res = await apiGenerateJobDescription({
+        title: newJob.title,
+        company: newJob.company,
+        category: newJob.category,
+        contract: newJob.contract,
+        keywords: newJob.tags,
+      });
+      setNewJob(prev => ({ ...prev, description: res.description }));
+      showToast('Fiche de poste générée avec succès par l\'IA NovoRise ! ✨');
+    } catch (err: any) {
+      showToast(err.message || 'Erreur lors de la génération avec l\'IA.');
+    } finally {
+      setAiGenerating(false);
+    }
   };
 
   const handlePostJob = (e: React.FormEvent) => {
@@ -389,7 +417,36 @@ export const RecruiterDashboard: React.FC = () => {
                   )}
                 </div>
 
-                <div className="flex items-center gap-3 border-t md:border-t-0 pt-3 md:pt-0 border-gray-100">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 border-t md:border-t-0 pt-3 md:pt-0 border-gray-100">
+                  <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-xl border border-slate-200">
+                    <span className="text-[11px] font-semibold text-slate-500">Statut :</span>
+                    <select
+                      value={app.status || 'En attente'}
+                      onChange={(e) => {
+                        const newStatus = e.target.value as ApplicationStatus;
+                        updateApplicationStatus(app.id, newStatus);
+                        showToast(`Statut mis à jour : "${newStatus}" pour ${app.candidateName} ✅`);
+                      }}
+                      className={`text-xs font-bold px-2 py-1 rounded-lg border outline-none cursor-pointer transition-all ${
+                        app.status === 'Entretien'
+                          ? 'bg-purple-100 text-purple-800 border-purple-200'
+                          : app.status === 'Acceptée'
+                          ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                          : app.status === 'Refusée'
+                          ? 'bg-rose-100 text-rose-800 border-rose-200'
+                          : app.status === "En cours d'examen"
+                          ? 'bg-blue-100 text-blue-800 border-blue-200'
+                          : 'bg-amber-100 text-amber-800 border-amber-200'
+                      }`}
+                    >
+                      <option value="En attente">⏳ En attente</option>
+                      <option value="En cours d'examen">🔍 En examen</option>
+                      <option value="Entretien">🎯 Entretien</option>
+                      <option value="Acceptée">✅ Acceptée</option>
+                      <option value="Refusée">❌ Refusée</option>
+                    </select>
+                  </div>
+
                   <button
                     onClick={() => setContactingCandidate(app)}
                     className="bg-[#0B132B] hover:bg-slate-900 text-white px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm transition-colors cursor-pointer"
@@ -518,14 +575,35 @@ export const RecruiterDashboard: React.FC = () => {
             </div>
 
             <div>
-              <label className="block font-semibold text-gray-700 mb-1">Description complète du poste *</label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block font-semibold text-gray-700">Description complète du poste *</label>
+                <button
+                  type="button"
+                  onClick={handleGenerateAIDescription}
+                  disabled={aiGenerating}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-[#2D6BE4] text-white text-[11px] font-bold shadow-sm hover:from-blue-700 hover:to-indigo-700 transition-all cursor-pointer disabled:opacity-50"
+                  title="Générer automatiquement une description attrayante et structurée avec l'IA Gemini"
+                >
+                  {aiGenerating ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Génération IA en cours…</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                      <span>Générer avec l'IA Gemini</span>
+                    </>
+                  )}
+                </button>
+              </div>
               <textarea
-                rows={4}
+                rows={7}
                 required
                 value={newJob.description}
                 onChange={(e) => setNewJob({...newJob, description: e.target.value})}
-                placeholder="Décrivez les objectifs clés, les responsabilités et l'équipe..."
-                className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#2D6BE4] resize-none"
+                placeholder="Décrivez les objectifs clés, les responsabilités et l'équipe (ou cliquez sur 'Générer avec l'IA Gemini' ci-dessus)..."
+                className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#2D6BE4] resize-none leading-relaxed font-normal"
               />
             </div>
 

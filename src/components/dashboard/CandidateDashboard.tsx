@@ -47,9 +47,28 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
   const [cvFile, setCvFile] = useState(user?.profile?.cvFileName || 'CV_Principal_2026.pdf');
   const [coverLetterFile, setCoverLetterFile] = useState(user?.profile?.coverLetterFileName || 'Lettre_De_Motivation_2026.pdf');
 
+  // Saved Jobs State
+  const [savedJobIds, setSavedJobIds] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem('novorise_saved_jobs');
+      return raw ? JSON.parse(raw) : ['job-1'];
+    } catch (_) {
+      return ['job-1'];
+    }
+  });
+
   const showToast = (msg: string) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(null), 3500);
+  };
+
+  const removeSavedJob = (id: string) => {
+    const updated = savedJobIds.filter(j => j !== id);
+    setSavedJobIds(updated);
+    try {
+      localStorage.setItem('novorise_saved_jobs', JSON.stringify(updated));
+    } catch (_) {}
+    showToast('Offre retirée de vos favoris.');
   };
 
   const handleSaveProfile = (e: React.FormEvent) => {
@@ -225,7 +244,19 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
           }`}
         >
           <FileText className="w-4 h-4" />
-          <span>Mon Profil & CV</span>
+          <span>Mon Profil &amp; CV</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('saved')}
+          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'saved'
+              ? 'bg-[#0B132B] text-white shadow-sm'
+              : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+          }`}
+        >
+          <Bookmark className="w-4 h-4 text-[#FF9F1C]" />
+          <span>Favoris ({savedJobIds.length})</span>
         </button>
       </div>
 
@@ -500,6 +531,97 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onBrowse
             </div>
 
           </form>
+        </div>
+      )}
+
+      {/* ================= TAB 3: OFFRES FAVORITES ================= */}
+      {activeTab === 'saved' && (
+        <div className="space-y-6 animate-fade-in">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-bold text-[#0B132B]">Vos offres sauvegardées</h2>
+              <p className="text-gray-500 text-xs mt-0.5">
+                Retrouvez rapidement les opportunités que vous avez ajoutées à vos favoris pour postuler quand vous le souhaitez.
+              </p>
+            </div>
+            <button
+              onClick={onBrowseJobs}
+              className="inline-flex items-center gap-2 bg-[#2D6BE4] text-white text-xs font-bold px-4 py-2 rounded-full hover:bg-[#2563EB] transition-colors cursor-pointer shadow-sm w-fit"
+            >
+              <Search className="w-3.5 h-3.5" />
+              <span>Explorer d'autres offres</span>
+            </button>
+          </div>
+
+          {savedJobIds.length === 0 ? (
+            <div className="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-sm max-w-xl mx-auto">
+              <div className="w-16 h-16 rounded-2xl bg-amber-50 text-[#FF9F1C] flex items-center justify-center mx-auto mb-4 border border-amber-100">
+                <Bookmark className="w-8 h-8" />
+              </div>
+              <h3 className="text-lg font-bold text-[#0B132B] mb-1">Aucune offre favorite enregistrée</h3>
+              <p className="text-gray-500 text-xs max-w-sm mx-auto mb-6 leading-relaxed">
+                Parcourez le catalogue d'offres NovoRise et cliquez sur l'icône marque-page pour sauvegarder vos annonces préférées.
+              </p>
+              <button
+                onClick={onBrowseJobs}
+                className="bg-[#2D6BE4] hover:bg-[#2563EB] text-white px-6 py-2.5 rounded-full text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer inline-flex items-center gap-2"
+              >
+                <Search className="w-3.5 h-3.5" />
+                <span>Découvrir les offres en ligne</span>
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {savedJobIds.map((jobId, idx) => (
+                <div
+                  key={jobId || idx}
+                  className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm flex-shrink-0">
+                          NR
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-bold text-[#FF9F1C] uppercase tracking-wider block">⭐ Offre Favorite</span>
+                          <h4 className="text-base font-bold text-[#0B132B] mt-0.5">Poste NovoRise Talent #{idx + 1}</h4>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => removeSavedJob(jobId)}
+                        className="text-gray-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
+                        title="Retirer des favoris"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
+                      <span className="bg-slate-100 px-2.5 py-1 rounded-lg font-medium">Contrat CDI</span>
+                      <span className="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-lg font-medium">Télétravail (Remote)</span>
+                      <span className="flex items-center gap-1 text-gray-500"><MapPin className="w-3 h-3 text-gray-400" /> Casablanca &amp; Remote</span>
+                    </div>
+
+                    <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
+                      Cette annonce fait partie de vos favoris. Rendez-vous sur le catalogue pour postuler immédiatement avec votre profil vérifié.
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
+                    <span className="text-xs font-bold text-[#2D6BE4]">Rémunération compétitive</span>
+                    <button
+                      onClick={onBrowseJobs}
+                      className="bg-[#2D6BE4] hover:bg-[#2563EB] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <span>Postuler</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

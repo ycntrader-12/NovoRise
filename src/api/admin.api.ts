@@ -73,6 +73,27 @@ export interface DbTableInfo {
   columns: DbTableColumn[];
 }
 
+export interface AdminJob {
+  id: string;
+  recruiter_id: string;
+  title: string;
+  company: string;
+  category: string;
+  contract: string;
+  workplace: string;
+  location: string;
+  salary: string;
+  description: string;
+  tags: string[] | string;
+  status: 'Actif' | 'Pause' | 'Clôturé';
+  views_count?: number;
+  applications_count?: number;
+  created_at: string;
+  recruiter_name?: string;
+  recruiter_email?: string;
+  recruiter_company?: string;
+}
+
 export const adminApi = {
   // Get system & database statistics
   async getStats(): Promise<AdminStats> {
@@ -115,6 +136,21 @@ export const adminApi = {
   // Get rows of a specific SQL table
   async getTableRows(tableName: string): Promise<Record<string, any>[]> {
     return apiGet<Record<string, any>[]>(`/admin/database/table/${tableName}`);
+  },
+
+  // Get all job postings
+  async getJobs(status?: string, search?: string): Promise<AdminJob[]> {
+    const params = new URLSearchParams();
+    if (status && status !== 'Tous') params.append('status', status);
+    if (search) params.append('search', search);
+
+    const queryString = params.toString();
+    return apiGet<AdminJob[]>(`/admin/jobs${queryString ? `?${queryString}` : ''}`);
+  },
+
+  // Update job status
+  async updateJobStatus(id: string, status: string): Promise<AdminJob> {
+    return apiPatch<AdminJob>(`/admin/jobs/${id}/status`, { status });
   },
 
   // Delete job post
