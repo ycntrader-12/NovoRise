@@ -36,7 +36,9 @@ import {
   User,
   Mail,
   Phone,
-  Loader2
+  Loader2,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { AuthFlowModal } from './src/components/auth/AuthFlowModal';
@@ -404,6 +406,29 @@ function NovoRiseMain() {
   });
   const [showOnlySaved, setShowOnlySaved] = useState(false);
 
+  // Dark mode theme state
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('novorise_theme');
+      if (saved) return saved === 'dark';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } catch {
+      return false;
+    }
+  });
+
+  React.useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('novorise_theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('novorise_theme', 'light');
+    }
+  }, [isDarkMode]);
+
+  const toggleDarkMode = () => setIsDarkMode(prev => !prev);
+
   // Toast
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -519,7 +544,7 @@ function NovoRiseMain() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] font-sans text-slate-800 relative">
+    <div className="min-h-screen bg-[#F8F9FA] dark:bg-[#0B1120] font-sans text-slate-800 dark:text-slate-100 transition-colors duration-300 relative">
       
       {/* Toast Notification */}
       {toastMessage && (
@@ -540,7 +565,7 @@ function NovoRiseMain() {
       <AuthFlowModal />
 
       {/* HEADER */}
-      <header className="sticky top-0 z-50 bg-[#F8F7F5]/90 backdrop-blur-md border-b border-gray-200/60 w-full">
+      <header className="sticky top-0 z-50 bg-[#F8F7F5]/90 dark:bg-[#0B1120]/90 backdrop-blur-md border-b border-gray-200/60 dark:border-slate-800/80 w-full transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             
@@ -553,16 +578,16 @@ function NovoRiseMain() {
               }}
               className="flex items-center gap-2 cursor-pointer select-none group"
             >
-              <div className="bg-[#2D6BE4] p-1.5 rounded-lg text-white shadow-sm group-hover:scale-105 transition-transform">
+              <div className="bg-[#2D6BE4] dark:bg-gradient-to-tr dark:from-cyan-500 dark:to-indigo-500 p-1.5 rounded-lg text-white shadow-sm group-hover:scale-105 transition-transform dark:shadow-[0_0_12px_rgba(6,182,212,0.4)]">
                 <TrendingUp className="w-5 h-5" strokeWidth={2.5} />
               </div>
-              <span className="text-2xl font-bold text-[#1A1A2E] tracking-tight">
-                Novo<span className="text-[#2D6BE4]">Rise</span>
+              <span className="text-2xl font-bold text-[#1A1A2E] dark:text-white tracking-tight">
+                Novo<span className="text-[#2D6BE4] dark:text-cyan-400">Rise</span>
               </span>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-8 items-center">
+            <nav className="hidden md:flex space-x-6 items-center">
               <button 
                 onClick={() => {
                   setActiveView('home');
@@ -570,7 +595,7 @@ function NovoRiseMain() {
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }} 
                 className={`font-medium text-sm transition-colors ${
-                  activeView === 'home' ? 'text-[#2D6BE4]' : 'text-[#1A1A2E] hover:text-[#2D6BE4]'
+                  activeView === 'home' ? 'text-[#2D6BE4] dark:text-cyan-400 font-bold' : 'text-[#1A1A2E] dark:text-slate-300 hover:text-[#2D6BE4] dark:hover:text-cyan-400'
                 }`}
               >
                 Trouver un emploi
@@ -582,7 +607,7 @@ function NovoRiseMain() {
                   const el = document.getElementById('categories-section');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }} 
-                className="text-[#6B7280] hover:text-[#1A1A2E] font-medium text-sm transition-colors"
+                className="text-[#6B7280] dark:text-slate-400 hover:text-[#1A1A2E] dark:hover:text-white font-medium text-sm transition-colors"
               >
                 Secteurs d'activité
               </button>
@@ -596,7 +621,7 @@ function NovoRiseMain() {
                   className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-all ${
                     activeView === 'candidate-dashboard' || activeView === 'recruiter-dashboard'
                       ? 'bg-[#2D6BE4] text-white shadow-sm'
-                      : 'bg-gray-100 text-[#1A1A2E] hover:bg-gray-200'
+                      : 'bg-gray-100 dark:bg-slate-800 text-[#1A1A2E] dark:text-slate-200 hover:bg-gray-200 dark:hover:bg-slate-700'
                   }`}
                 >
                   <LayoutDashboard className="w-3.5 h-3.5" />
@@ -615,7 +640,7 @@ function NovoRiseMain() {
                 className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all border ${
                   showOnlySaved 
                     ? 'bg-[#2D6BE4] text-white border-[#2D6BE4]' 
-                    : 'bg-white text-[#6B7280] border-gray-200 hover:bg-gray-50 hover:text-[#1A1A2E]'
+                    : 'bg-white dark:bg-slate-900/60 text-[#6B7280] dark:text-slate-300 border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-[#1A1A2E] dark:hover:text-white'
                 }`}
               >
                 <Bookmark className="w-3.5 h-3.5" />
@@ -623,26 +648,41 @@ function NovoRiseMain() {
               </button>
             </nav>
 
-            {/* User Auth CTA / Profile Area */}
+            {/* User Auth CTA / Profile Area + Theme Toggle */}
             <div className="hidden md:flex items-center space-x-3">
+              {/* Theme Toggle Button */}
+              <button
+                type="button"
+                onClick={toggleDarkMode}
+                aria-label="Basculer le thème"
+                title={isDarkMode ? 'Passer en mode clair' : 'Passer en mode sombre'}
+                className="p-2 rounded-xl border border-gray-300/80 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 text-slate-700 dark:text-cyan-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all cursor-pointer shadow-sm hover:shadow dark:shadow-[0_0_12px_rgba(6,182,212,0.25)] active:scale-95"
+              >
+                {isDarkMode ? (
+                  <Sun className="w-4 h-4 text-amber-400" />
+                ) : (
+                  <Moon className="w-4 h-4 text-indigo-600" />
+                )}
+              </button>
+
               {isAuthenticated ? (
                 <div className="flex items-center gap-3">
                   <div 
                     onClick={() => setActiveView(user?.role === 'recruteur' ? 'recruiter-dashboard' : 'candidate-dashboard')}
-                    className="flex items-center gap-2.5 bg-gray-100 hover:bg-gray-200/80 px-3 py-1.5 rounded-lg border border-gray-200 cursor-pointer transition-colors"
+                    className="flex items-center gap-2.5 bg-gray-100 dark:bg-slate-900/80 hover:bg-gray-200/80 dark:hover:bg-slate-800 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-800 cursor-pointer transition-colors"
                   >
                     <div className="w-8 h-8 rounded-lg bg-[#2D6BE4] text-white flex items-center justify-center font-bold text-xs">
                       {user?.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="text-left">
-                      <div className="text-xs font-bold text-[#1A1A2E] line-clamp-1">{user?.name}</div>
-                      <div className="text-[10px] text-[#2D6BE4] font-semibold uppercase">{user?.role}</div>
+                      <div className="text-xs font-bold text-[#1A1A2E] dark:text-white line-clamp-1">{user?.name}</div>
+                      <div className="text-[10px] text-[#2D6BE4] dark:text-cyan-400 font-semibold uppercase">{user?.role}</div>
                     </div>
                   </div>
 
                   <button
                     onClick={logout}
-                    className="p-2 text-[#6B7280] hover:text-[#1A1A2E] hover:bg-gray-100 rounded-lg transition-colors"
+                    className="p-2 text-[#6B7280] dark:text-slate-400 hover:text-[#1A1A2E] dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                     title="Déconnexion"
                     aria-label="Déconnexion"
                   >
@@ -653,7 +693,7 @@ function NovoRiseMain() {
                 <>
                   <button 
                     onClick={() => { setAuthModalStep('login'); setAuthModalOpen(true); }}
-                    className="text-[#1A1A2E] font-medium text-sm px-4 py-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                    className="text-[#1A1A2E] dark:text-slate-200 font-medium text-sm px-4 py-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                   >
                     Connexion
                   </button>
@@ -667,11 +707,19 @@ function NovoRiseMain() {
               )}
             </div>
 
-            {/* Mobile menu button */}
-            <div className="md:hidden flex items-center gap-3">
+            {/* Mobile menu button & Theme toggle */}
+            <div className="md:hidden flex items-center gap-2">
+              <button
+                type="button"
+                onClick={toggleDarkMode}
+                aria-label="Basculer le thème"
+                className="p-1.5 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-cyan-400"
+              >
+                {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
+              </button>
               <button 
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-[#1A1A2E] hover:text-[#2D6BE4] focus:outline-none p-1"
+                className="text-[#1A1A2E] dark:text-white hover:text-[#2D6BE4] focus:outline-none p-1"
                 aria-label="Menu"
               >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -682,10 +730,10 @@ function NovoRiseMain() {
 
         {/* Mobile Menu Panel */}
         {isMobileMenuOpen && (
-          <div className="md:hidden bg-white px-4 pt-2 pb-6 space-y-3 shadow-lg border-b border-gray-200 animate-fade-in">
+          <div className="md:hidden bg-white dark:bg-[#0E172A] px-4 pt-2 pb-6 space-y-3 shadow-lg border-b border-gray-200 dark:border-slate-800 animate-fade-in text-slate-900 dark:text-white">
             <button 
               onClick={() => { setActiveView('home'); setIsMobileMenuOpen(false); }} 
-              className="block w-full text-left px-3 py-2 text-[#1A1A2E] font-medium rounded-md hover:bg-gray-100 text-xs"
+              className="block w-full text-left px-3 py-2 text-[#1A1A2E] dark:text-white font-medium rounded-md hover:bg-gray-100 dark:hover:bg-slate-800 text-xs"
             >
               Trouver un emploi
             </button>
@@ -697,13 +745,13 @@ function NovoRiseMain() {
                     setActiveView(user?.role === 'recruteur' ? 'recruiter-dashboard' : 'candidate-dashboard'); 
                     setIsMobileMenuOpen(false); 
                   }} 
-                  className="block w-full text-left px-3 py-2 text-[#2D6BE4] font-bold rounded-md hover:bg-gray-100 text-xs"
+                  className="block w-full text-left px-3 py-2 text-[#2D6BE4] dark:text-cyan-400 font-bold rounded-md hover:bg-gray-100 dark:hover:bg-slate-800 text-xs"
                 >
                   Mon Dashboard ({user?.role})
                 </button>
-                <div className="pt-2 border-t border-gray-100 flex justify-between items-center px-3">
-                  <span className="text-[#6B7280] text-xs">{user?.email}</span>
-                  <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="text-rose-600 font-bold text-xs flex items-center gap-1">
+                <div className="pt-2 border-t border-gray-100 dark:border-slate-800 flex justify-between items-center px-3">
+                  <span className="text-[#6B7280] dark:text-slate-400 text-xs">{user?.email}</span>
+                  <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="text-rose-600 dark:text-rose-400 font-bold text-xs flex items-center gap-1">
                     <LogOut className="w-3.5 h-3.5" /> Déconnexion
                   </button>
                 </div>
@@ -712,7 +760,7 @@ function NovoRiseMain() {
               <div className="pt-2 flex flex-col gap-2">
                 <button 
                   onClick={() => { setIsMobileMenuOpen(false); setAuthModalStep('login'); setAuthModalOpen(true); }}
-                  className="text-[#1A1A2E] font-medium px-4 py-2 border border-gray-300 rounded-lg text-xs hover:bg-gray-100"
+                  className="text-[#1A1A2E] dark:text-slate-200 font-medium px-4 py-2 border border-gray-300 dark:border-slate-700 rounded-lg text-xs hover:bg-gray-100 dark:hover:bg-slate-800"
                 >
                   Connexion
                 </button>
@@ -750,76 +798,83 @@ function NovoRiseMain() {
         <main>
           {/* HERO SECTION */}
           <section className="w-full py-16 md:py-24 px-4 flex flex-col items-center text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-[#1A1A2E] mb-4 tracking-tight">
-              Trouvez l'emploi qui vous correspond.
+            <h1 className="text-4xl md:text-5xl font-bold text-[#1A1A2E] dark:text-white mb-4 tracking-tight">
+              Trouvez l'emploi qui <br className="hidden sm:inline" />
+              <span className="bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-cyan-400 dark:via-sky-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                vous correspond.
+              </span>
             </h1>
-            <p className="text-lg text-[#6B7280] mb-10 max-w-2xl font-medium">
+            <p className="text-lg text-[#6B7280] dark:text-slate-300 mb-10 max-w-2xl font-medium">
               Découvrez des milliers d'offres d'emploi dans les meilleures entreprises. 
               Votre prochaine opportunité vous attend.
             </p>
 
-            {/* Prominent Search Bar */}
-            <form 
-              onSubmit={handleSearchSubmit}
-              className="w-full max-w-4xl bg-white rounded-2xl shadow-md p-2 flex flex-col md:flex-row items-center border border-gray-100"
-            >
-              <div className="flex items-center flex-1 w-full px-4 py-3 md:border-r border-gray-200">
-                <Search className="text-[#6B7280] w-5 h-5 mr-3 flex-shrink-0" />
-                <input 
-                  type="text" 
-                  value={searchKeyword}
-                  onChange={(e) => setSearchKeyword(e.target.value)}
-                  placeholder="Intitulé de poste, mots-clés, entreprise..." 
-                  className="w-full outline-none text-[#1A1A2E] bg-transparent placeholder-[#6B7280] text-base"
-                />
-                {searchKeyword && (
-                  <button 
-                    type="button" 
-                    onClick={() => setSearchKeyword('')} 
-                    className="text-[#6B7280] hover:text-[#1A1A2E] text-xs mr-2"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-              
-              <div className="flex items-center flex-1 w-full px-4 py-3 border-t md:border-t-0 border-gray-100">
-                <MapPin className="text-[#6B7280] w-5 h-5 mr-3 flex-shrink-0" />
-                <input 
-                  type="text" 
-                  value={locationKeyword}
-                  onChange={(e) => setLocationKeyword(e.target.value)}
-                  placeholder="Ville ou code postal" 
-                  className="w-full outline-none text-[#1A1A2E] bg-transparent placeholder-[#6B7280] text-base"
-                />
-                {locationKeyword && (
-                  <button 
-                    type="button" 
-                    onClick={() => setLocationKeyword('')} 
-                    className="text-[#6B7280] hover:text-[#1A1A2E] text-xs mr-2"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
+            {/* Prominent Search Bar (Effet Cyberpunk Glow en Dark Mode) */}
+            <div className="w-full max-w-4xl relative">
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-indigo-500/20 to-violet-500/20 blur-xl opacity-0 dark:opacity-100 transition-opacity pointer-events-none" />
 
-              <button 
-                type="submit"
-                className="w-full md:w-auto bg-[#2D6BE4] hover:bg-[#2D6BE4]/90 text-white px-8 py-3.5 rounded-xl font-semibold flex items-center justify-center transition-colors mt-2 md:mt-0 flex-shrink-0 cursor-pointer shadow-sm"
+              <form 
+                onSubmit={handleSearchSubmit}
+                className="relative w-full bg-white dark:bg-[#0E172A] rounded-2xl shadow-md dark:shadow-[0_0_25px_rgba(6,182,212,0.25)] p-2 flex flex-col md:flex-row items-center border border-gray-100 dark:border-cyan-500/40 transition-all"
               >
-                Rechercher
-              </button>
-            </form>
+                <div className="flex items-center flex-1 w-full px-4 py-3 md:border-r border-gray-200 dark:border-slate-800">
+                  <Search className="text-[#6B7280] dark:text-cyan-400 w-5 h-5 mr-3 flex-shrink-0" />
+                  <input 
+                    type="text" 
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyword(e.target.value)}
+                    placeholder="Intitulé de poste, mots-clés, entreprise..." 
+                    className="w-full outline-none text-[#1A1A2E] dark:text-white bg-transparent placeholder-[#6B7280] dark:placeholder-slate-400 text-base"
+                  />
+                  {searchKeyword && (
+                    <button 
+                      type="button" 
+                      onClick={() => setSearchKeyword('')} 
+                      className="text-[#6B7280] dark:text-slate-400 hover:text-[#1A1A2E] dark:hover:text-white text-xs mr-2"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+                
+                <div className="flex items-center flex-1 w-full px-4 py-3 border-t md:border-t-0 border-gray-100 dark:border-slate-800">
+                  <MapPin className="text-[#6B7280] dark:text-indigo-400 w-5 h-5 mr-3 flex-shrink-0" />
+                  <input 
+                    type="text" 
+                    value={locationKeyword}
+                    onChange={(e) => setLocationKeyword(e.target.value)}
+                    placeholder="Ville ou code postal" 
+                    className="w-full outline-none text-[#1A1A2E] dark:text-white bg-transparent placeholder-[#6B7280] dark:placeholder-slate-400 text-base"
+                  />
+                  {locationKeyword && (
+                    <button 
+                      type="button" 
+                      onClick={() => setLocationKeyword('')} 
+                      className="text-[#6B7280] dark:text-slate-400 hover:text-[#1A1A2E] dark:hover:text-white text-xs mr-2"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
+                <button 
+                  type="submit"
+                  className="w-full md:w-auto bg-[#2D6BE4] hover:bg-[#2D6BE4]/90 dark:bg-gradient-to-r dark:from-indigo-600 dark:to-cyan-600 dark:shadow-[0_0_15px_rgba(99,102,241,0.5)] text-white px-8 py-3.5 rounded-xl font-semibold flex items-center justify-center transition-all mt-2 md:mt-0 flex-shrink-0 cursor-pointer shadow-sm active:scale-95"
+                >
+                  Rechercher
+                </button>
+              </form>
+            </div>
             
             {/* Quick trending tags */}
             <div className="mt-8 flex flex-wrap justify-center items-center gap-2.5 text-sm">
-              <span className="text-[#6B7280] font-medium text-xs">Tendances :</span>
+              <span className="text-[#6B7280] dark:text-slate-300 font-medium text-xs">Tendances :</span>
               {['Développeur React', 'UI/UX Designer', 'Data Scientist', 'Casablanca', 'Remote'].map((tag) => (
                 <button 
                   key={tag} 
-                  type="button"
+                  type="button" 
                   onClick={() => handleTagClick(tag)}
-                  className="bg-white text-[#6B7280] hover:text-[#1A1A2E] px-3.5 py-1 rounded-full cursor-pointer hover:bg-gray-100 transition-all text-xs border border-gray-200/60 active:scale-95 shadow-sm"
+                  className="bg-white dark:bg-slate-900/60 text-[#6B7280] dark:text-slate-300 hover:text-[#1A1A2E] dark:hover:text-white px-3.5 py-1 rounded-full cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-800 transition-all text-xs border border-gray-200/60 dark:border-slate-700/80 active:scale-95 shadow-sm dark:hover:border-cyan-500/50"
                 >
                   {tag}
                 </button>
@@ -831,18 +886,18 @@ function NovoRiseMain() {
           <section id="categories-section" className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
             <div className="flex justify-between items-end mb-10">
               <div>
-                <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#2D6BE4] uppercase tracking-wider mb-2">
-                  <Sparkles className="w-3.5 h-3.5 text-[#2D6BE4]" /> Métiers & Secteurs
+                <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#2D6BE4] dark:text-cyan-400 uppercase tracking-wider mb-2">
+                  <Sparkles className="w-3.5 h-3.5 text-[#2D6BE4] dark:text-cyan-400" /> Métiers & Secteurs
                 </div>
-                <h2 className="text-3xl font-bold text-[#1A1A2E]">Opportunités recommandées</h2>
-                <p className="text-[#6B7280] mt-2 font-medium">Explorez les secteurs qui recrutent le plus activement aujourd'hui.</p>
+                <h2 className="text-3xl font-bold text-[#1A1A2E] dark:text-white">Opportunités recommandées</h2>
+                <p className="text-[#6B7280] dark:text-slate-300 mt-2 font-medium">Explorez les secteurs qui recrutent le plus activement aujourd'hui.</p>
               </div>
               <button 
                 onClick={() => {
                   setActiveCategory('Tous');
                   document.getElementById('offres-section')?.scrollIntoView({ behavior: 'smooth' });
                 }} 
-                className="hidden md:flex items-center text-[#2D6BE4] font-semibold hover:underline transition-colors text-sm"
+                className="hidden md:flex items-center text-[#2D6BE4] dark:text-cyan-400 font-semibold hover:underline transition-colors text-sm"
               >
                 Voir toutes les offres <ArrowRight className="ml-2 w-5 h-5" />
               </button>
@@ -859,23 +914,25 @@ function NovoRiseMain() {
                       setActiveCategory(catLabel);
                       document.getElementById('offres-section')?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className={`bg-white rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer border group ${
-                      activeCategory === catLabel ? 'border-[#2D6BE4] ring-2 ring-blue-400/20' : 'border-gray-100'
+                    className={`bg-white dark:bg-[#0E172A] rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer border group ${
+                      activeCategory === catLabel 
+                        ? 'border-[#2D6BE4] dark:border-cyan-400 ring-2 ring-blue-400/20 dark:ring-cyan-400/20' 
+                        : 'border-gray-100 dark:border-slate-800 hover:dark:border-cyan-500/40'
                     }`}
                   >
-                    <div className="w-12 h-12 rounded-xl bg-[#F8F7F5] border border-gray-100 flex items-center justify-center mb-4 text-2xl group-hover:bg-[#2D6BE4]/10 transition-colors">
+                    <div className="w-12 h-12 rounded-xl bg-[#F8F7F5] dark:bg-slate-800/80 border border-gray-100 dark:border-slate-700 flex items-center justify-center mb-4 text-2xl group-hover:bg-[#2D6BE4]/10 transition-colors">
                       {meta.icon}
                     </div>
-                    <h3 className="text-sm font-bold text-[#1A1A2E] mb-1 leading-tight group-hover:text-[#2D6BE4] transition-colors">{meta.label}</h3>
-                    <p className="text-[#6B7280] text-xs mb-2">{meta.count.toLocaleString('fr-FR')} offres</p>
+                    <h3 className="text-sm font-bold text-[#1A1A2E] dark:text-white mb-1 leading-tight group-hover:text-[#2D6BE4] dark:group-hover:text-cyan-400 transition-colors">{meta.label}</h3>
+                    <p className="text-[#6B7280] dark:text-slate-400 text-xs mb-2">{meta.count.toLocaleString('fr-FR')} offres</p>
                     <div className="flex flex-wrap gap-1 mb-3">
                       {meta.jobs.slice(0, 3).map(jobName => (
-                        <span key={jobName} className="text-[10px] bg-[#F8F7F5] text-[#6B7280] px-1.5 py-0.5 rounded border border-gray-100">
+                        <span key={jobName} className="text-[10px] bg-[#F8F7F5] dark:bg-slate-800/80 text-[#6B7280] dark:text-slate-300 px-1.5 py-0.5 rounded border border-gray-100 dark:border-slate-700">
                           {jobName}
                         </span>
                       ))}
                     </div>
-                    <div className="flex items-center text-xs font-semibold text-[#6B7280] group-hover:text-[#2D6BE4] transition-colors">
+                    <div className="flex items-center text-xs font-semibold text-[#6B7280] dark:text-slate-400 group-hover:text-[#2D6BE4] dark:group-hover:text-cyan-400 transition-colors">
                       Explorer <ArrowRight className="ml-1 w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all" />
                     </div>
                   </div>
@@ -884,13 +941,13 @@ function NovoRiseMain() {
             </div>
 
             {/* Tous les secteurs — grille compacte groupée */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-              <p className="text-xs font-bold text-[#6B7280] uppercase tracking-wider mb-4">Tous les secteurs ({JOB_CATEGORIES.length})</p>
+            <div className="bg-white dark:bg-[#0E172A] rounded-2xl border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
+              <p className="text-xs font-bold text-[#6B7280] dark:text-slate-400 uppercase tracking-wider mb-4">Tous les secteurs ({JOB_CATEGORIES.length})</p>
               {CATEGORY_GROUPS.map(group => {
                 const cats = JOB_CATEGORIES.filter(c => c.group === group);
                 return (
                   <div key={group} className="mb-4 last:mb-0">
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">{group}</p>
+                    <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest mb-2">{group}</p>
                     <div className="flex flex-wrap gap-2">
                       {cats.map(cat => (
                         <button
@@ -901,8 +958,8 @@ function NovoRiseMain() {
                           }}
                           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                             activeCategory === cat.label
-                              ? 'bg-[#1A1A2E] text-white shadow-sm'
-                              : 'bg-[#F8F7F5] border border-gray-200/60 text-[#6B7280] hover:border-[#2D6BE4] hover:text-[#2D6BE4]'
+                              ? 'bg-[#1A1A2E] dark:bg-cyan-500 text-white dark:text-slate-950 shadow-sm font-bold'
+                              : 'bg-[#F8F7F5] dark:bg-slate-800/60 border border-gray-200/60 dark:border-slate-700 text-[#6B7280] dark:text-slate-300 hover:border-[#2D6BE4] dark:hover:border-cyan-400 hover:text-[#2D6BE4] dark:hover:text-cyan-400'
                           }`}
                         >
                           <span>{cat.icon}</span>
@@ -921,8 +978,8 @@ function NovoRiseMain() {
             
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
               <div>
-                <h2 className="text-2xl font-bold text-[#1A1A2E]">Offres d'emploi ({filteredJobs.length})</h2>
-                <p className="text-[#6B7280] text-sm mt-1 font-medium">
+                <h2 className="text-2xl font-bold text-[#1A1A2E] dark:text-white">Offres d'emploi ({filteredJobs.length})</h2>
+                <p className="text-[#6B7280] dark:text-slate-400 text-sm mt-1 font-medium">
                   Découvrez nos opportunités sélectionnées selon vos critères
                 </p>
               </div>
@@ -930,7 +987,7 @@ function NovoRiseMain() {
               {(searchKeyword || locationKeyword || activeCategory !== 'Tous' || activeContract !== 'Tous' || activeWorkplace !== 'Tous' || showOnlySaved) && (
                 <button 
                   onClick={resetFilters}
-                  className="self-start md:self-auto text-xs font-semibold text-[#2D6BE4] hover:underline flex items-center gap-1 transition-colors"
+                  className="self-start md:self-auto text-xs font-semibold text-[#2D6BE4] dark:text-cyan-400 hover:underline flex items-center gap-1 transition-colors"
                 >
                   ✕ Réinitialiser les filtres
                 </button>
@@ -938,9 +995,9 @@ function NovoRiseMain() {
             </div>
 
             {/* Filter Bar */}
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-8 space-y-4">
+            <div className="bg-white dark:bg-[#0E172A] p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 mb-8 space-y-4 transition-colors">
               <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-                <span className="text-xs font-semibold text-[#6B7280] mr-1 flex items-center gap-1">
+                <span className="text-xs font-semibold text-[#6B7280] dark:text-slate-400 mr-1 flex items-center gap-1">
                   <Filter className="w-3.5 h-3.5" /> Secteur:
                 </span>
                 {/* Bouton Tous */}
@@ -948,8 +1005,8 @@ function NovoRiseMain() {
                   onClick={() => setActiveCategory('Tous')}
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                     activeCategory === 'Tous'
-                      ? 'bg-[#1A1A2E] text-white shadow-sm'
-                      : 'bg-[#F8F7F5] text-[#6B7280] hover:bg-gray-100'
+                      ? 'bg-[#1A1A2E] text-white shadow-sm dark:bg-cyan-500 dark:text-slate-950 font-bold'
+                      : 'bg-[#F8F7F5] dark:bg-slate-800/80 text-[#6B7280] dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700'
                   }`}
                 >
                   Tous
@@ -960,20 +1017,20 @@ function NovoRiseMain() {
                   <button
                     className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                       activeCategory !== 'Tous'
-                        ? 'bg-[#2D6BE4] text-white shadow-sm'
-                        : 'bg-[#F8F7F5] text-[#6B7280] hover:bg-gray-100'
+                        ? 'bg-[#2D6BE4] text-white shadow-sm dark:bg-cyan-500 dark:text-slate-950 font-bold'
+                        : 'bg-[#F8F7F5] dark:bg-slate-800/80 text-[#6B7280] dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700'
                     }`}
                   >
                     <Filter className="w-3 h-3" />
                     {activeCategory !== 'Tous' ? activeCategory : 'Choisir un secteur'}
                     <ChevronDown className="w-3 h-3" />
                   </button>
-                  <div className="absolute left-0 top-full mt-1 z-50 hidden group-hover:block w-[520px] bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 max-h-[420px] overflow-y-auto">
+                  <div className="absolute left-0 top-full mt-1 z-50 hidden group-hover:block w-[520px] bg-white dark:bg-[#0E172A] rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 p-4 max-h-[420px] overflow-y-auto">
                     {CATEGORY_GROUPS.map(group => {
                       const cats = JOB_CATEGORIES.filter(c => c.group === group);
                       return (
                         <div key={group} className="mb-3 last:mb-0">
-                          <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest mb-1.5 px-1">{group}</p>
+                          <p className="text-[10px] font-bold text-gray-400 dark:text-slate-400 uppercase tracking-widest mb-1.5 px-1">{group}</p>
                           <div className="flex flex-wrap gap-1.5">
                             {cats.map(cat => (
                               <button
@@ -981,8 +1038,8 @@ function NovoRiseMain() {
                                 onClick={() => setActiveCategory(cat.label)}
                                 className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
                                   activeCategory === cat.label
-                                    ? 'bg-[#1A1A2E] text-white'
-                                    : 'bg-[#F8F7F5] text-[#6B7280] hover:bg-blue-50 hover:text-[#2D6BE4]'
+                                    ? 'bg-[#1A1A2E] text-white dark:bg-cyan-500 dark:text-slate-950 font-bold'
+                                    : 'bg-[#F8F7F5] dark:bg-slate-800/60 text-[#6B7280] dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-cyan-500/10 hover:text-[#2D6BE4] dark:hover:text-cyan-400'
                                 }`}
                               >
                                 <span className="text-sm">{cat.icon}</span> {cat.label}
@@ -996,17 +1053,17 @@ function NovoRiseMain() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-gray-100 text-xs">
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-gray-100 dark:border-slate-800 text-xs">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-semibold text-[#6B7280]">Contrat:</span>
+                  <span className="font-semibold text-[#6B7280] dark:text-slate-400">Contrat:</span>
                   {['Tous', 'CDI', 'CDD', 'Freelance', 'Stage'].map(contract => (
                     <button
                       key={contract}
                       onClick={() => setActiveContract(contract)}
                       className={`px-2.5 py-1 rounded-lg transition-all ${
                         activeContract === contract 
-                          ? 'bg-[#2D6BE4] text-white font-bold' 
-                          : 'text-[#6B7280] hover:bg-gray-100'
+                          ? 'bg-[#2D6BE4] dark:bg-cyan-500 dark:text-slate-950 text-white font-bold' 
+                          : 'text-[#6B7280] dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       {contract}
@@ -1015,15 +1072,15 @@ function NovoRiseMain() {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-semibold text-[#6B7280]">Modalité:</span>
+                  <span className="font-semibold text-[#6B7280] dark:text-slate-400">Modalité:</span>
                   {['Tous', 'Remote', 'Hybride', 'Présentiel'].map(wp => (
                     <button
                       key={wp}
                       onClick={() => setActiveWorkplace(wp)}
                       className={`px-2.5 py-1 rounded-lg transition-all ${
                         activeWorkplace === wp 
-                          ? 'bg-[#1A1A2E] text-white font-bold' 
-                          : 'text-[#6B7280] hover:bg-gray-100'
+                          ? 'bg-[#1A1A2E] dark:bg-cyan-500 dark:text-slate-950 text-white font-bold' 
+                          : 'text-[#6B7280] dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       {wp}
@@ -1035,17 +1092,17 @@ function NovoRiseMain() {
 
             {/* Jobs Cards Grid */}
             {filteredJobs.length === 0 ? (
-              <div className="bg-white rounded-2xl p-12 text-center border border-gray-100 shadow-sm max-w-lg mx-auto">
-                <div className="w-16 h-16 bg-blue-50 text-[#2D6BE4] rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-white dark:bg-[#0E172A] rounded-2xl p-12 text-center border border-gray-100 dark:border-slate-800 shadow-sm max-w-lg mx-auto">
+                <div className="w-16 h-16 bg-blue-50 dark:bg-cyan-950/40 text-[#2D6BE4] dark:text-cyan-400 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Search className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-[#1A1A2E] mb-2">Aucune offre trouvée</h3>
-                <p className="text-[#6B7280] text-sm mb-6 font-medium">
+                <h3 className="text-xl font-bold text-[#1A1A2E] dark:text-white mb-2">Aucune offre trouvée</h3>
+                <p className="text-[#6B7280] dark:text-slate-400 text-sm mb-6 font-medium">
                   Aucune offre ne correspond exactement à vos critères. Essayez d'élargir votre recherche.
                 </p>
                 <button 
                   onClick={resetFilters}
-                  className="bg-[#2D6BE4] text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#2D6BE4]/90 transition-colors shadow-sm cursor-pointer"
+                  className="bg-[#2D6BE4] dark:bg-cyan-500 dark:text-slate-950 text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#2D6BE4]/90 dark:hover:bg-cyan-400 transition-colors shadow-sm cursor-pointer"
                 >
                   Réinitialiser les filtres
                 </button>
@@ -1058,21 +1115,21 @@ function NovoRiseMain() {
                     <div 
                       key={job.id}
                       onClick={() => setSelectedJob(job)}
-                      className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md border border-gray-100 transition-all group flex flex-col justify-between h-full cursor-pointer"
+                      className="bg-white dark:bg-[#0E172A] p-6 rounded-2xl shadow-sm hover:shadow-lg dark:hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] border border-gray-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-cyan-500/40 transition-all group flex flex-col justify-between h-full cursor-pointer"
                     >
                       <div>
                         {/* Header: Logo, Title, Bookmark */}
                         <div className="flex items-start justify-between gap-3 mb-4">
                           <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-xl bg-[#F8F7F5] border border-gray-100 flex items-center justify-center font-bold text-[#2D6BE4] text-xl shrink-0">
+                            <div className="w-12 h-12 rounded-xl bg-[#F8F7F5] dark:bg-slate-800 border border-gray-100 dark:border-slate-700 flex items-center justify-center font-bold text-[#2D6BE4] dark:text-cyan-400 text-xl shrink-0">
                               {job.logoText}
                             </div>
                             <div>
-                              <h3 className="text-lg font-semibold text-[#1A1A2E] group-hover:text-[#2D6BE4] transition-colors leading-tight line-clamp-1">
+                              <h3 className="text-lg font-semibold text-[#1A1A2E] dark:text-white group-hover:text-[#2D6BE4] dark:group-hover:text-cyan-400 transition-colors leading-tight line-clamp-1">
                                 {job.title}
                               </h3>
-                              <div className="flex items-center text-sm text-[#6B7280] mt-1 font-medium">
-                                <Building2 className="w-4 h-4 mr-1.5 text-[#6B7280]" />
+                              <div className="flex items-center text-sm text-[#6B7280] dark:text-slate-400 mt-1 font-medium">
+                                <Building2 className="w-4 h-4 mr-1.5 text-[#6B7280] dark:text-slate-400" />
                                 {job.company}
                               </div>
                             </div>
@@ -1081,7 +1138,7 @@ function NovoRiseMain() {
                           <button
                             onClick={(e) => toggleBookmark(job.id, e)}
                             className={`p-1.5 rounded-lg transition-colors ${
-                              isSaved ? 'text-[#2D6BE4] bg-blue-50' : 'text-gray-300 hover:text-[#2D6BE4]'
+                              isSaved ? 'text-[#2D6BE4] dark:text-cyan-400 bg-blue-50 dark:bg-cyan-950/40' : 'text-gray-300 dark:text-slate-600 hover:text-[#2D6BE4] dark:hover:text-cyan-400'
                             }`}
                             title={isSaved ? "Retirer des favoris" : "Enregistrer l'offre"}
                             aria-label="Enregistrer l'offre"
@@ -1092,32 +1149,32 @@ function NovoRiseMain() {
 
                         {/* Badges */}
                         <div className="flex flex-wrap gap-2 mb-4">
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#F8F7F5] text-[#6B7280] border border-gray-100">
-                            <MapPin className="w-3.5 h-3.5 mr-1 text-[#6B7280]" />
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#F8F7F5] dark:bg-slate-800/80 text-[#6B7280] dark:text-slate-300 border border-gray-100 dark:border-slate-700">
+                            <MapPin className="w-3.5 h-3.5 mr-1 text-[#6B7280] dark:text-slate-400" />
                             {job.location} ({job.workplace})
                           </span>
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#2D6BE4]/10 text-[#2D6BE4]">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#2D6BE4]/10 dark:bg-cyan-500/10 text-[#2D6BE4] dark:text-cyan-400">
                             <Briefcase className="w-3.5 h-3.5 mr-1" />
                             {job.contract}
                           </span>
                         </div>
 
-                        <p className="text-[#6B7280] text-xs line-clamp-2 mb-4 leading-relaxed font-medium">
+                        <p className="text-[#6B7280] dark:text-slate-400 text-xs line-clamp-2 mb-4 leading-relaxed font-medium">
                           {job.description}
                         </p>
                       </div>
 
                       {/* Footer: Time and Action Button */}
-                      <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-100">
-                        <div className="flex items-center text-xs text-[#6B7280] font-medium">
-                          <Clock className="w-4 h-4 mr-1.5 text-[#6B7280]" />
+                      <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-100 dark:border-slate-800">
+                        <div className="flex items-center text-xs text-[#6B7280] dark:text-slate-400 font-medium">
+                          <Clock className="w-4 h-4 mr-1.5 text-[#6B7280] dark:text-slate-400" />
                           {job.postedTime}
                         </div>
                         
                         <div className="flex items-center gap-2">
                           <button
                             onClick={(e) => { e.stopPropagation(); setSelectedJob(job); }}
-                            className="px-3 py-1.5 text-xs font-semibold text-[#6B7280] hover:text-[#1A1A2E] hover:bg-gray-100 rounded-lg transition-colors"
+                            className="px-3 py-1.5 text-xs font-semibold text-[#6B7280] dark:text-slate-400 hover:text-[#1A1A2E] dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                           >
                             Détails
                           </button>
@@ -1249,20 +1306,20 @@ function NovoRiseMain() {
       )}
 
       {/* FOOTER */}
-      <footer className="bg-white border-t border-gray-200/60 pt-16 pb-8 mt-10">
+      <footer className="bg-white dark:bg-[#070D18] border-t border-gray-200/60 dark:border-slate-800/80 pt-16 pb-8 mt-10 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             
             <div className="col-span-1 md:col-span-1">
               <div className="flex items-center gap-2 mb-4 cursor-pointer" onClick={() => { setActiveView('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
-                <div className="bg-[#2D6BE4] p-1.5 rounded-lg text-white shadow-sm">
+                <div className="bg-[#2D6BE4] dark:bg-cyan-500 p-1.5 rounded-lg text-white dark:text-slate-950 shadow-sm">
                   <TrendingUp className="w-5 h-5" strokeWidth={2.5} />
                 </div>
-                <span className="text-xl font-bold text-[#1A1A2E] tracking-tight">
-                  Novo<span className="text-[#2D6BE4]">Rise</span>
+                <span className="text-xl font-bold text-[#1A1A2E] dark:text-white tracking-tight">
+                  Novo<span className="text-[#2D6BE4] dark:text-cyan-400">Rise</span>
                 </span>
               </div>
-              <p className="text-[#6B7280] text-sm leading-relaxed mb-6 font-medium">
+              <p className="text-[#6B7280] dark:text-slate-400 text-sm leading-relaxed mb-6 font-medium">
                 Le point de rencontre entre les talents ambitieux et les entreprises innovantes. Votre prochaine opportunité commence ici.
               </p>
               
@@ -1271,7 +1328,7 @@ function NovoRiseMain() {
                   href="https://linkedin.com" 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="w-9 h-9 rounded-full bg-[#F8F7F5] hover:bg-[#2D6BE4] hover:text-white text-[#6B7280] flex items-center justify-center transition-colors shadow-sm"
+                  className="w-9 h-9 rounded-full bg-[#F8F7F5] dark:bg-slate-800 hover:bg-[#2D6BE4] dark:hover:bg-cyan-500 hover:text-white dark:hover:text-slate-950 text-[#6B7280] dark:text-slate-300 flex items-center justify-center transition-colors shadow-sm"
                   aria-label="LinkedIn"
                 >
                   <Linkedin className="w-4 h-4" />
@@ -1280,7 +1337,7 @@ function NovoRiseMain() {
                   href="https://twitter.com" 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="w-9 h-9 rounded-full bg-gray-100 hover:bg-[#FF9F1C] hover:text-white text-gray-600 flex items-center justify-center transition-colors shadow-sm"
+                  className="w-9 h-9 rounded-full bg-gray-100 dark:bg-slate-800 hover:bg-[#FF9F1C] dark:hover:bg-cyan-500 hover:text-white dark:hover:text-slate-950 text-gray-600 dark:text-slate-300 flex items-center justify-center transition-colors shadow-sm"
                   aria-label="Twitter / X"
                 >
                   <Twitter className="w-4 h-4" />
@@ -1289,7 +1346,7 @@ function NovoRiseMain() {
                   href="https://github.com" 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="w-9 h-9 rounded-full bg-gray-100 hover:bg-[#FF9F1C] hover:text-white text-gray-600 flex items-center justify-center transition-colors shadow-sm"
+                  className="w-9 h-9 rounded-full bg-gray-100 dark:bg-slate-800 hover:bg-[#FF9F1C] dark:hover:bg-cyan-500 hover:text-white dark:hover:text-slate-950 text-gray-600 dark:text-slate-300 flex items-center justify-center transition-colors shadow-sm"
                   aria-label="GitHub"
                 >
                   <Github className="w-4 h-4" />
@@ -1297,7 +1354,7 @@ function NovoRiseMain() {
                 <a 
                   href="#" 
                   onClick={(e) => { e.preventDefault(); showToast('Site officiel NovoRise'); }}
-                  className="w-9 h-9 rounded-full bg-gray-100 hover:bg-[#FF9F1C] hover:text-white text-gray-600 flex items-center justify-center transition-colors shadow-sm"
+                  className="w-9 h-9 rounded-full bg-gray-100 dark:bg-slate-800 hover:bg-[#FF9F1C] dark:hover:bg-cyan-500 hover:text-white dark:hover:text-slate-950 text-gray-600 dark:text-slate-300 flex items-center justify-center transition-colors shadow-sm"
                   aria-label="Site Web"
                 >
                   <Globe className="w-4 h-4" />
@@ -1306,15 +1363,15 @@ function NovoRiseMain() {
             </div>
             
             <div>
-              <h4 className="font-bold text-[#0B132B] mb-4">Candidats</h4>
-              <ul className="space-y-2 text-sm text-gray-500">
+              <h4 className="font-bold text-[#0B132B] dark:text-white mb-4">Candidats</h4>
+              <ul className="space-y-2 text-sm text-gray-500 dark:text-slate-400">
                 <li>
-                  <button onClick={() => { setActiveView('home'); document.getElementById('offres-section')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-[#2D6BE4] transition-colors text-left">
+                  <button onClick={() => { setActiveView('home'); document.getElementById('offres-section')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-[#2D6BE4] dark:hover:text-cyan-400 transition-colors text-left">
                     Rechercher un emploi
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => { setAuthModalStep('register'); setAuthModalOpen(true); }} className="hover:text-[#2D6BE4] transition-colors text-left">
+                  <button onClick={() => { setAuthModalStep('register'); setAuthModalOpen(true); }} className="hover:text-[#2D6BE4] dark:hover:text-cyan-400 transition-colors text-left">
                     Créer un profil
                   </button>
                 </li>
@@ -1326,12 +1383,12 @@ function NovoRiseMain() {
                       setAuthModalStep('register');
                       setAuthModalOpen(true);
                     }
-                  }} className="hover:text-[#2D6BE4] transition-colors text-left">
+                  }} className="hover:text-[#2D6BE4] dark:hover:text-cyan-400 transition-colors text-left">
                     Déposer son CV
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => showToast('Inscrivez-vous pour activer les alertes personnalisées')} className="hover:text-[#2D6BE4] transition-colors text-left">
+                  <button onClick={() => showToast('Inscrivez-vous pour activer les alertes personnalisées')} className="hover:text-[#2D6BE4] dark:hover:text-cyan-400 transition-colors text-left">
                     Alertes emploi
                   </button>
                 </li>
@@ -1339,8 +1396,8 @@ function NovoRiseMain() {
             </div>
 
             <div>
-              <h4 className="font-bold text-[#0B132B] mb-4">Recruteurs</h4>
-              <ul className="space-y-2 text-sm text-gray-500">
+              <h4 className="font-bold text-[#0B132B] dark:text-white mb-4">Recruteurs</h4>
+              <ul className="space-y-2 text-sm text-gray-500 dark:text-slate-400">
                 <li>
                   <button onClick={() => {
                     if (isAuthenticated && user?.role === 'recruteur') {
@@ -1349,7 +1406,7 @@ function NovoRiseMain() {
                       setAuthModalStep('register');
                       setAuthModalOpen(true);
                     }
-                  }} className="hover:text-[#2D6BE4] transition-colors text-left">
+                  }} className="hover:text-[#2D6BE4] dark:hover:text-cyan-400 transition-colors text-left">
                     Publier une annonce
                   </button>
                 </li>
@@ -1361,17 +1418,17 @@ function NovoRiseMain() {
                       setAuthModalStep('login');
                       setAuthModalOpen(true);
                     }
-                  }} className="hover:text-[#2D6BE4] transition-colors text-left">
+                  }} className="hover:text-[#2D6BE4] dark:hover:text-cyan-400 transition-colors text-left">
                     Accès CVthèque
                   </button>
                 </li>
                 <li>
-                  <a href="#solutions-section" className="hover:text-[#2D6BE4] transition-colors">
+                  <a href="#solutions-section" className="hover:text-[#2D6BE4] dark:hover:text-cyan-400 transition-colors">
                     Solutions Marque Employeur
                   </a>
                 </li>
                 <li>
-                  <button onClick={() => showToast('Grille tarifaire : contactez contact@novorise.com')} className="hover:text-[#2D6BE4] transition-colors text-left">
+                  <button onClick={() => showToast('Grille tarifaire : contactez contact@novorise.com')} className="hover:text-[#2D6BE4] dark:hover:text-cyan-400 transition-colors text-left">
                     Tarifs & Packs
                   </button>
                 </li>
@@ -1379,25 +1436,25 @@ function NovoRiseMain() {
             </div>
 
             <div>
-              <h4 className="font-bold text-[#0B132B] mb-4">NovoRise</h4>
-              <ul className="space-y-2 text-sm text-gray-500">
+              <h4 className="font-bold text-[#0B132B] dark:text-white mb-4">NovoRise</h4>
+              <ul className="space-y-2 text-sm text-gray-500 dark:text-slate-400">
                 <li>
-                  <a href="#" onClick={(e) => { e.preventDefault(); showToast('NovoRise — Plateforme RH & Recrutement'); }} className="hover:text-[#2D6BE4] transition-colors">
+                  <a href="#" onClick={(e) => { e.preventDefault(); showToast('NovoRise — Plateforme RH & Recrutement'); }} className="hover:text-[#2D6BE4] dark:hover:text-cyan-400 transition-colors">
                     À propos
                   </a>
                 </li>
                 <li>
-                  <a href="mailto:contact@novorise.com" className="hover:text-[#2D6BE4] transition-colors">
+                  <a href="mailto:contact@novorise.com" className="hover:text-[#2D6BE4] dark:hover:text-cyan-400 transition-colors">
                     Contactez-nous
                   </a>
                 </li>
                 <li>
-                  <a href="#" onClick={(e) => { e.preventDefault(); showToast('Politique de confidentialité conforme RGPD & CNDP'); }} className="hover:text-[#2D6BE4] transition-colors">
+                  <a href="#" onClick={(e) => { e.preventDefault(); showToast('Politique de confidentialité conforme RGPD & CNDP'); }} className="hover:text-[#2D6BE4] dark:hover:text-cyan-400 transition-colors">
                     Politique de confidentialité
                   </a>
                 </li>
                 <li>
-                  <a href="#" onClick={(e) => { e.preventDefault(); showToast('Conditions Générales d\'Utilisation de NovoRise'); }} className="hover:text-[#2D6BE4] transition-colors">
+                  <a href="#" onClick={(e) => { e.preventDefault(); showToast('Conditions Générales d\'Utilisation de NovoRise'); }} className="hover:text-[#2D6BE4] dark:hover:text-cyan-400 transition-colors">
                     CGU & Mentions Légales
                   </a>
                 </li>
@@ -1405,11 +1462,11 @@ function NovoRiseMain() {
             </div>
           </div>
           
-          <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-400 text-sm">
+          <div className="border-t border-gray-100 dark:border-slate-800/80 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-400 dark:text-slate-500 text-sm">
               © {new Date().getFullYear()} NovoRise. Tous droits réservés. Plateforme moderne d'emploi et de recrutement.
             </p>
-            <div className="flex items-center gap-6 text-xs text-gray-400">
+            <div className="flex items-center gap-6 text-xs text-gray-400 dark:text-slate-500">
               <span>Fait avec passion pour les talents de demain</span>
             </div>
           </div>
@@ -1419,7 +1476,7 @@ function NovoRiseMain() {
       {/* ================= MODAL: JOB DETAILS ================= */}
       {selectedJob && (
         <div className="fixed inset-0 z-50 bg-[#0B132B]/75 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
-          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative border border-slate-100 my-6">
+          <div className="bg-white dark:bg-[#0E172A] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative border border-slate-100 dark:border-slate-800 my-6 transition-colors">
             
             {/* Modal Top Header (NovoRise Theme) */}
             <div className="bg-gradient-to-r from-[#0B132B] via-[#1C2541] to-[#0B132B] text-white p-6 sm:p-8 relative overflow-hidden">
@@ -1427,7 +1484,7 @@ function NovoRiseMain() {
 
               <button 
                 onClick={() => setSelectedJob(null)}
-                className="absolute top-5 right-5 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors z-20"
+                className="absolute top-5 right-5 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors z-20 cursor-pointer"
                 aria-label="Fermer"
               >
                 <X className="w-5 h-5" />
@@ -1449,32 +1506,32 @@ function NovoRiseMain() {
 
             <div className="p-6 sm:p-8">
               <div className="flex flex-wrap gap-2 mb-6">
-                <span className="bg-slate-100 text-slate-800 text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1.5">
-                  <Briefcase className="w-3.5 h-3.5 text-slate-500" /> {selectedJob.contract}
+                <span className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1.5">
+                  <Briefcase className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" /> {selectedJob.contract}
                 </span>
-                <span className="bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1.5 border border-emerald-100">
-                  <Globe className="w-3.5 h-3.5 text-emerald-600" /> {selectedJob.workplace}
+                <span className="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1.5 border border-emerald-100 dark:border-emerald-800/40">
+                  <Globe className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> {selectedJob.workplace}
                 </span>
-                <span className="bg-blue-50 text-[#2D6BE4] text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1.5 border border-blue-100">
-                  <Clock className="w-3.5 h-3.5 text-[#2D6BE4]" /> {selectedJob.postedTime}
+                <span className="bg-blue-50 dark:bg-cyan-950/40 text-[#2D6BE4] dark:text-cyan-400 text-xs font-semibold px-3 py-1.5 rounded-xl flex items-center gap-1.5 border border-blue-100 dark:border-cyan-800/40">
+                  <Clock className="w-3.5 h-3.5 text-[#2D6BE4] dark:text-cyan-400" /> {selectedJob.postedTime}
                 </span>
-                <span className="bg-purple-50 text-purple-700 text-xs font-bold px-3 py-1.5 rounded-xl border border-purple-100">
+                <span className="bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 text-xs font-bold px-3 py-1.5 rounded-xl border border-purple-100 dark:border-purple-800/40">
                   💰 {selectedJob.salary}
                 </span>
               </div>
 
-              <div className="space-y-6 text-sm text-gray-700 border-t border-b border-gray-100 py-6">
+              <div className="space-y-6 text-sm text-gray-700 dark:text-slate-300 border-t border-b border-gray-100 dark:border-slate-800 py-6">
                 <div>
-                  <h4 className="font-extrabold text-[#0B132B] text-base mb-2">Description du poste</h4>
-                  <p className="leading-relaxed text-gray-600 text-xs sm:text-sm">{selectedJob.description}</p>
+                  <h4 className="font-extrabold text-[#0B132B] dark:text-white text-base mb-2">Description du poste</h4>
+                  <p className="leading-relaxed text-gray-600 dark:text-slate-400 text-xs sm:text-sm">{selectedJob.description}</p>
                 </div>
 
                 {selectedJob.missions && selectedJob.missions.length > 0 && (
                   <div>
-                    <h4 className="font-extrabold text-[#0B132B] text-base mb-2">Missions principales</h4>
+                    <h4 className="font-extrabold text-[#0B132B] dark:text-white text-base mb-2">Missions principales</h4>
                     <ul className="space-y-2">
                       {selectedJob.missions.map((mission, idx) => (
-                        <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-600">
+                        <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-600 dark:text-slate-400">
                           <Check className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
                           <span>{mission}</span>
                         </li>
@@ -1485,11 +1542,11 @@ function NovoRiseMain() {
 
                 {selectedJob.requirements && selectedJob.requirements.length > 0 && (
                   <div>
-                    <h4 className="font-extrabold text-[#0B132B] text-base mb-2">Profil recherché</h4>
+                    <h4 className="font-extrabold text-[#0B132B] dark:text-white text-base mb-2">Profil recherché</h4>
                     <ul className="space-y-2">
                       {selectedJob.requirements.map((req, idx) => (
-                        <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-600">
-                          <Check className="w-4 h-4 text-[#2D6BE4] mt-0.5 flex-shrink-0" />
+                        <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-600 dark:text-slate-400">
+                          <Check className="w-4 h-4 text-[#2D6BE4] dark:text-cyan-400 mt-0.5 flex-shrink-0" />
                           <span>{req}</span>
                         </li>
                       ))}
@@ -1499,11 +1556,11 @@ function NovoRiseMain() {
 
                 {selectedJob.benefits && selectedJob.benefits.length > 0 && (
                   <div>
-                    <h4 className="font-extrabold text-[#0B132B] text-base mb-2">Avantages offerts</h4>
+                    <h4 className="font-extrabold text-[#0B132B] dark:text-white text-base mb-2">Avantages offerts</h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {selectedJob.benefits.map((b, idx) => (
-                        <div key={idx} className="bg-slate-50 p-2.5 rounded-xl text-xs font-semibold text-slate-700 flex items-center gap-2 border border-slate-100">
-                          <Sparkles className="w-3.5 h-3.5 text-[#2D6BE4]" /> {b}
+                        <div key={idx} className="bg-slate-50 dark:bg-slate-800/80 p-2.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2 border border-slate-100 dark:border-slate-700">
+                          <Sparkles className="w-3.5 h-3.5 text-[#2D6BE4] dark:text-cyan-400" /> {b}
                         </div>
                       ))}
                     </div>
@@ -1514,11 +1571,11 @@ function NovoRiseMain() {
               <div className="flex items-center justify-between gap-4 mt-6">
                 <button
                   onClick={() => toggleBookmark(selectedJob.id)}
-                  className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-700 hover:text-[#0B132B] px-4 py-3 rounded-2xl border border-slate-200 hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-[#0B132B] dark:hover:text-white px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   {savedJobs.includes(selectedJob.id) ? (
                     <>
-                      <BookmarkCheck className="w-4 h-4 text-[#2D6BE4]" />
+                      <BookmarkCheck className="w-4 h-4 text-[#2D6BE4] dark:text-cyan-400" />
                       <span>Sauvegardée</span>
                     </>
                   ) : (
@@ -1535,7 +1592,7 @@ function NovoRiseMain() {
                     setSelectedJob(null);
                     setApplyJob(jobToApply);
                   }}
-                  className="bg-[#2D6BE4] hover:bg-[#2563EB] text-white px-8 py-3.5 rounded-2xl font-extrabold text-xs sm:text-sm shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40 transition-all transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                  className="bg-[#2D6BE4] hover:bg-[#2563EB] dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-slate-950 px-8 py-3.5 rounded-2xl font-extrabold text-xs sm:text-sm shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40 transition-all transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
                 >
                   Postuler maintenant
                 </button>
@@ -1549,7 +1606,7 @@ function NovoRiseMain() {
       {/* ================= MODAL: APPLY TO JOB (CANDIDATURE DIRECTE) ================= */}
       {applyJob && (
         <div className="fixed inset-0 z-50 bg-[#0B132B]/75 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
-          <div className="bg-white rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden border border-slate-100 relative my-4 max-h-[92vh] flex flex-col">
+          <div className="bg-white dark:bg-[#0E172A] rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800 relative my-4 max-h-[92vh] flex flex-col transition-colors">
             
             {/* Modal Top Header (NovoRise Blue Brand Theme) */}
             <div className="bg-gradient-to-r from-[#0B132B] via-[#1C2541] to-[#0B132B] text-white p-5 sm:p-6 relative overflow-hidden flex-shrink-0">
@@ -1595,7 +1652,7 @@ function NovoRiseMain() {
                 {/* Row 1: Nom & Email */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1 text-[11px]">Nom complet *</label>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1 text-[11px]">Nom complet *</label>
                     <div className="relative">
                       <User className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
                       <input 
@@ -1604,13 +1661,13 @@ function NovoRiseMain() {
                         defaultValue={user?.name || ''}
                         onChange={(e) => setApplyForm({...applyForm, fullName: e.target.value})}
                         placeholder="Ex: Sarah Alami"
-                        className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl pl-9 pr-3 py-2 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15"
+                        className="w-full border border-slate-200 dark:border-slate-700 focus:border-[#2D6BE4] dark:focus:border-cyan-400 rounded-xl pl-9 pr-3 py-2 outline-none transition-all text-xs text-slate-800 dark:text-white bg-slate-50/50 dark:bg-slate-800/60 focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-[#2D6BE4]/15"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1 text-[11px]">Email *</label>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1 text-[11px]">Email *</label>
                     <div className="relative">
                       <Mail className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
                       <input 
@@ -1619,7 +1676,7 @@ function NovoRiseMain() {
                         defaultValue={user?.email || ''}
                         onChange={(e) => setApplyForm({...applyForm, email: e.target.value})}
                         placeholder="sarah@exemple.com"
-                        className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl pl-9 pr-3 py-2 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15"
+                        className="w-full border border-slate-200 dark:border-slate-700 focus:border-[#2D6BE4] dark:focus:border-cyan-400 rounded-xl pl-9 pr-3 py-2 outline-none transition-all text-xs text-slate-800 dark:text-white bg-slate-50/50 dark:bg-slate-800/60 focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-[#2D6BE4]/15"
                       />
                     </div>
                   </div>
@@ -1627,7 +1684,7 @@ function NovoRiseMain() {
 
                 {/* Row 2: Téléphone */}
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1 text-[11px]">Téléphone *</label>
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1 text-[11px]">Téléphone *</label>
                   <div className="relative">
                     <Phone className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
                     <input 
@@ -1636,7 +1693,7 @@ function NovoRiseMain() {
                       value={applyForm.phone}
                       onChange={(e) => setApplyForm({...applyForm, phone: e.target.value})}
                       placeholder="+212 6..."
-                      className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl pl-9 pr-3 py-2 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15"
+                      className="w-full border border-slate-200 dark:border-slate-700 focus:border-[#2D6BE4] dark:focus:border-cyan-400 rounded-xl pl-9 pr-3 py-2 outline-none transition-all text-xs text-slate-800 dark:text-white bg-slate-50/50 dark:bg-slate-800/60 focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-[#2D6BE4]/15"
                     />
                   </div>
                 </div>
@@ -1645,8 +1702,8 @@ function NovoRiseMain() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-0.5">
                   {/* CV Upload */}
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1 text-[11px]">CV (Tous formats) *</label>
-                    <div className="border-2 border-dashed border-blue-200 hover:border-[#2D6BE4] bg-blue-50/30 hover:bg-blue-50/60 rounded-2xl p-3 text-center transition-all cursor-pointer relative group">
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1 text-[11px]">CV (Tous formats) *</label>
+                    <div className="border-2 border-dashed border-blue-200 dark:border-slate-700 hover:border-[#2D6BE4] dark:hover:border-cyan-400 bg-blue-50/30 dark:bg-slate-800/40 hover:bg-blue-50/60 dark:hover:bg-slate-800/70 rounded-2xl p-3 text-center transition-all cursor-pointer relative group">
                       <input 
                         type="file" 
                         accept=".pdf,.doc,.docx,.odt,.rtf,.txt,.jpg,.jpeg,.png,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
@@ -1656,22 +1713,22 @@ function NovoRiseMain() {
                         }}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                       />
-                      <div className="w-8 h-8 rounded-xl bg-blue-100 text-[#2D6BE4] flex items-center justify-center mx-auto mb-1 shadow-sm group-hover:scale-105 transition-transform">
+                      <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-slate-700 text-[#2D6BE4] dark:text-cyan-400 flex items-center justify-center mx-auto mb-1 shadow-sm group-hover:scale-105 transition-transform">
                         <FileText className="w-4 h-4" />
                       </div>
-                      <span className="text-xs font-bold text-slate-800 block truncate">
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block truncate">
                         {applyForm.fileName || user?.profile?.cvFileName 
                           ? `✓ ${applyForm.fileName || user?.profile?.cvFileName}` 
                           : 'Déposer votre CV'}
                       </span>
-                      <span className="text-[10px] text-slate-500 block">Format libre</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Format libre</span>
                     </div>
                   </div>
 
                   {/* Lettre de Motivation Upload */}
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1 text-[11px]">Lettre de Motivation (Optionnel)</label>
-                    <div className="border-2 border-dashed border-slate-200 hover:border-[#2D6BE4] bg-slate-50/50 hover:bg-blue-50/30 rounded-2xl p-3 text-center transition-all cursor-pointer relative group">
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1 text-[11px]">Lettre de Motivation (Optionnel)</label>
+                    <div className="border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-[#2D6BE4] dark:hover:border-cyan-400 bg-slate-50/50 dark:bg-slate-800/40 hover:bg-blue-50/30 dark:hover:bg-slate-800/70 rounded-2xl p-3 text-center transition-all cursor-pointer relative group">
                       <input 
                         type="file" 
                         accept=".pdf,.doc,.docx,.odt,.rtf,.txt,.jpg,.jpeg,.png,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
@@ -1681,22 +1738,22 @@ function NovoRiseMain() {
                         }}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                       />
-                      <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-500 group-hover:bg-blue-100 group-hover:text-[#2D6BE4] flex items-center justify-center mx-auto mb-1 shadow-sm group-hover:scale-105 transition-transform">
+                      <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 group-hover:bg-blue-100 group-hover:text-[#2D6BE4] dark:group-hover:text-cyan-400 flex items-center justify-center mx-auto mb-1 shadow-sm group-hover:scale-105 transition-transform">
                         <FileText className="w-4 h-4" />
                       </div>
-                      <span className="text-xs font-bold text-slate-800 block truncate">
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block truncate">
                         {applyForm.coverLetterFileName || user?.profile?.coverLetterFileName 
                           ? `✓ ${applyForm.coverLetterFileName || user?.profile?.coverLetterFileName}` 
                           : 'Déposer votre Lettre'}
                       </span>
-                      <span className="text-[10px] text-slate-500 block">Format libre</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Format libre</span>
                     </div>
                   </div>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block font-bold text-slate-700 text-[11px]">Message pour le recruteur (optionnel)</label>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 text-[11px]">Message pour le recruteur (optionnel)</label>
                     <button
                       type="button"
                       onClick={handleGenerateAICoverLetter}
@@ -1722,14 +1779,14 @@ function NovoRiseMain() {
                     value={applyForm.note}
                     onChange={(e) => setApplyForm({...applyForm, note: e.target.value})}
                     placeholder="Présentez brièvement vos motivations pour ce poste (ou cliquez sur 'Rédiger avec l'IA Gemini')..."
-                    className="w-full border border-slate-200 focus:border-[#2D6BE4] rounded-xl px-3 py-2 outline-none transition-all text-xs text-slate-800 bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-[#2D6BE4]/15 resize-none leading-relaxed"
+                    className="w-full border border-slate-200 dark:border-slate-700 focus:border-[#2D6BE4] dark:focus:border-cyan-400 rounded-xl px-3 py-2 outline-none transition-all text-xs text-slate-800 dark:text-white bg-slate-50/50 dark:bg-slate-800/60 focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-[#2D6BE4]/15 resize-none leading-relaxed"
                   />
                 </div>
 
                 <div className="pt-1">
                   <button 
                     type="submit"
-                    className="w-full bg-[#2D6BE4] hover:bg-[#2563EB] text-white py-3 rounded-2xl font-bold shadow-lg shadow-blue-600/20 hover:shadow-blue-600/35 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
+                    className="w-full bg-[#2D6BE4] hover:bg-[#2563EB] dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-slate-950 py-3 rounded-2xl font-bold shadow-lg shadow-blue-600/20 hover:shadow-blue-600/35 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
                   >
                     <Send className="w-4 h-4" />
                     <span>Envoyer ma candidature</span>
