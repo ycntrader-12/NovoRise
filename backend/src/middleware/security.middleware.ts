@@ -93,9 +93,27 @@ export const sanitizeInputs = (req: Request, _res: Response, next: NextFunction)
     return value;
   };
 
-  if (req.body && typeof req.body === 'object') req.body = sanitize(req.body);
-  if (req.query && typeof req.query === 'object') req.query = sanitize(req.query) as any;
-  if (req.params && typeof req.params === 'object') req.params = sanitize(req.params) as any;
+  if (req.body && typeof req.body === 'object') {
+    try {
+      req.body = sanitize(req.body);
+    } catch {
+      // Préserver le body si non-sérialisable
+    }
+  }
+
+  if (req.query && typeof req.query === 'object') {
+    try {
+      const sanitized = sanitize(req.query);
+      Object.defineProperty(req, 'query', {
+        value: sanitized,
+        writable: true,
+        configurable: true,
+        enumerable: true,
+      });
+    } catch {
+      // Préserver la query si getter non configurable
+    }
+  }
 
   next();
 };
