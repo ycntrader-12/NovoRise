@@ -1,0 +1,2982 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NovoRise — Recrutement & Emplois d'Avenir</title>
+  <meta name="description" content="Plateforme de recrutement sobre, moderne et transparente. Trouvez votre prochaine opportunité ou recrutez les meilleurs talents." />
+  
+  <!-- Google Fonts: Plus Jakarta Sans (titres) + Inter (texte courant) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ========================================================
+       VARIABLES CSS & DESIGN SYSTEM (8px GRID & WCAG AA)
+       ======================================================== */
+    :root {
+      /* Palette Principale : Vert Émeraude / Sarcelle Profond */
+      --primary: #0F766E;
+      --primary-hover: #115E59;
+      --primary-active: #134E4A;
+      --primary-subtle: #F0FDFA;
+      --primary-border: #99F6E4;
+      --primary-text: #0F766E;
+      
+      /* Neutres Chauds & Fonds */
+      --bg-body: #FAF9F6;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #F4F1EA;
+      --bg-muted: #EBE7DD;
+      
+      /* Bordures & Séparateurs */
+      --border: #E5E1D6;
+      --border-hover: #CBC5B6;
+      --border-focus: #0F766E;
+      
+      /* Typographie & Contrastes AA */
+      --text-main: #1C1917;
+      --text-secondary: #57534E;
+      --text-tertiary: #78716C;
+      --text-inverse: #FFFFFF;
+      
+      /* Statuts & Accents Discrets */
+      --success: #15803D;
+      --success-bg: #F0FDF4;
+      --warning: #B45309;
+      --warning-bg: #FFFBEB;
+      --danger: #B91C1C;
+      --danger-bg: #FEF2F2;
+      --info: #0369A1;
+      --info-bg: #F0F9FF;
+      
+      /* Ombres Légères et Délicates */
+      --shadow-xs: 0 1px 2px rgba(28, 25, 23, 0.04);
+      --shadow-sm: 0 2px 4px rgba(28, 25, 23, 0.05);
+      --shadow-md: 0 4px 12px -2px rgba(28, 25, 23, 0.08);
+      --shadow-lg: 0 12px 24px -4px rgba(28, 25, 23, 0.1);
+      
+      /* Rayons de Courbure Modérés */
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-full: 9999px;
+      
+      /* Polices & Typographie */
+      --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      /* Transitions Courtes & Fluides (150-200ms) */
+      --transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="dark"] {
+      --primary: #14B8A6;
+      --primary-hover: #2DD4BF;
+      --primary-active: #5EEAD4;
+      --primary-subtle: rgba(20, 184, 166, 0.12);
+      --primary-border: rgba(20, 184, 166, 0.3);
+      --primary-text: #2DD4BF;
+      
+      --bg-body: #0E1626;
+      --bg-surface: #152238;
+      --bg-subtle: #1C2D4A;
+      --bg-muted: #24385B;
+      
+      --border: #253754;
+      --border-hover: #374E75;
+      --border-focus: #14B8A6;
+      
+      --text-main: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-tertiary: #64748B;
+      --text-inverse: #0E1626;
+      
+      --success: #34D399;
+      --success-bg: rgba(52, 211, 153, 0.12);
+      --warning: #FBBF24;
+      --warning-bg: rgba(251, 191, 36, 0.12);
+      --danger: #F87171;
+      --danger-bg: rgba(248, 113, 113, 0.12);
+      --info: #38BDF8;
+      --info-bg: rgba(56, 189, 248, 0.12);
+      
+      --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.5;
+      transition: background-color 200ms ease, color 200ms ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-heading);
+      color: var(--text-main);
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.015em;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      background: none;
+      border: none;
+      outline: none;
+    }
+
+    /* Accessibilité : Focus Visible */
+    :focus-visible {
+      outline: 2px solid var(--border-focus);
+      outline-offset: 2px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    /* ========================================================
+       COMPOSANTS D'INTERFACE & BOUTONS
+       ======================================================== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--text-inverse);
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-surface);
+      color: var(--text-main);
+      border-color: var(--border);
+      box-shadow: var(--shadow-xs);
+    }
+    .btn-secondary:hover {
+      background-color: var(--bg-subtle);
+      border-color: var(--border-hover);
+    }
+
+    .btn-ghost {
+      color: var(--text-secondary);
+    }
+    .btn-ghost:hover {
+      background-color: var(--bg-subtle);
+      color: var(--text-main);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .badge-primary {
+      background-color: var(--primary-subtle);
+      color: var(--primary-text);
+      border: 1px solid var(--primary-border);
+    }
+    .badge-neutral {
+      background-color: var(--bg-subtle);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    /* Icônes SVG Inline */
+    .icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+    .icon-sm {
+      width: 15px;
+      height: 15px;
+    }
+    .icon-lg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* ========================================================
+       1. HEADER NAV
+       ======================================================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+      transition: background-color 200ms ease;
+    }
+
+    .header-inner {
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-md);
+      background-color: var(--primary);
+      color: var(--text-inverse);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .brand-name span {
+      color: var(--primary);
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-link {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      padding: 6px 0;
+      position: relative;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--primary);
+    }
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: var(--primary);
+      border-radius: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Switch Rôle Candidat / Recruteur */
+    .role-switcher {
+      display: inline-flex;
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 3px;
+      border-radius: var(--radius-full);
+      gap: 2px;
+    }
+    .role-btn {
+      padding: 5px 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+    .role-btn.active {
+      background-color: var(--bg-surface);
+      color: var(--text-main);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .theme-toggle-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      background-color: var(--bg-surface);
+      transition: var(--transition);
+    }
+    .theme-toggle-btn:hover {
+      background-color: var(--bg-subtle);
+      color: var(--text-main);
+    }
+
+    /* ========================================================
+       2. HERO SECTION
+       ======================================================== */
+    .hero-section {
+      padding: 64px 0 48px;
+      background: radial-gradient(circle at 50% 0%, var(--primary-subtle) 0%, transparent 65%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-content {
+      text-align: center;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    .hero-tag {
+      margin-bottom: 16px;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: var(--text-main);
+    }
+
+    .hero-subtitle {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      margin-bottom: 36px;
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Barre de Recherche Unifiée */
+    .search-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 8px;
+      box-shadow: var(--shadow-md);
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr auto;
+      gap: 8px;
+      align-items: center;
+      transition: var(--transition);
+    }
+    .search-card:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 6px 20px -2px rgba(15, 118, 110, 0.15);
+    }
+
+    .search-input-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background-color: var(--bg-subtle);
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      transition: var(--transition);
+    }
+    .search-input-group:focus-within {
+      background-color: var(--bg-surface);
+      border-color: var(--border-hover);
+    }
+
+    .search-input-group input, .search-input-group select {
+      width: 100%;
+      background: none;
+      border: none;
+      outline: none;
+      font-size: 0.875rem;
+      color: var(--text-main);
+    }
+    .search-input-group input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .hero-stats {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px dashed var(--border);
+    }
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    .stat-item strong {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+    .stat-bullet {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--primary);
+    }
+
+    /* ========================================================
+       3. FILTRES & BARRE D'AFFINAGE
+       ======================================================== */
+    .catalog-section {
+      padding: 40px 0 80px;
+      flex: 1;
+    }
+
+    .filters-bar {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .filters-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .contracts-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .pill-btn {
+      padding: 6px 13px;
+      font-size: 0.775rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+    .pill-btn:hover {
+      border-color: var(--border-hover);
+      color: var(--text-main);
+    }
+    .pill-btn.active {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: var(--text-inverse);
+    }
+
+    .filters-secondary-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) auto;
+      gap: 12px;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .select-filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .select-filter-group label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+    }
+    .select-filter-group select {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      color: var(--text-main);
+      outline: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .select-filter-group select:focus {
+      border-color: var(--primary);
+      background-color: var(--bg-surface);
+    }
+
+    .reset-btn {
+      font-size: 0.8125rem;
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: underline;
+      align-self: flex-end;
+      padding: 8px;
+    }
+    .reset-btn:hover {
+      color: var(--primary-hover);
+    }
+
+    /* Bar info résultats et tri */
+    .catalog-meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 16px;
+    }
+    .results-count {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .results-count span {
+      color: var(--primary);
+    }
+
+    .sort-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+    }
+    .sort-control select {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-main);
+      outline: none;
+    }
+
+    /* ========================================================
+       4. LISTE DES OFFRES (CARTES)
+       ======================================================== */
+    .jobs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 20px;
+    }
+
+    .job-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow-xs);
+      transition: var(--transition);
+      position: relative;
+      cursor: pointer;
+    }
+    .job-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .job-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .company-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: var(--radius-md);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .job-header-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .job-title {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: var(--transition);
+    }
+    .job-card:hover .job-title {
+      color: var(--primary);
+    }
+
+    .company-name {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .fav-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-tertiary);
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+    .fav-btn:hover {
+      color: var(--primary);
+      background-color: var(--primary-subtle);
+    }
+    .fav-btn.active {
+      color: #E11D48;
+    }
+    .fav-btn.active svg {
+      fill: currentColor;
+    }
+
+    .job-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+    .job-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .job-description-excerpt {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 16px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .job-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+    .skill-tag {
+      font-size: 0.72rem;
+      font-weight: 500;
+      background-color: var(--bg-subtle);
+      color: var(--text-secondary);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .job-card-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+
+    .posted-time {
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+    }
+
+    /* État aucun résultat */
+    .empty-state {
+      text-align: center;
+      padding: 64px 24px;
+      background-color: var(--bg-surface);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-lg);
+      max-width: 520px;
+      margin: 20px auto;
+    }
+    .empty-state-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-full);
+      background-color: var(--primary-subtle);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .empty-state h3 {
+      font-size: 1.125rem;
+      margin-bottom: 8px;
+    }
+    .empty-state p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    /* ========================================================
+       5. MODALE & PANNEAU LATÉRAL (DRAWER) DÉTAIL D'OFFRE
+       ======================================================== */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(14, 22, 38, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease;
+    }
+    .drawer-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 620px;
+      background-color: var(--bg-surface);
+      z-index: 51;
+      box-shadow: var(--shadow-lg);
+      transform: translateX(100%);
+      transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .drawer-panel.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background-color: var(--bg-surface);
+      z-index: 10;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .drawer-close-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-tertiary);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+    .drawer-close-btn:hover {
+      background-color: var(--bg-subtle);
+      color: var(--text-main);
+    }
+
+    .drawer-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .detail-section-title {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .detail-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .detail-list li {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.5;
+    }
+    .detail-list li::before {
+      content: '•';
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .benefit-item {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .drawer-footer {
+      padding: 18px 24px;
+      border-top: 1px solid var(--border);
+      background-color: var(--bg-surface);
+      position: sticky;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    /* ========================================================
+       6. MODALE DE CANDIDATURE (AVEC VALIDATION FORM)
+       ======================================================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(14, 22, 38, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      max-width: 520px;
+      width: 100%;
+      box-shadow: var(--shadow-lg);
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: scale(0.96);
+      transition: transform 200ms ease;
+    }
+    .modal-overlay.open .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .form-group label .required {
+      color: var(--danger);
+    }
+    .form-group input, .form-group textarea, .form-group select {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      font-size: 0.875rem;
+      color: var(--text-main);
+      outline: none;
+      transition: var(--transition);
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      background-color: var(--bg-surface);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-subtle);
+    }
+    .form-group.has-error input, .form-group.has-error textarea {
+      border-color: var(--danger);
+      background-color: var(--danger-bg);
+    }
+    .form-error-msg {
+      font-size: 0.75rem;
+      color: var(--danger);
+      font-weight: 500;
+      display: none;
+    }
+    .form-group.has-error .form-error-msg {
+      display: block;
+    }
+
+    /* Zone Drop CV */
+    .file-dropzone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      text-align: center;
+      background-color: var(--bg-subtle);
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+    .file-dropzone:hover, .file-dropzone.dragover {
+      border-color: var(--primary);
+      background-color: var(--primary-subtle);
+    }
+    .file-dropzone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .file-dropzone-text {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      margin-top: 6px;
+    }
+    .file-dropzone-name {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-top: 6px;
+      word-break: break-all;
+    }
+
+    /* ========================================================
+       7. ESPACE RECRUTEUR (TABLEAU DE BORD)
+       ======================================================== */
+    .recruiter-view {
+      display: none;
+    }
+    .recruiter-view.active {
+      display: block;
+    }
+    .candidate-view {
+      display: block;
+    }
+    .candidate-view.hidden {
+      display: none;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .kpi-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .kpi-title {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .kpi-value {
+      font-size: 2rem;
+      font-weight: 800;
+      font-family: var(--font-heading);
+      color: var(--text-main);
+    }
+    .kpi-sub {
+      font-size: 0.75rem;
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .recruiter-table-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-xs);
+    }
+    .table-header-bar {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.84rem;
+    }
+    table.data-table th {
+      background-color: var(--bg-subtle);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    table.data-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-main);
+    }
+    table.data-table tr:last-child td {
+      border-bottom: none;
+    }
+    table.data-table tr:hover td {
+      background-color: var(--bg-subtle);
+    }
+
+    .status-select {
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background-color: var(--bg-surface);
+      cursor: pointer;
+      outline: none;
+    }
+    .status-select.status-nouveau {
+      background-color: var(--info-bg);
+      color: var(--info);
+      border-color: var(--info);
+    }
+    .status-select.status-entretien {
+      background-color: var(--warning-bg);
+      color: var(--warning);
+      border-color: var(--warning);
+    }
+    .status-select.status-refuse {
+      background-color: var(--danger-bg);
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+    .status-select.status-embauche {
+      background-color: var(--success-bg);
+      color: var(--success);
+      border-color: var(--success);
+    }
+
+    /* ========================================================
+       8. FOOTER
+       ======================================================== */
+    .site-footer {
+      background-color: var(--bg-surface);
+      border-top: 1px solid var(--border);
+      padding: 56px 0 28px;
+      margin-top: auto;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-top: 12px;
+      max-width: 320px;
+      line-height: 1.6;
+    }
+
+    .footer-col h4 {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer-links a {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    .footer-bottom {
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 0.8125rem;
+      color: var(--text-tertiary);
+    }
+
+    .social-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .social-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    .social-btn:hover {
+      color: var(--primary);
+      background-color: var(--primary-subtle);
+      border-color: var(--primary-border);
+    }
+
+    /* Notification Toast */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toast {
+      background-color: var(--text-main);
+      color: var(--bg-surface);
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: slideInToast 200ms ease;
+    }
+    @keyframes slideInToast {
+      from { transform: translateY(12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Responsive Queries */
+    @media (max-width: 1024px) {
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-inner {
+        height: auto;
+        padding: 12px 0;
+        flex-wrap: wrap;
+      }
+      .main-nav {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+        padding-top: 8px;
+        gap: 18px;
+      }
+      .search-card {
+        grid-template-columns: 1fr;
+      }
+      .jobs-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+      .hero-stats {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================
+       1. HEADER
+       ======================================================== -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        
+        <!-- Logo -->
+        <a href="#offres" class="brand-logo" aria-label="Accueil NovoRise">
+          <div class="brand-mark">N</div>
+          <span class="brand-name">Novo<span>Rise</span></span>
+        </a>
+
+        <!-- Navigation principale -->
+        <nav class="main-nav" aria-label="Navigation principale">
+          <a href="#offres" class="nav-link active" id="nav-link-offres">Offres d'emploi</a>
+          <a href="#entreprises" class="nav-link" id="nav-link-entreprises">Entreprises</a>
+          <a href="#conseils" class="nav-link" id="nav-link-conseils">Conseils & Carrière</a>
+        </nav>
+
+        <!-- Actions : Rôle, Thème, Connexion, Publier -->
+        <div class="header-actions">
+          
+          <!-- Basculement Candidat / Recruteur -->
+          <div class="role-switcher" role="radiogroup" aria-label="Mode d'utilisation">
+            <button class="role-btn active" id="btn-mode-candidate" role="radio" aria-checked="true" title="Mode Candidat">
+              Candidat
+            </button>
+            <button class="role-btn" id="btn-mode-recruiter" role="radio" aria-checked="false" title="Mode Recruteur">
+              Recruteur
+            </button>
+          </div>
+
+          <!-- Bouton Dark Mode -->
+          <button class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Changer le thème" title="Basculer clair / sombre">
+            <svg class="icon icon-sm" id="theme-icon" viewBox="0 0 24 24">
+              <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" />
+            </svg>
+          </button>
+
+          <!-- Bouton Se connecter -->
+          <button class="btn btn-secondary" id="btn-login-modal">
+            Se connecter
+          </button>
+
+          <!-- Bouton Publier une offre -->
+          <button class="btn btn-primary" id="btn-post-job-cta">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Publier une offre
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================
+       VUE CANDIDAT (PAR DÉFAUT)
+       ======================================================== -->
+  <main class="candidate-view" id="candidate-view">
+    
+    <!-- 2. HERO SECTION -->
+    <section class="hero-section">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-tag">
+            <span class="badge badge-primary">
+              <span class="stat-bullet"></span>
+              Plateforme RH & Emploi de référence
+            </span>
+          </div>
+
+          <h1 class="hero-title">
+            Trouvez le poste qui valorise votre talent, sans compromis.
+          </h1>
+          <p class="hero-subtitle">
+            Accédez à des opportunités sélectionnées avec des grilles de salaire transparentes, un descriptif clair et une réponse garantie sous 72h.
+          </p>
+
+          <!-- Barre de Recherche -->
+          <form class="search-card" id="search-form" role="search" aria-label="Recherche d'offres">
+            <div class="search-input-group">
+              <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="search-keyword" placeholder="Métier, compétences, mot-clé..." aria-label="Mot-clé" />
+            </div>
+
+            <div class="search-input-group">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <input type="text" id="search-location" placeholder="Ville, région ou Remote" aria-label="Localisation" />
+            </div>
+
+            <div class="search-input-group">
+              <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+              <select id="search-contract" aria-label="Type de contrat">
+                <option value="Tous">Tous les contrats</option>
+                <option value="CDI">CDI</option>
+                <option value="CDD">CDD</option>
+                <option value="Freelance">Freelance</option>
+                <option value="Stage">Stage</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="padding: 12px 22px;">
+              Rechercher
+            </button>
+          </form>
+
+          <!-- Chiffres clés -->
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-bullet"></span>
+              <span><strong>3 420+</strong> offres actives vérifiées</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-bullet"></span>
+              <span><strong>98%</strong> de retours garantis sous 72h</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-bullet"></span>
+              <span><strong>1 250+</strong> entreprises partenaires</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 & 4. CATALOGUE & FILTRES -->
+    <section class="catalog-section" id="offres">
+      <div class="container">
+        
+        <!-- Panneau des filtres -->
+        <div class="filters-bar">
+          <!-- Ligne 1 : Pilules de contrat & favoris -->
+          <div class="filters-top-row">
+            <div class="contracts-pills" role="tablist" aria-label="Filtre par contrat">
+              <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-tertiary); margin-right: 4px;">Contrat :</span>
+              <button class="pill-btn active" data-contract="Tous">Tous</button>
+              <button class="pill-btn" data-contract="CDI">CDI</button>
+              <button class="pill-btn" data-contract="CDD">CDD</button>
+              <button class="pill-btn" data-contract="Freelance">Freelance</button>
+              <button class="pill-btn" data-contract="Stage">Stage</button>
+            </div>
+
+            <button class="btn btn-secondary btn-sm" id="btn-toggle-saved" style="padding: 6px 12px; font-size: 0.78rem;">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+              Mes favoris (<span id="saved-counter">0</span>)
+            </button>
+          </div>
+
+          <!-- Ligne 2 : Filtres secondaires détaillés -->
+          <div class="filters-secondary-row">
+            <div class="select-filter-group">
+              <label for="filter-workplace">Télétravail</label>
+              <select id="filter-workplace">
+                <option value="Tous">Toutes modalités</option>
+                <option value="Télétravail total">Télétravail total</option>
+                <option value="Hybride">Hybride</option>
+                <option value="Sur site">Sur site</option>
+              </select>
+            </div>
+
+            <div class="select-filter-group">
+              <label for="filter-experience">Expérience</label>
+              <select id="filter-experience">
+                <option value="Tous">Tous niveaux</option>
+                <option value="Débutant">Débutant (0 - 2 ans)</option>
+                <option value="Confirmé">Confirmé (3 - 5 ans)</option>
+                <option value="Senior">Senior (5+ ans)</option>
+              </select>
+            </div>
+
+            <div class="select-filter-group">
+              <label for="filter-salary">Fourchette de salaire</label>
+              <select id="filter-salary">
+                <option value="Tous">Tous salaires</option>
+                <option value="40k">&gt; 40 000 € / an</option>
+                <option value="50k">&gt; 50 000 € / an</option>
+                <option value="60k">&gt; 60 000 € / an</option>
+              </select>
+            </div>
+
+            <div class="select-filter-group">
+              <label for="filter-date">Date d'ajout</label>
+              <select id="filter-date">
+                <option value="Tous">Toutes dates</option>
+                <option value="1">Moins de 24 heures</option>
+                <option value="7">Moins de 7 jours</option>
+                <option value="30">Moins d'un mois</option>
+              </select>
+            </div>
+
+            <button class="reset-btn" id="btn-reset-filters">Réinitialiser les filtres</button>
+          </div>
+        </div>
+
+        <!-- En-tête de résultats + Tri -->
+        <div class="catalog-meta-bar">
+          <div class="results-count">
+            <span id="filtered-count">0</span> opportunité(s) correspondante(s)
+          </div>
+
+          <div class="sort-control">
+            <label for="sort-select">Trier par :</label>
+            <select id="sort-select">
+              <option value="recent">Plus récentes</option>
+              <option value="salary">Salaire le plus élevé</option>
+              <option value="title">Intitulé (A-Z)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Grille des Offres -->
+        <div class="jobs-grid" id="jobs-container" role="feed" aria-busy="false">
+          <!-- Les cartes d'emploi sont injectées dynamiquement par JS -->
+        </div>
+
+        <!-- État vide -->
+        <div class="empty-state" id="empty-state" style="display: none;">
+          <div class="empty-state-icon">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </div>
+          <h3>Aucune offre ne correspond à vos critères</h3>
+          <p>Essayez d'élargir votre recherche, de supprimer certains filtres ou de réinitialiser vos paramètres.</p>
+          <button class="btn btn-primary" id="btn-empty-reset">Réinitialiser les filtres</button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================
+       7. ESPACE RECRUTEUR (TABLEAU DE BORD)
+       ======================================================== -->
+  <main class="recruiter-view" id="recruiter-view">
+    <div class="container" style="padding-top: 40px; padding-bottom: 80px;">
+      
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h2 style="font-size: 1.75rem;">Espace Recruteur & Talents</h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Gérez vos offres actives, consultez les candidats et suivez les recrutements.</p>
+        </div>
+        <button class="btn btn-primary" id="btn-open-create-job">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Publier une nouvelle annonce
+        </button>
+      </div>
+
+      <!-- KPI Recruteur -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-title">Offres Actives</span>
+          <span class="kpi-value" id="kpi-active-jobs">12</span>
+          <span class="kpi-sub">En ligne & vérifiées</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Candidatures reçues</span>
+          <span class="kpi-value" id="kpi-candidates-count">8</span>
+          <span class="kpi-sub">+3 cette semaine</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Entretiens en cours</span>
+          <span class="kpi-value" id="kpi-interviews-count">3</span>
+          <span class="kpi-sub">Délai moyen : 48h</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Embauches finalisées</span>
+          <span class="kpi-value" id="kpi-hired-count">2</span>
+          <span class="kpi-sub">Taux de conversion : 25%</span>
+        </div>
+      </div>
+
+      <!-- Tableau de bord des candidatures -->
+      <div class="recruiter-table-card">
+        <div class="table-header-bar">
+          <h3 style="font-size: 1.05rem;">Candidatures récentes</h3>
+          <span class="badge badge-neutral">Pipeline en direct</span>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Candidat</th>
+                <th>Poste visé</th>
+                <th>Date d'envoi</th>
+                <th>CV & Contact</th>
+                <th>Statut du recrutement</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="recruiter-applications-body">
+              <!-- Rempli par JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========================================================
+       5. DÉTAIL D'UNE OFFRE (PANNEAU LATÉRAL DRAWER)
+       ======================================================== -->
+  <div class="drawer-overlay" id="drawer-overlay" aria-hidden="true"></div>
+  <aside class="drawer-panel" id="job-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-job-title">
+    
+    <div class="drawer-header">
+      <div style="display: flex; gap: 14px; align-items: center;">
+        <div class="company-logo" id="drawer-company-logo">TN</div>
+        <div>
+          <h2 id="drawer-job-title" style="font-size: 1.25rem;">Intitulé du poste</h2>
+          <div style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 2px;" id="drawer-company-info">Entreprise • Ville</div>
+        </div>
+      </div>
+      <button class="drawer-close-btn" id="drawer-close-btn" aria-label="Fermer le détail">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- Badges clés -->
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;" id="drawer-badges">
+        <!-- Badges dynamiques -->
+      </div>
+
+      <!-- Description -->
+      <div>
+        <h4 class="detail-section-title">Présentation du poste</h4>
+        <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6;" id="drawer-description">
+          Description complète...
+        </p>
+      </div>
+
+      <!-- Missions -->
+      <div>
+        <h4 class="detail-section-title">Missions principales</h4>
+        <ul class="detail-list" id="drawer-missions"></ul>
+      </div>
+
+      <!-- Profil recherché -->
+      <div>
+        <h4 class="detail-section-title">Profil & Compétences requises</h4>
+        <ul class="detail-list" id="drawer-requirements"></ul>
+      </div>
+
+      <!-- Avantages -->
+      <div>
+        <h4 class="detail-section-title">Avantages & Cadre de travail</h4>
+        <div class="benefits-grid" id="drawer-benefits"></div>
+      </div>
+    </div>
+
+    <div class="drawer-footer">
+      <button class="btn btn-secondary" id="drawer-save-btn">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+        <span id="drawer-save-text">Sauvegarder</span>
+      </button>
+
+      <button class="btn btn-primary" id="drawer-apply-btn" style="flex: 1;">
+        Postuler maintenant
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ========================================================
+       6. MODALE FORMULAIRE DE CANDIDATURE
+       ======================================================== -->
+  <div class="modal-overlay" id="apply-modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="apply-modal-title">
+      
+      <div class="modal-header">
+        <div>
+          <h3 id="apply-modal-title" style="font-size: 1.125rem;">Postuler à l'offre</h3>
+          <p style="font-size: 0.8125rem; color: var(--text-secondary);" id="apply-modal-subtitle">Poste chez Entreprise</p>
+        </div>
+        <button class="drawer-close-btn" id="apply-modal-close" aria-label="Fermer la modale">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <form id="apply-form" style="padding: 24px;" novalidate>
+        
+        <div class="form-group" id="group-fullname">
+          <label for="apply-fullname">Nom et Prénom <span class="required">*</span></label>
+          <input type="text" id="apply-fullname" placeholder="Ex: Sarah Alami" required />
+          <span class="form-error-msg">Veuillez renseigner votre nom complet.</span>
+        </div>
+
+        <div class="form-group" id="group-email">
+          <label for="apply-email">Adresse e-mail <span class="required">*</span></label>
+          <input type="email" id="apply-email" placeholder="sarah@exemple.com" required />
+          <span class="form-error-msg">Veuillez renseigner un email valide (ex: nom@domaine.com).</span>
+        </div>
+
+        <div class="form-group" id="group-phone">
+          <label for="apply-phone">Numéro de téléphone <span class="required">*</span></label>
+          <input type="tel" id="apply-phone" placeholder="06 12 34 56 78" required />
+          <span class="form-error-msg">Veuillez saisir un numéro de téléphone valide.</span>
+        </div>
+
+        <!-- Upload CV -->
+        <div class="form-group" id="group-cv">
+          <label>Curriculum Vitae (PDF, DOCX - Max 5Mo) <span class="required">*</span></label>
+          <div class="file-dropzone" id="cv-dropzone">
+            <input type="file" id="apply-cv" accept=".pdf,.doc,.docx" required />
+            <svg class="icon" viewBox="0 0 24 24" style="color: var(--primary); margin: 0 auto;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <div class="file-dropzone-text" id="cv-status-text">Glissez-déposez votre CV ou <strong>parcourez vos fichiers</strong></div>
+            <div class="file-dropzone-name" id="cv-file-name" style="display: none;"></div>
+          </div>
+          <span class="form-error-msg">Veuillez joindre votre CV pour postuler.</span>
+        </div>
+
+        <!-- Lettre de motivation -->
+        <div class="form-group">
+          <label for="apply-letter">Lettre de motivation ou mot d'accompagnement</label>
+          <textarea id="apply-letter" rows="3" placeholder="Présentez brièvement vos atouts pour ce poste..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
+          <button type="button" class="btn btn-ghost" id="apply-cancel-btn">Annuler</button>
+          <button type="submit" class="btn btn-primary" id="apply-submit-btn">
+            Transmettre ma candidature
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODALE DE CRÉATION D'OFFRE (RECRUTEUR)
+       ======================================================== */ -->
+  <div class="modal-overlay" id="create-job-modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="create-job-title">
+      <div class="modal-header">
+        <h3 id="create-job-title" style="font-size: 1.125rem;">Publier une nouvelle annonce</h3>
+        <button class="drawer-close-btn" id="create-job-close" aria-label="Fermer">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <form id="create-job-form" style="padding: 24px;" novalidate>
+        <div class="form-group">
+          <label for="job-in-title">Intitulé du poste *</label>
+          <input type="text" id="job-in-title" placeholder="Ex: Lead Développeur Node.js" required />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label for="job-in-company">Entreprise *</label>
+            <input type="text" id="job-in-company" placeholder="Ex: TechNova" required />
+          </div>
+          <div class="form-group">
+            <label for="job-in-location">Ville *</label>
+            <input type="text" id="job-in-location" placeholder="Ex: Paris" required />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label for="job-in-contract">Contrat</label>
+            <select id="job-in-contract">
+              <option value="CDI">CDI</option>
+              <option value="CDD">CDD</option>
+              <option value="Freelance">Freelance</option>
+              <option value="Stage">Stage</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="job-in-workplace">Modalité</label>
+            <select id="job-in-workplace">
+              <option value="Hybride">Hybride</option>
+              <option value="Télétravail total">Télétravail total</option>
+              <option value="Sur site">Sur site</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="job-in-salary">Rémunération annuelle brute</label>
+          <input type="text" id="job-in-salary" placeholder="Ex: 50k - 60k €" required />
+        </div>
+
+        <div class="form-group">
+          <label for="job-in-tags">Compétences clés (séparées par des virgules)</label>
+          <input type="text" id="job-in-tags" placeholder="React, Node.js, TypeScript, Docker" />
+        </div>
+
+        <div class="form-group">
+          <label for="job-in-desc">Courte description du poste</label>
+          <textarea id="job-in-desc" rows="3" placeholder="Présentation synthétique du rôle..." required></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+          <button type="button" class="btn btn-ghost" id="create-job-cancel">Annuler</button>
+          <button type="submit" class="btn btn-primary">Publier l'annonce</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <!-- ========================================================
+       8. FOOTER
+       ======================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        
+        <div class="footer-brand">
+          <div class="brand-logo">
+            <div class="brand-mark">N</div>
+            <span class="brand-name">Novo<span>Rise</span></span>
+          </div>
+          <p>
+            Plateforme d'emploi et de recrutement moderne, pensée pour rapprocher les entreprises exigeantes et les talents ambitieux en toute clarté.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Candidats</h4>
+          <ul class="footer-links">
+            <li><a href="#offres">Offres en CDI</a></li>
+            <li><a href="#offres">Missions Freelance</a></li>
+            <li><a href="#offres">Postes en Télétravail</a></li>
+            <li><a href="#offres">Grille des salaires 2026</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Recruteurs</h4>
+          <ul class="footer-links">
+            <li><a href="#" id="footer-link-post">Publier une annonce</a></li>
+            <li><a href="#" id="footer-link-recruiter">Tableau de bord</a></li>
+            <li><a href="#">Solutions Marque Employeur</a></li>
+            <li><a href="#">Tarifs & Abonnements</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Informations</h4>
+          <ul class="footer-links">
+            <li><a href="#">À propos de NovoRise</a></li>
+            <li><a href="#">Politique de confidentialité (RGPD)</a></li>
+            <li><a href="#">Conditions Générales</a></li>
+            <li><a href="#">Accessibilité & Démarche</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          © 2026 NovoRise Technologies. Tous droits réservés.
+        </div>
+        <div class="social-links">
+          <a href="https://linkedin.com" target="_blank" rel="noreferrer" class="social-btn" aria-label="LinkedIn">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+          </a>
+          <a href="https://twitter.com" target="_blank" rel="noreferrer" class="social-btn" aria-label="Twitter">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+          </a>
+          <a href="https://github.com" target="_blank" rel="noreferrer" class="social-btn" aria-label="GitHub">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================
+       JAVASCRIPT AUTONOME (LOGIQUE, FILTRAGE, INTERACTIONS)
+       ======================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      // 1. BASE DE DONNÉES FICTIVE RÉALISTE (12 OFFRES)
+      const INITIAL_JOBS = [
+        {
+          id: 'job-1',
+          title: 'Lead Développeur Full Stack (Node / React)',
+          company: 'FinTech Horizon',
+          logoText: 'FH',
+          location: 'Paris',
+          contract: 'CDI',
+          workplace: 'Hybride',
+          experience: 'Senior',
+          salary: '65k - 75k €',
+          salaryNum: 70000,
+          daysAgo: 1,
+          tags: ['React', 'Node.js', 'TypeScript', 'PostgreSQL', 'AWS'],
+          description: 'FinTech Horizon accélère la digitalisation du paiement B2B européen. Vous piloterez une équipe de 5 ingénieurs et concevrez une architecture événementielle robuste et scalable.',
+          missions: [
+            'Concevoir et déployer les nouvelles API de paiement sécurisées',
+            'Superviser les revues de code, la CI/CD et l’optimisation de la base de données',
+            'Collaborer avec l’équipe Produit pour définir la roadmap technique trimestrielle',
+            'Mentorer les développeurs juniors et garantir les standards de haute sécurité'
+          ],
+          requirements: [
+            '5+ années d’expérience robuste en TypeScript, Node.js et React',
+            'Expérience avérée sur des architectures microservices et AWS',
+            'Sens aigu de la sécurité des données et des tests automatisés',
+            'Excellente communication et leadership technique bienveillant'
+          ],
+          benefits: ['RTT (12 jours/an)', 'Mutuelle Alan prise en charge à 100%', 'Budget matériel 2 500 €', 'Participation & Intéressement']
+        },
+        {
+          id: 'job-2',
+          title: 'Product Designer Senior (UX & Design System)',
+          company: 'Lumina Health',
+          logoText: 'LH',
+          location: 'Lyon',
+          contract: 'CDI',
+          workplace: 'Télétravail total',
+          experience: 'Senior',
+          salary: '54k - 62k €',
+          salaryNum: 58000,
+          daysAgo: 2,
+          tags: ['Figma', 'Design System', 'User Research', 'Accessibilité'],
+          description: 'Lumina simplifie le suivi médical connecté des patients chroniques. Vous façonnerez une expérience soignée, rassurante et accessible au plus grand nombre.',
+          missions: [
+            'Piloter la recherche utilisateur et animer les ateliers de co-conception',
+            'Faire évoluer le Design System multiplateforme (Web & Mobile)',
+            'Garantir le respect strict des critères d’accessibilité WCAG AA',
+            'Collaborer au quotidien avec les équipes d’ingénierie et le Product Manager'
+          ],
+          requirements: [
+            '4+ années d’expérience en Product Design sur des applications SaaS complexes',
+            'Maîtrise approfondie de Figma, tokens de design et prototypage interactif',
+            'Portfolio démontrant une rigueur méthodologique centrée sur l’humain',
+            'Sensibilité prononcée pour l’accessibilité numérique'
+          ],
+          benefits: ['Télétravail à 100% avec prime équipement', 'Titres restaurant Swile', 'Horaires flexibles', 'Séminaire annuel à l’étranger']
+        },
+        {
+          id: 'job-3',
+          title: 'DevOps & Cloud Engineer (AWS / Terraform)',
+          company: 'DataSphere Analytics',
+          logoText: 'DS',
+          location: 'Nantes',
+          contract: 'CDI',
+          workplace: 'Hybride',
+          experience: 'Confirmé',
+          salary: '58k - 68k €',
+          salaryNum: 63000,
+          daysAgo: 3,
+          tags: ['Kubernetes', 'Terraform', 'AWS', 'Docker', 'Prometheus'],
+          description: 'DataSphere déploie des pipelines d’analyse de données massives. Vous assurerez la résilience, la sécurité et l’automatisation de notre infrastructure cloud.',
+          missions: [
+            'Maintenir et faire évoluer nos clusters Kubernetes sur AWS (EKS)',
+            'Automatiser le provisionnement d’infrastructures via Terraform (IaC)',
+            'Optimiser les pipelines CI/CD GitLab et réduire les temps de build',
+            'Mettre en place un monitoring prédictif avec Grafana et Prometheus'
+          ],
+          requirements: [
+            '3+ années d’expérience concrète sur un environnement cloud AWS et K8s',
+            'Excellente maîtrise du scripting (Python ou Bash) et de Terraform',
+            'Rigueur opérationnelle sur la haute disponibilité et la gestion d’incidents'
+          ],
+          benefits: ['2 jours de télétravail par semaine', 'Carte Ticket Restaurant', 'Prise en charge à 100% des certifications Cloud', 'Plan d’épargne salariale']
+        },
+        {
+          id: 'job-4',
+          title: 'Responsable Marketing Digital & Acquisition',
+          company: 'EcoVibe Retail',
+          logoText: 'EV',
+          location: 'Bordeaux',
+          contract: 'CDI',
+          workplace: 'Sur site',
+          experience: 'Confirmé',
+          salary: '45k - 52k €',
+          salaryNum: 48000,
+          daysAgo: 5,
+          tags: ['SEO', 'Google Ads', 'Analytics', 'Inbound Marketing', 'CRM'],
+          description: 'Marque éco-responsable en forte croissance, EcoVibe recherche son futur leader de l’acquisition digitale pour amplifier notre notoriété et fidéliser nos clients.',
+          missions: [
+            'Définir et exécuter la stratégie d’acquisition multi-canale (Paid, SEO, CRM)',
+            'Gérer le budget d’acquisition et optimiser le CAC (Coût d’Acquisition Client)',
+            'Superviser la création de contenus et animer la communauté engagée',
+            'Analyser les KPI de conversion et présenter les bilans au board'
+          ],
+          requirements: [
+            '3 à 5 ans d’expérience réussie en e-commerce ou marque D2C',
+            'Esprit analytique affûté et maîtrise poussée de GA4 et HubSpot',
+            'Créativité alliée à un réel souci de rentabilité (ROAS / LTV)'
+          ],
+          benefits: ['Réductions substantielles sur le catalogue', 'Locaux en plein centre-ville', 'Tickets restaurants', 'Vendredis après-midi allégés']
+        },
+        {
+          id: 'job-5',
+          title: 'Ingénieur Data Platform (Python / Snowflake)',
+          company: 'NovaPulse Tech',
+          logoText: 'NP',
+          location: 'Paris',
+          contract: 'CDI',
+          workplace: 'Hybride',
+          experience: 'Confirmé',
+          salary: '60k - 72k €',
+          salaryNum: 66000,
+          daysAgo: 4,
+          tags: ['Python', 'Snowflake', 'dbt', 'Airflow', 'SQL'],
+          description: 'NovaPulse transforme les données télémétriques en insights temps réel. Vous concevrez des entrepôts de données modernes et des pipelines d’une fiabilité absolue.',
+          missions: [
+            'Modéliser les entrepôts de données Snowflake avec dbt',
+            'Construire des flux ETL/ELT fiables orchestrés par Apache Airflow',
+            'Garantir la qualité, la traçabilité et la gouvernance des données',
+            'Accompagner les Data Analysts dans l’optimisation de leurs requêtes'
+          ],
+          requirements: [
+            'Solide expertise SQL et Python orienté data manipulation',
+            'Expérience prouvée sur Snowflake, BigQuery ou Databricks',
+            'Connaissance des bonnes pratiques de modélisation (Kimball, Data Vault)'
+          ],
+          benefits: ['Prime sur objectifs annuelle', 'Mutuelle premium', 'Abonnement Gymlib financé', 'Budget formation illimité']
+        },
+        {
+          id: 'job-6',
+          title: 'Talent Acquisition Manager (Tech & Sales)',
+          company: 'ScaleUp Partners',
+          logoText: 'SP',
+          location: 'Casablanca',
+          contract: 'CDI',
+          workplace: 'Hybride',
+          experience: 'Confirmé',
+          salary: '35k - 45k MAD',
+          salaryNum: 48000,
+          daysAgo: 6,
+          tags: ['Sourcing', 'LinkedIn Recruiter', 'Chasse de tête', 'ATS'],
+          description: 'Cabinet de conseil en forte expansion, ScaleUp Partners accompagne les licornes technologiques dans le recrutement de leurs talents clés.',
+          missions: [
+            'Prendre en charge l’intégralité du cycle de recrutement (du brief à l’offre)',
+            'Chasser activement les profils pénuriques (Développeurs, Sales B2B)',
+            'Assurer une expérience candidat bienveillante, fluide et transparente',
+            'Participer aux salons professionnels et événements Tech'
+          ],
+          requirements: [
+            '3+ années d’expérience en cabinet de recrutement ou en startup en forte croissance',
+            'Excellent relationnel et capacité éprouvée d’évaluation des compétences',
+            'Maîtrise courante du français et de l’anglais professionnel'
+          ],
+          benefits: ['Commissions attractives non plafonnées', 'MacBook Pro fourni', 'Assurance santé privée', '2 jours de télétravail']
+        },
+        {
+          id: 'job-7',
+          title: 'Customer Success Manager B2B',
+          company: 'Aura SaaS',
+          logoText: 'AS',
+          location: 'Paris',
+          contract: 'CDI',
+          workplace: 'Hybride',
+          experience: 'Confirmé',
+          salary: '42k - 48k €',
+          salaryNum: 45000,
+          daysAgo: 8,
+          tags: ['Onboarding', 'NPS', 'Up-sell', 'Churn Reduction', 'HubSpot'],
+          description: 'Aura propose une solution de gestion des achats pour les PME. Votre mission : maximiser la satisfaction client, l’adoption et la fidélisation de nos comptes.',
+          missions: [
+            'Gérer l’onboarding et la formation des nouveaux clients stratégiques',
+            'Suivre la santé des comptes et anticiper proactivement les risques d’attrition',
+            'Identifier les opportunités d’expansion de licence et d’upsell',
+            'Faire remonter les retours terrain prioritaires à l’équipe Produit'
+          ],
+          requirements: [
+            '2 à 4 ans d’expérience en Customer Success sur un logiciel B2B SaaS',
+            'Excellente empathie, écoute active et compétences pédagogiques',
+            'Orientation résultats et maîtrise du pilotage de portefeuille'
+          ],
+          benefits: ['Bonus trimestriel sur rétention', 'Cadre de travail chaleureux', 'Formations continues', 'Événements d’équipe réguliers']
+        },
+        {
+          id: 'job-8',
+          title: 'Développeur Frontend Vue.js / Nuxt',
+          company: 'Studio Pixel',
+          logoText: 'PX',
+          location: 'Lille',
+          contract: 'CDD',
+          workplace: 'Télétravail total',
+          experience: 'Débutant',
+          salary: '38k - 44k €',
+          salaryNum: 41000,
+          daysAgo: 1,
+          tags: ['Vue.js', 'Nuxt.js', 'Tailwind CSS', 'TypeScript'],
+          description: 'Studio Pixel conçoit des plateformes digitales sur-mesure pour de grandes marques. Rejoignez notre pôle front-end pour une mission passionnante de 12 mois.',
+          missions: [
+            'Intégrer des interfaces réactives au pixel-près d’après les maquettes Figma',
+            'Optimiser les performances web (Core Web Vitals) et l’accessibilité',
+            'Développer des composants modulaires et testés unitairement'
+          ],
+          requirements: [
+            '1 à 3 ans d’expérience sur Vue 3 (Composition API) ou Nuxt',
+            'Maîtrise sans faille de HTML5 sémantique, CSS moderne et TypeScript',
+            'Sens aigu du détail visuel et de la fluidité des micro-interactions'
+          ],
+          benefits: ['Contrat 12 mois renouvelable', '100% remote possible', 'Tickets restaurant Swile', 'Équipe technique bienveillante']
+        },
+        {
+          id: 'job-9',
+          title: 'Bras Droit CEO / Chef de Projet Stratégie',
+          company: 'GreenFlow Mobility',
+          logoText: 'GF',
+          location: 'Paris',
+          contract: 'Stage',
+          workplace: 'Sur site',
+          experience: 'Débutant',
+          salary: '1 400 € / mois',
+          salaryNum: 16800,
+          daysAgo: 2,
+          tags: ['Stratégie', 'Business Plan', 'Ops', 'Levée de fonds'],
+          description: 'Startup spécialisée dans la logistique urbaine décarbonée, nous recherchons un(e) stagiaire de fin d’études brillant(e) pour assister le fondateur.',
+          missions: [
+            'Préparer les analyses de marché et les dossiers de levée de fonds',
+            'Optimiser les process opérationnels et mettre en place des dashboards',
+            'Participer aux négociations avec les partenaires et fournisseurs clés'
+          ],
+          requirements: [
+            'Étudiant(e) en dernière année d’école de commerce ou d’ingénieur de premier rang',
+            'Grande rigueur de synthèse, autonomie et proactivité reconnue',
+            'Maîtrise avancée d’Excel / Google Sheets et de la modélisation financière'
+          ],
+          benefits: ['Remboursement transport à 100%', 'Possibilité réelle d’embauche en CDI', 'Repas d’équipe hebdomadaires', 'Autonomie totale']
+        },
+        {
+          id: 'job-10',
+          title: 'Consultant Sécurité Informatique & Cybersécurité',
+          company: 'CyberVault Solutions',
+          logoText: 'CV',
+          location: 'Rennes',
+          contract: 'Freelance',
+          workplace: 'Hybride',
+          experience: 'Senior',
+          salary: '550 - 650 € / jour',
+          salaryNum: 120000,
+          daysAgo: 10,
+          tags: ['Audit', 'Pentest', 'ISO 27001', 'SOC', 'Cloud Security'],
+          description: 'Mission de 6 mois renouvelable pour accompagner la mise en conformité de systèmes bancaires et industriels hautement sécurisés.',
+          missions: [
+            'Réaliser des audits d’architecture et des tests d’intrusion (pentests)',
+            'Rédiger les rapports de vulnérabilités et préconiser des correctifs concrets',
+            'Accompagner la certification ISO 27001 et la gouvernance interne'
+          ],
+          requirements: [
+            '5+ années d’expérience confirmée en sécurité des systèmes d’information',
+            'Certifications appréciées (CISSP, CEH, OSCP ou CISM)',
+            'Capacité à vulgariser les enjeux critiques auprès des directions générales'
+          ],
+          benefits: ['TJM compétitif', 'Facturation à 30 jours garantie', 'Cadre de mission clair', 'Renouvellement probable']
+        },
+        {
+          id: 'job-11',
+          title: 'Directeur Artistique & Brand Lead',
+          company: 'Maison Auguste',
+          logoText: 'MA',
+          location: 'Paris',
+          contract: 'CDI',
+          workplace: 'Sur site',
+          experience: 'Senior',
+          salary: '50k - 60k €',
+          salaryNum: 55000,
+          daysAgo: 7,
+          tags: ['Branding', 'Direction Artistique', 'Motion', 'Typographie'],
+          description: 'Maison Auguste incarne l’artisanat d’exception contemporain. Nous recherchons une vision créative singulière pour orchestrer notre identité de marque globale.',
+          missions: [
+            'Définir la charte graphique et la signature visuelle de toutes les collections',
+            'Concevoir les campagnes digitales, le packaging et les supports print',
+            'Piloter les shootings photos, les tournages et superviser les créatifs freelance'
+          ],
+          requirements: [
+            '5+ années en direction artistique (agences de luxe, design studio ou marques)',
+            'Portfolio d’une rare élégance démontrant une maîtrise typographique pointue',
+            'Capacité à marier intemporalité et modernité numérique'
+          ],
+          benefits: ['Studio créatif spacieux dans le 3e arrondissement', 'Dotation annuelle de produits', 'Assurance santé haut de gamme']
+        },
+        {
+          id: 'job-12',
+          title: 'Ingénieur QA & Automatisation de Tests',
+          company: 'OmniCloud Software',
+          logoText: 'OC',
+          location: 'Toulouse',
+          contract: 'CDI',
+          workplace: 'Télétravail total',
+          experience: 'Confirmé',
+          salary: '45k - 54k €',
+          salaryNum: 50000,
+          daysAgo: 3,
+          tags: ['Playwright', 'Cypress', 'Jest', 'CI/CD', 'API Testing'],
+          description: 'OmniCloud édite une suite collaborative adoptée par 500 000 utilisateurs. Rejoignez notre guilde qualité pour bâtir une couverture de tests sans faille.',
+          missions: [
+            'Concevoir et maintenir la suite de tests automatisés E2E sous Playwright',
+            'Automatiser les tests d’API et de non-régression dans les pipelines GitHub Actions',
+            'Collaborer avec les développeurs dès la phase de spécification (approche BDD)',
+            'Auditer les performances et traquer les régressions avant chaque release'
+          ],
+          requirements: [
+            '2 à 5 ans d’expérience en assurance qualité logicielle automatisée',
+            'Maîtrise démontrée de Playwright ou Cypress en TypeScript/JavaScript',
+            'Sens aigu du détail, rigueur et goût du zéro bug'
+          ],
+          benefits: ['100% télétravail', 'Budget équipement de bureau 1 000 €', 'Abonnement tech & conférences financé', 'Prime de vacances']
+        }
+      ];
+
+      // Candidatures de démonstration dans l'espace recruteur
+      let recruiterApplications = [
+        {
+          id: 'app-1',
+          name: 'Sarah Alami',
+          email: 'sarah.alami@email.com',
+          phone: '+33 6 12 34 56 78',
+          jobTitle: 'Lead Développeur Full Stack',
+          date: 'Il y a 1 jour',
+          cvName: 'CV_Sarah_Alami_LeadDev.pdf',
+          status: 'Entretien'
+        },
+        {
+          id: 'app-2',
+          name: 'Mehdi Benjelloun',
+          email: 'mehdi.b@email.com',
+          phone: '+33 6 88 99 00 11',
+          jobTitle: 'DevOps & Cloud Engineer',
+          date: 'Il y a 2 jours',
+          cvName: 'CV_Mehdi_Benjelloun.pdf',
+          status: 'Nouveau'
+        },
+        {
+          id: 'app-3',
+          name: 'Clara Dubois',
+          email: 'clara.dubois@design.fr',
+          phone: '+33 6 44 55 66 77',
+          jobTitle: 'Product Designer Senior',
+          date: 'Il y a 3 jours',
+          cvName: 'Portfolio_ClaraDubois.pdf',
+          status: 'Embauché'
+        }
+      ];
+
+      // État de l'application
+      let allJobs = [...INITIAL_JOBS];
+      let savedJobIds = new Set(JSON.parse(localStorage.getItem('novorise_saved_jobs') || '[]'));
+      let selectedJobForApply = null;
+      let activeFilterContract = 'Tous';
+      let showOnlySaved = false;
+
+      // Éléments du DOM
+      const jobsContainer = document.getElementById('jobs-container');
+      const emptyState = document.getElementById('empty-state');
+      const filteredCountEl = document.getElementById('filtered-count');
+      const savedCounterEl = document.getElementById('saved-counter');
+      const toastContainer = document.getElementById('toast-container');
+
+      // Vues
+      const candidateView = document.getElementById('candidate-view');
+      const recruiterView = document.getElementById('recruiter-view');
+      const btnModeCandidate = document.getElementById('btn-mode-candidate');
+      const btnModeRecruiter = document.getElementById('btn-mode-recruiter');
+
+      // Drawer Détail
+      const drawerOverlay = document.getElementById('drawer-overlay');
+      const jobDrawer = document.getElementById('job-drawer');
+      const drawerCloseBtn = document.getElementById('drawer-close-btn');
+      const drawerApplyBtn = document.getElementById('drawer-apply-btn');
+      const drawerSaveBtn = document.getElementById('drawer-save-btn');
+      const drawerSaveText = document.getElementById('drawer-save-text');
+
+      // Modale Candidature
+      const applyModal = document.getElementById('apply-modal');
+      const applyModalClose = document.getElementById('apply-modal-close');
+      const applyCancelBtn = document.getElementById('apply-cancel-btn');
+      const applyForm = document.getElementById('apply-form');
+      const applyCvInput = document.getElementById('apply-cv');
+      const cvDropzone = document.getElementById('cv-dropzone');
+      const cvStatusText = document.getElementById('cv-status-text');
+      const cvFileName = document.getElementById('cv-file-name');
+
+      // Modale Création d'Offre (Recruteur)
+      const createJobModal = document.getElementById('create-job-modal');
+      const createJobClose = document.getElementById('create-job-close');
+      const createJobCancel = document.getElementById('create-job-cancel');
+      const createJobForm = document.getElementById('create-job-form');
+      const btnOpenCreateJob = document.getElementById('btn-open-create-job');
+      const btnPostJobCta = document.getElementById('btn-post-job-cta');
+
+      // Filtres Inputs
+      const searchForm = document.getElementById('search-form');
+      const searchKeyword = document.getElementById('search-keyword');
+      const searchLocation = document.getElementById('search-location');
+      const searchContract = document.getElementById('search-contract');
+      const filterWorkplace = document.getElementById('filter-workplace');
+      const filterExperience = document.getElementById('filter-experience');
+      const filterSalary = document.getElementById('filter-salary');
+      const filterDate = document.getElementById('filter-date');
+      const sortSelect = document.getElementById('sort-select');
+      const btnResetFilters = document.getElementById('btn-reset-filters');
+      const btnEmptyReset = document.getElementById('btn-empty-reset');
+      const btnToggleSaved = document.getElementById('btn-toggle-saved');
+
+      // 2. GESTION DU THÈME CLAIR / SOMBRE (CSS VARIABLES)
+      const themeToggleBtn = document.getElementById('theme-toggle-btn');
+      const htmlEl = document.documentElement;
+
+      function initTheme() {
+        const savedTheme = localStorage.getItem('novorise_theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+        htmlEl.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+      }
+
+      function toggleTheme() {
+        const current = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        htmlEl.setAttribute('data-theme', current);
+        localStorage.setItem('novorise_theme', current);
+        updateThemeIcon(current);
+        showToast(current === 'dark' ? 'Mode sombre activé' : 'Mode clair activé');
+      }
+
+      function updateThemeIcon(theme) {
+        const iconSvg = document.getElementById('theme-icon');
+        if (theme === 'dark') {
+          iconSvg.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+        } else {
+          iconSvg.innerHTML = '<path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" />';
+        }
+      }
+
+      themeToggleBtn.addEventListener('click', toggleTheme);
+
+      // 3. SYSTÈME DE TOASTS
+      function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `
+          <svg class="icon icon-sm" viewBox="0 0 24 24" style="color: var(--primary);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>${message}</span>
+        `;
+        toastContainer.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(8px)';
+          toast.style.transition = 'all 200ms ease';
+          setTimeout(() => toast.remove(), 200);
+        }, 3200);
+      }
+
+      // 4. RENDU DES OFFRES (CARTES)
+      function renderJobs() {
+        let filtered = allJobs.filter(job => {
+          // Filtre Mots-clés
+          const q = searchKeyword.value.trim().toLowerCase();
+          if (q) {
+            const inTitle = job.title.toLowerCase().includes(q);
+            const inCompany = job.company.toLowerCase().includes(q);
+            const inDesc = job.description.toLowerCase().includes(q);
+            const inTags = job.tags.some(t => t.toLowerCase().includes(q));
+            if (!inTitle && !inCompany && !inDesc && !inTags) return false;
+          }
+
+          // Filtre Ville / Localisation
+          const loc = searchLocation.value.trim().toLowerCase();
+          if (loc) {
+            const inLoc = job.location.toLowerCase().includes(loc);
+            const inWorkplace = job.workplace.toLowerCase().includes(loc);
+            if (!inLoc && !inWorkplace) return false;
+          }
+
+          // Filtre Contrat (depuis barre hero ou pills)
+          const contractVal = activeFilterContract !== 'Tous' ? activeFilterContract : searchContract.value;
+          if (contractVal !== 'Tous' && job.contract !== contractVal) {
+            return false;
+          }
+
+          // Filtre Télétravail
+          const wpVal = filterWorkplace.value;
+          if (wpVal !== 'Tous' && job.workplace !== wpVal) {
+            return false;
+          }
+
+          // Filtre Expérience
+          const expVal = filterExperience.value;
+          if (expVal !== 'Tous' && job.experience !== expVal) {
+            return false;
+          }
+
+          // Filtre Salaire
+          const salVal = filterSalary.value;
+          if (salVal === '40k' && job.salaryNum < 40000) return false;
+          if (salVal === '50k' && job.salaryNum < 50000) return false;
+          if (salVal === '60k' && job.salaryNum < 60000) return false;
+
+          // Filtre Date
+          const dateVal = filterDate.value;
+          if (dateVal !== 'Tous' && job.daysAgo > parseInt(dateVal, 10)) {
+            return false;
+          }
+
+          // Filtre Favoris uniquement
+          if (showOnlySaved && !savedJobIds.has(job.id)) {
+            return false;
+          }
+
+          return true;
+        });
+
+        // Tri
+        const sortVal = sortSelect.value;
+        if (sortVal === 'recent') {
+          filtered.sort((a, b) => a.daysAgo - b.daysAgo);
+        } else if (sortVal === 'salary') {
+          filtered.sort((a, b) => b.salaryNum - a.salaryNum);
+        } else if (sortVal === 'title') {
+          filtered.sort((a, b) => a.title.localeCompare(b.title));
+        }
+
+        // Mise à jour compteur
+        filteredCountEl.textContent = filtered.length;
+        savedCounterEl.textContent = savedJobIds.size;
+
+        if (filtered.length === 0) {
+          jobsContainer.innerHTML = '';
+          emptyState.style.display = 'block';
+          return;
+        }
+
+        emptyState.style.display = 'none';
+
+        // Injection HTML des cartes
+        jobsContainer.innerHTML = filtered.map(job => {
+          const isSaved = savedJobIds.has(job.id);
+          const daysText = job.daysAgo === 1 ? "Hier" : `Il y a ${job.daysAgo} jours`;
+
+          return `
+            <article class="job-card" data-id="${job.id}" tabindex="0" role="article" aria-label="${job.title} chez ${job.company}">
+              <div>
+                <div class="job-card-top">
+                  <div class="company-logo" aria-hidden="true">${job.logoText}</div>
+                  <div class="job-header-text">
+                    <h3 class="job-title" title="${job.title}">${job.title}</h3>
+                    <div class="company-name">${job.company}</div>
+                  </div>
+                  <button class="fav-btn ${isSaved ? 'active' : ''}" data-job-id="${job.id}" aria-label="${isSaved ? 'Retirer des favoris' : 'Ajouter aux favoris'}" title="Enregistrer l'offre">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                  </button>
+                </div>
+
+                <div class="job-meta-row">
+                  <span class="job-meta-item">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    ${job.location} • ${job.workplace}
+                  </span>
+                  <span class="job-meta-item">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                    ${job.contract}
+                  </span>
+                </div>
+
+                <p class="job-description-excerpt">${job.description}</p>
+
+                <div class="job-tags">
+                  ${job.tags.slice(0, 4).map(t => `<span class="skill-tag">${t}</span>`).join('')}
+                </div>
+              </div>
+
+              <div class="job-card-bottom">
+                <span class="posted-time">
+                  <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  ${daysText}
+                </span>
+
+                <div style="font-weight: 700; color: var(--primary);">
+                  ${job.salary}
+                </div>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      // 5. GESTION DES FAVORIS
+      function toggleFavorite(jobId, btnEl) {
+        if (savedJobIds.has(jobId)) {
+          savedJobIds.delete(jobId);
+          showToast('Offre retirée des favoris');
+        } else {
+          savedJobIds.add(jobId);
+          showToast('Offre ajoutée à vos favoris !');
+        }
+        localStorage.setItem('novorise_saved_jobs', JSON.stringify([...savedJobIds]));
+        renderJobs();
+      }
+
+      // Événements sur les cartes
+      jobsContainer.addEventListener('click', (e) => {
+        const favBtn = e.target.closest('.fav-btn');
+        if (favBtn) {
+          e.stopPropagation();
+          const jobId = favBtn.getAttribute('data-job-id');
+          toggleFavorite(jobId, favBtn);
+          return;
+        }
+
+        const card = e.target.closest('.job-card');
+        if (card) {
+          const jobId = card.getAttribute('data-id');
+          const job = allJobs.find(j => j.id === jobId);
+          if (job) openDrawer(job);
+        }
+      });
+
+      // Navigation Clavier sur cartes (Enter)
+      jobsContainer.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const card = e.target.closest('.job-card');
+          if (card) {
+            const jobId = card.getAttribute('data-id');
+            const job = allJobs.find(j => j.id === jobId);
+            if (job) openDrawer(job);
+          }
+        }
+      });
+
+      // 6. PANNEAU LATÉRAL (DRAWER)
+      let currentDrawerJob = null;
+
+      function openDrawer(job) {
+        currentDrawerJob = job;
+        document.getElementById('drawer-company-logo').textContent = job.logoText;
+        document.getElementById('drawer-job-title').textContent = job.title;
+        document.getElementById('drawer-company-info').textContent = `${job.company} • ${job.location} (${job.workplace})`;
+        document.getElementById('drawer-description').textContent = job.description;
+
+        // Badges
+        const badgesContainer = document.getElementById('drawer-badges');
+        badgesContainer.innerHTML = `
+          <span class="badge badge-primary">${job.contract}</span>
+          <span class="badge badge-neutral">${job.workplace}</span>
+          <span class="badge badge-neutral">💰 ${job.salary}</span>
+          <span class="badge badge-neutral">Expérience : ${job.experience}</span>
+        `;
+
+        // Missions
+        const missionsList = document.getElementById('drawer-missions');
+        missionsList.innerHTML = job.missions.map(m => `<li>${m}</li>`).join('');
+
+        // Profil
+        const reqList = document.getElementById('drawer-requirements');
+        reqList.innerHTML = job.requirements.map(r => `<li>${r}</li>`).join('');
+
+        // Avantages
+        const benefitsBox = document.getElementById('drawer-benefits');
+        benefitsBox.innerHTML = job.benefits.map(b => `
+          <div class="benefit-item">
+            <svg class="icon icon-sm" viewBox="0 0 24 24" style="color: var(--primary);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            ${b}
+          </div>
+        `).join('');
+
+        // Bouton favori dans le drawer
+        const isSaved = savedJobIds.has(job.id);
+        drawerSaveText.textContent = isSaved ? 'Sauvegardée' : 'Sauvegarder';
+        drawerSaveBtn.style.color = isSaved ? '#E11D48' : '';
+
+        // Ouverture
+        drawerOverlay.classList.add('open');
+        jobDrawer.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeDrawer() {
+        drawerOverlay.classList.remove('open');
+        jobDrawer.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      drawerCloseBtn.addEventListener('click', closeDrawer);
+      drawerOverlay.addEventListener('click', closeDrawer);
+
+      drawerSaveBtn.addEventListener('click', () => {
+        if (currentDrawerJob) {
+          toggleFavorite(currentDrawerJob.id);
+          const isSaved = savedJobIds.has(currentDrawerJob.id);
+          drawerSaveText.textContent = isSaved ? 'Sauvegardée' : 'Sauvegarder';
+          drawerSaveBtn.style.color = isSaved ? '#E11D48' : '';
+        }
+      });
+
+      drawerApplyBtn.addEventListener('click', () => {
+        if (currentDrawerJob) {
+          closeDrawer();
+          openApplyModal(currentDrawerJob);
+        }
+      });
+
+      // 7. MODALE DE CANDIDATURE & VALIDATION FORMULAIRE
+      function openApplyModal(job) {
+        selectedJobForApply = job;
+        document.getElementById('apply-modal-title').textContent = `Postuler à l'offre : ${job.title}`;
+        document.getElementById('apply-modal-subtitle').textContent = `Entreprise : ${job.company} • ${job.location} (${job.contract})`;
+        applyModal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeApplyModal() {
+        applyModal.classList.remove('open');
+        document.body.style.overflow = '';
+        applyForm.reset();
+        cvFileName.style.display = 'none';
+        cvStatusText.style.display = 'block';
+        clearFormErrors();
+      }
+
+      applyModalClose.addEventListener('click', closeApplyModal);
+      applyCancelBtn.addEventListener('click', closeApplyModal);
+      applyModal.addEventListener('click', (e) => {
+        if (e.target === applyModal) closeApplyModal();
+      });
+
+      // Drag & Drop CV
+      applyCvInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          cvStatusText.style.display = 'none';
+          cvFileName.style.display = 'block';
+          cvFileName.textContent = `✓ ${file.name} (${(file.size / 1024).toFixed(0)} Ko)`;
+          document.getElementById('group-cv').classList.remove('has-error');
+        }
+      });
+
+      function clearFormErrors() {
+        document.querySelectorAll('.form-group.has-error').forEach(el => el.classList.remove('has-error'));
+      }
+
+      applyForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        clearFormErrors();
+
+        const fullname = document.getElementById('apply-fullname');
+        const email = document.getElementById('apply-email');
+        const phone = document.getElementById('apply-phone');
+        let isValid = true;
+
+        if (!fullname.value.trim()) {
+          document.getElementById('group-fullname').classList.add('has-error');
+          isValid = false;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email.value.trim() || !emailRegex.test(email.value.trim())) {
+          document.getElementById('group-email').classList.add('has-error');
+          isValid = false;
+        }
+
+        if (!phone.value.trim() || phone.value.trim().length < 8) {
+          document.getElementById('group-phone').classList.add('has-error');
+          isValid = false;
+        }
+
+        if (!applyCvInput.files || applyCvInput.files.length === 0) {
+          document.getElementById('group-cv').classList.add('has-error');
+          isValid = false;
+        }
+
+        if (!isValid) return;
+
+        // Enregistrement dans les candidatures du recruteur
+        const newApp = {
+          id: 'app-' + Date.now(),
+          name: fullname.value.trim(),
+          email: email.value.trim(),
+          phone: phone.value.trim(),
+          jobTitle: selectedJobForApply ? selectedJobForApply.title : 'Candidature spontanée',
+          date: "À l'instant",
+          cvName: applyCvInput.files[0].name,
+          status: 'Nouveau'
+        };
+
+        recruiterApplications.unshift(newApp);
+        updateRecruiterDashboard();
+
+        showToast(`Votre candidature pour ${newApp.jobTitle} a été transmise avec succès !`);
+        closeApplyModal();
+      });
+
+      // 8. ESPACE RECRUTEUR & CRÉATION D'OFFRE
+      function updateRecruiterDashboard() {
+        document.getElementById('kpi-active-jobs').textContent = allJobs.length;
+        document.getElementById('kpi-candidates-count').textContent = recruiterApplications.length;
+        
+        const interviews = recruiterApplications.filter(a => a.status === 'Entretien').length;
+        document.getElementById('kpi-interviews-count').textContent = interviews;
+
+        const hired = recruiterApplications.filter(a => a.status === 'Embauché').length;
+        document.getElementById('kpi-hired-count').textContent = hired;
+
+        const tbody = document.getElementById('recruiter-applications-body');
+        if (recruiterApplications.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-tertiary); padding: 32px;">Aucune candidature pour le moment.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = recruiterApplications.map(app => {
+          return `
+            <tr>
+              <td>
+                <strong>${app.name}</strong>
+              </td>
+              <td>${app.jobTitle}</td>
+              <td style="color: var(--text-tertiary); font-size: 0.8rem;">${app.date}</td>
+              <td>
+                <span style="font-size: 0.78rem; color: var(--primary); font-weight: 600;">📄 ${app.cvName}</span>
+                <div style="font-size: 0.75rem; color: var(--text-tertiary);">${app.email}</div>
+              </td>
+              <td>
+                <select class="status-select status-${app.status.toLowerCase()}" data-app-id="${app.id}">
+                  <option value="Nouveau" ${app.status === 'Nouveau' ? 'selected' : ''}>Nouveau</option>
+                  <option value="Entretien" ${app.status === 'Entretien' ? 'selected' : ''}>Entretien</option>
+                  <option value="Refusé" ${app.status === 'Refusé' ? 'selected' : ''}>Refusé</option>
+                  <option value="Embauché" ${app.status === 'Embauché' ? 'selected' : ''}>Embauché</option>
+                </select>
+              </td>
+              <td>
+                <button class="btn btn-secondary btn-sm" onclick="alert('Contact direct initié avec ${app.name} (${app.email})')" style="padding: 4px 8px; font-size: 0.75rem;">
+                  Contacter
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Changement de statut candidat
+      document.getElementById('recruiter-applications-body').addEventListener('change', (e) => {
+        if (e.target.classList.contains('status-select')) {
+          const appId = e.target.getAttribute('data-app-id');
+          const newStatus = e.target.value;
+          const app = recruiterApplications.find(a => a.id === appId);
+          if (app) {
+            app.status = newStatus;
+            e.target.className = `status-select status-${newStatus.toLowerCase()}`;
+            updateRecruiterDashboard();
+            showToast(`Statut de ${app.name} mis à jour : ${newStatus}`);
+          }
+        }
+      });
+
+      // Modale création d'annonce
+      function openCreateJobModal() {
+        createJobModal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeCreateJobModal() {
+        createJobModal.classList.remove('open');
+        document.body.style.overflow = '';
+        createJobForm.reset();
+      }
+
+      btnOpenCreateJob.addEventListener('click', openCreateJobModal);
+      btnPostJobCta.addEventListener('click', openCreateJobModal);
+      document.getElementById('footer-link-post').addEventListener('click', (e) => { e.preventDefault(); openCreateJobModal(); });
+      createJobClose.addEventListener('click', closeCreateJobModal);
+      createJobCancel.addEventListener('click', closeCreateJobModal);
+
+      createJobForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('job-in-title').value.trim();
+        const company = document.getElementById('job-in-company').value.trim();
+        const location = document.getElementById('job-in-location').value.trim();
+        const contract = document.getElementById('job-in-contract').value;
+        const workplace = document.getElementById('job-in-workplace').value;
+        const salary = document.getElementById('job-in-salary').value.trim() || 'À négocier';
+        const tagsRaw = document.getElementById('job-in-tags').value.trim();
+        const desc = document.getElementById('job-in-desc').value.trim();
+
+        if (!title || !company || !location || !desc) {
+          alert('Veuillez renseigner tous les champs obligatoires.');
+          return;
+        }
+
+        const newJob = {
+          id: 'job-' + Date.now(),
+          title,
+          company,
+          logoText: company.substring(0, 2).toUpperCase(),
+          location,
+          contract,
+          workplace,
+          experience: 'Confirmé',
+          salary,
+          salaryNum: 50000,
+          daysAgo: 1,
+          tags: tagsRaw ? tagsRaw.split(',').map(t => t.trim()) : ['Polyvalence'],
+          description: desc,
+          missions: ['Participer activement aux projets structurants', 'Contribuer à l’excellence opérationnelle'],
+          requirements: ['Compétences solides et esprit d’initiative', 'Esprit d’équipe et rigueur'],
+          benefits: ['RTT', 'Mutuelle d’entreprise', 'Télétravail partiel']
+        };
+
+        allJobs.unshift(newJob);
+        renderJobs();
+        updateRecruiterDashboard();
+        closeCreateJobModal();
+        showToast(`L'offre "${title}" a été publiée avec succès !`);
+
+        // Basculer sur la vue candidat pour admirer l'offre en haut de liste
+        switchToCandidateView();
+        window.scrollTo({ top: document.getElementById('offres').offsetTop - 80, behavior: 'smooth' });
+      });
+
+      // 9. BASCULE CANDIDAT / RECRUTEUR
+      function switchToCandidateView() {
+        btnModeCandidate.classList.add('active');
+        btnModeCandidate.setAttribute('aria-checked', 'true');
+        btnModeRecruiter.classList.remove('active');
+        btnModeRecruiter.setAttribute('aria-checked', 'false');
+        candidateView.classList.remove('hidden');
+        recruiterView.classList.remove('active');
+      }
+
+      function switchToRecruiterView() {
+        btnModeRecruiter.classList.add('active');
+        btnModeRecruiter.setAttribute('aria-checked', 'true');
+        btnModeCandidate.classList.remove('active');
+        btnModeCandidate.setAttribute('aria-checked', 'false');
+        candidateView.classList.add('hidden');
+        recruiterView.classList.add('active');
+        updateRecruiterDashboard();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      btnModeCandidate.addEventListener('click', switchToCandidateView);
+      btnModeRecruiter.addEventListener('click', switchToRecruiterView);
+      document.getElementById('footer-link-recruiter').addEventListener('click', (e) => { e.preventDefault(); switchToRecruiterView(); });
+
+      // 10. RECHERCHE & FILTRAGE EN TEMPS RÉEL
+      searchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        renderJobs();
+      });
+      searchKeyword.addEventListener('input', renderJobs);
+      searchLocation.addEventListener('input', renderJobs);
+      searchContract.addEventListener('change', (e) => {
+        activeFilterContract = e.target.value;
+        updatePillsUI(activeFilterContract);
+        renderJobs();
+      });
+
+      filterWorkplace.addEventListener('change', renderJobs);
+      filterExperience.addEventListener('change', renderJobs);
+      filterSalary.addEventListener('change', renderJobs);
+      filterDate.addEventListener('change', renderJobs);
+      sortSelect.addEventListener('change', renderJobs);
+
+      // Pilules de contrat
+      const pillsContainer = document.querySelector('.contracts-pills');
+      pillsContainer.addEventListener('click', (e) => {
+        const btn = e.target.closest('.pill-btn');
+        if (!btn) return;
+        activeFilterContract = btn.getAttribute('data-contract');
+        updatePillsUI(activeFilterContract);
+        searchContract.value = activeFilterContract;
+        renderJobs();
+      });
+
+      function updatePillsUI(contract) {
+        document.querySelectorAll('.pill-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-contract') === contract);
+        });
+      }
+
+      // Filtre favoris
+      btnToggleSaved.addEventListener('click', () => {
+        showOnlySaved = !showOnlySaved;
+        btnToggleSaved.classList.toggle('btn-primary', showOnlySaved);
+        btnToggleSaved.classList.toggle('btn-secondary', !showOnlySaved);
+        renderJobs();
+      });
+
+      // Réinitialisation
+      function resetAllFilters() {
+        searchForm.reset();
+        activeFilterContract = 'Tous';
+        updatePillsUI('Tous');
+        filterWorkplace.value = 'Tous';
+        filterExperience.value = 'Tous';
+        filterSalary.value = 'Tous';
+        filterDate.value = 'Tous';
+        sortSelect.value = 'recent';
+        showOnlySaved = false;
+        btnToggleSaved.classList.remove('btn-primary');
+        btnToggleSaved.classList.add('btn-secondary');
+        renderJobs();
+        showToast('Filtres réinitialisés');
+      }
+
+      btnResetFilters.addEventListener('click', resetAllFilters);
+      btnEmptyReset.addEventListener('click', resetAllFilters);
+
+      // Modale de connexion simplifiée
+      document.getElementById('btn-login-modal').addEventListener('click', () => {
+        showToast('Espace d’authentification sécurisé NovoRise (SSO / Email)');
+      });
+
+      // Touche Escape pour fermer les modales/drawers
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeDrawer();
+          closeApplyModal();
+          closeCreateJobModal();
+        }
+      });
+
+      // Initialisation
+      initTheme();
+      renderJobs();
+      updateRecruiterDashboard();
+
+    })();
+  </script>
+</body>
+</html>
