@@ -74,7 +74,8 @@ export const registerUser = async (
 export const verifyEmailToken = async (token: string, email?: string) => {
   let found: { rows: any[]; rowCount: number };
 
-  if (token === 'mock_24h_token_valid' || token.startsWith('mock_')) {
+  // Dev-only bypass: mock tokens only work when NODE_ENV is explicitly not 'production'
+  if (process.env.NODE_ENV !== 'production' && (token === 'mock_24h_token_valid' || token.startsWith('mock_'))) {
     if (email) {
       found = await pool.query(
         'SELECT id, name, email, role FROM users WHERE email = $1',

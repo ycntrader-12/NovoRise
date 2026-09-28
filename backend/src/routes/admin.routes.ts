@@ -319,29 +319,24 @@ router.delete('/users/:id', async (req: Request, res: Response) => {
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/database/tables', requireRole('admin'), async (_req: Request, res: Response) => {
   try {
-    const tablesQuery = `
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = 'public' 
-      ORDER BY table_name;
-    `;
-    const tablesResult = await pool.query(tablesQuery);
-    const tableNames = tablesResult.rows.map(r => r.table_name);
+    // SQLite-native: liste des tables via sqlite_master
+    const tablesResult = await pool.query(
+      `SELECT name as table_name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name`
+    );
+    const tableNames = tablesResult.rows.map((r: any) => r.table_name);
 
     const tablesDetails = await Promise.all(
-      tableNames.map(async (tableName) => {
+      tableNames.map(async (tableName: string) => {
         const countRes = await pool.query(`SELECT COUNT(*) as row_count FROM "${tableName}"`);
-        const colsRes = await pool.query(`
-          SELECT column_name, data_type, is_nullable
-          FROM information_schema.columns
-          WHERE table_name = $1
-          ORDER BY ordinal_position;
-        `, [tableName]);
-
+        const colsRes = await pool.query(`PRAGMA table_info("${tableName}")`);
         return {
           tableName,
           rowCount: parseInt(countRes.rows[0].row_count, 10),
-          columns: colsRes.rows
+          columns: colsRes.rows.map((c: any) => ({
+            column_name: c.name,
+            data_type: c.type,
+            is_nullable: c.notnull === 0 ? 'YES' : 'NO',
+          })),
         };
       })
     );
@@ -359,7 +354,7 @@ router.get('/database/tables', requireRole('admin'), async (_req: Request, res: 
 router.get('/database/table/:name', requireRole('admin'), async (req: Request, res: Response) => {
   try {
     const name = String(req.params.name);
-    const allowedTables = ['users', 'job_posts', 'applications'];
+    const allowedTables = ['users', 'job_posts', 'applications', 'contact_messages'];
 
     if (!allowedTables.includes(name)) {
       res.status(400).json({ error: 'UNAUTHORIZED_TABLE' });
@@ -456,6 +451,44 @@ router.delete('/jobs/:id', requireRole('admin'), async (req: Request, res: Respo
     res.json({ message: 'JOB_DELETED', job: result.rows[0] });
   } catch (err) {
     console.error('DELETE /admin/jobs/:id error:', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/admin/messages — Lister les messages de contact (admin + admin_manager)
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/messages', async (_req: Request, res: Response) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, nom, prenom, email, telephone, sujet, message, is_read, created_at
+       FROM contact_messages
+       ORDER BY created_at DESC`
+    );
+    res.json({ messages: result.rows });
+  } catch (err) {
+    console.error('GET /admin/messages error:', err);
+    res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PATCH /api/admin/messages/:id/read — Marquer un message comme lu
+// ─────────────────────────────────────────────────────────────────────────────
+router.patch('/messages/:id/read', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query(
+      `UPDATE contact_messages SET is_read = 1 WHERE id = $1 RETURNING id`,
+      [id]
+    );
+    if (result.rowCount === 0) {
+      res.status(404).json({ error: 'MESSAGE_NOT_FOUND' });
+      return;
+    }
+    res.json({ message: 'MESSAGE_MARKED_READ' });
+  } catch (err) {
+    console.error('PATCH /admin/messages/:id/read error:', err);
     res.status(500).json({ error: 'SERVER_ERROR' });
   }
 });

@@ -15,6 +15,7 @@ import jobsRoutes from './routes/jobs.routes';
 import applicationsRoutes from './routes/applications.routes';
 import adminRoutes from './routes/admin.routes';
 import aiRoutes from './routes/ai.routes';
+import contactRoutes from './routes/contact.routes';
 
 // Worker email (démarre Bull consumer dès le lancement)
 import './workers/email.worker';
@@ -41,12 +42,13 @@ const allowedOrigins = [
   'http://localhost:3007',
   'http://localhost:5173',
   'http://localhost:3000',
+  'null',
 ].filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Permettre les requêtes locales / sans origine (curl, tests internes)
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Permettre les requêtes locales / sans origine (curl, file:///, tests internes)
+    if (!origin || origin === 'null' || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('CORS_RESTRICTION_TRIGGERED'));
@@ -73,6 +75,7 @@ app.use('/api/jobs', jobsRoutes);
 app.use('/api/applications', applicationsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/contact', contactRoutes);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/api/health', (_req, res) => {

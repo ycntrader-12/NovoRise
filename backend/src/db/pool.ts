@@ -72,15 +72,35 @@ db.exec(`
     UNIQUE (job_id, candidate_id)
   );
 
+  CREATE TABLE IF NOT EXISTS contact_messages (
+    id         TEXT    PRIMARY KEY,
+    nom        TEXT    NOT NULL,
+    prenom     TEXT    NOT NULL,
+    email      TEXT    NOT NULL,
+    telephone  TEXT    NOT NULL,
+    sujet      TEXT    NOT NULL,
+    message    TEXT    NOT NULL,
+    is_read    INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT    NOT NULL DEFAULT (datetime('now'))
+  );
+
   CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
   CREATE INDEX IF NOT EXISTS idx_users_vtok ON users(verification_token);
   CREATE INDEX IF NOT EXISTS idx_users_rtok ON users(reset_token);
   CREATE INDEX IF NOT EXISTS idx_jobs_recruiter ON job_posts(recruiter_id);
   CREATE INDEX IF NOT EXISTS idx_apps_job ON applications(job_id);
   CREATE INDEX IF NOT EXISTS idx_apps_candidate ON applications(candidate_id);
+  CREATE INDEX IF NOT EXISTS idx_contact_read ON contact_messages(is_read);
 `);
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Rattrapage des identifiants NULL existants ───────────────────────────────
+try {
+  db.exec(`
+    UPDATE job_posts SET id = lower(hex(randomblob(16))) WHERE id IS NULL OR id = '';
+    UPDATE applications SET id = lower(hex(randomblob(16))) WHERE id IS NULL OR id = '';
+    UPDATE users SET id = lower(hex(randomblob(16))) WHERE id IS NULL OR id = '';
+  `);
+} catch (_) {}
 function normalizeRow(row: any): any {
   if (!row) return row;
   if ('verified' in row) row.verified = row.verified === 1;
@@ -136,14 +156,21 @@ export const pool = {
         const hasReturning = /RETURNING/i.test(sql);
 
         // Generate UUID for the id if not provided in params
-        // Inject the id into the query if needed
         let finalSql = sql;
         let finalParams = params;
 
+        const colsMatch = finalSql.match(/\(([^)]+)\)\s+VALUES/i);
+        if (colsMatch && !/\bid\b/i.test(colsMatch[1])) {
+          finalSql = finalSql.replace(/\(([^)]+)\)\s+VALUES\s*\(([^)]+)\)/i, (_, cols, vals) => {
+            return `(id, ${cols}) VALUES (?, ${vals})`;
+          });
+          finalParams = [uuidv4(), ...finalParams];
+        }
+
         if (hasReturning) {
-          const returningIdx = sql.toUpperCase().indexOf('RETURNING');
-          const insertSql = sql.substring(0, returningIdx).trim();
-          const returningCols = sql.substring(returningIdx + 9).trim();
+          const returningIdx = finalSql.toUpperCase().indexOf('RETURNING');
+          const insertSql = finalSql.substring(0, returningIdx).trim();
+          const returningCols = finalSql.substring(returningIdx + 9).trim();
 
           db.prepare(insertSql).run(...finalParams);
 

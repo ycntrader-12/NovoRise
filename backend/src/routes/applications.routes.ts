@@ -16,7 +16,7 @@ router.post('/', requireAuth, requireRole('candidat'), async (req: Request, res:
     // Vérifier que l'offre existe et est active
     const jobResult = await pool.query(
       `SELECT j.id, j.title, j.company, u.id as recruiter_id, u.email as recruiter_email, u.name as recruiter_name
-       FROM job_posts j JOIN users u ON j.recruiter_id = u.id
+       FROM job_posts j LEFT JOIN users u ON j.recruiter_id = u.id
        WHERE j.id = $1 AND j.status = 'Actif'`,
       [jobId]
     );
@@ -52,20 +52,22 @@ router.post('/', requireAuth, requireRole('candidat'), async (req: Request, res:
     );
 
     // Push notification email recruteur dans Bull/Redis (asynchrone)
-    try {
-      await emailQueue.add({
-        type: 'application-notification',
-        to: job.recruiter_email,
-        name: job.recruiter_name,
-        payload: {
-          recruiterName: job.recruiter_name,
-          jobTitle: job.title,
-          candidateName: req.user!.name,
-          candidateEmail: req.user!.email,
-          appliedAt: new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Casablanca' }),
-        },
-      });
-    } catch (_) {}
+    if (job.recruiter_email) {
+      try {
+        await emailQueue.add({
+          type: 'application-notification',
+          to: job.recruiter_email,
+          name: job.recruiter_name || 'Recruteur',
+          payload: {
+            recruiterName: job.recruiter_name || 'Recruteur',
+            jobTitle: job.title,
+            candidateName: req.user!.name,
+            candidateEmail: req.user!.email,
+            appliedAt: new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Casablanca' }),
+          },
+        });
+      } catch (_) {}
+    }
 
     res.status(201).json(appResult.rows[0]);
   } catch (err) {

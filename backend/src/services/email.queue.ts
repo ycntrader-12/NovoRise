@@ -1,8 +1,3 @@
-import Queue from 'bull';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
 export interface EmailJobData {
   type: 'email-verification' | 'password-reset' | 'application-notification';
   to: string;

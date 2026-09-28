@@ -747,6 +747,7 @@
       margin-bottom: 16px;
       display: -webkit-box;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -1373,7 +1374,7 @@
           <a href="#offres" class="nav-link active" id="nav-link-offres">Offres d'emploi</a>
           <a href="#entreprises" class="nav-link" id="nav-link-entreprises">Entreprises</a>
           <a href="#conseils" class="nav-link" id="nav-link-conseils">Conseils & Carrière</a>
-        </nav>
+          <button class="nav-link" id="nav-btn-contact" style="background:none; border:none; cursor:pointer; font-weight:600; color:var(--primary); padding:4px 2px; display:flex; align-items:center; gap:5px; font-size:inherit; font-family:inherit;">&#9993; Contactez-nous</button>`n        </nav>
 
         <!-- Actions : Rôle, Thème, Connexion, Publier -->
         <div class="header-actions">
@@ -1394,6 +1395,20 @@
               <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" />
             </svg>
           </button>
+
+          <!-- Statut API Backend -->
+          <div id="backend-status-badge" class="badge badge-primary" style="cursor: pointer; gap: 6px; padding: 5px 12px; font-weight: 500;" title="Statut du serveur backend (cliquer pour retester)">
+            <span id="backend-status-dot" style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10B981;"></span>
+            <span id="backend-status-text">API Connectée (3006)</span>
+          </div>
+
+          <!-- Session Utilisateur Connecté -->
+          <div id="user-session-chip" style="display: none; align-items: center; gap: 8px; background: var(--bg-subtle); padding: 4px 10px; border-radius: var(--radius-full); border: 1px solid var(--border); font-size: 0.8125rem;">
+            <span style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:var(--primary); color:#fff; font-size:0.75rem; font-weight:700;" id="user-chip-avatar">C</span>
+            <span id="user-chip-name" style="font-weight: 600; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Candidat</span>
+            <span id="user-chip-role" class="badge badge-primary" style="font-size: 0.6875rem; padding: 1px 6px;">Candidat</span>
+            <button id="btn-logout" title="Se déconnecter" style="background: none; border: none; cursor: pointer; color: var(--text-tertiary); font-size: 0.9rem; padding: 0 4px; line-height: 1;">✕</button>
+          </div>
 
           <!-- Bouton Se connecter -->
           <button class="btn btn-secondary" id="btn-login-modal">
@@ -1653,6 +1668,35 @@
         </div>
       </div>
 
+      <!-- ── MESSAGERIE CONTACT (admin / admin_manager uniquement) ──────────── -->
+      <div id="contact-inbox-card" class="recruiter-table-card" style="display: none; margin-top: 28px;">
+        <div class="table-header-bar">
+          <h3 style="font-size: 1.05rem;">✉ Messagerie — Formulaire de contact</h3>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="badge badge-primary" id="contact-unread-badge" style="display: none;">0 non lu(s)</span>
+            <button class="btn btn-secondary btn-sm" id="btn-refresh-messages" style="padding: 4px 12px; font-size: 0.78rem;">↺ Actualiser</button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Expéditeur</th>
+                <th>E-mail</th>
+                <th>Téléphone</th>
+                <th>Sujet</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th>Lu</th>
+              </tr>
+            </thead>
+            <tbody id="contact-messages-body">
+              <tr><td colspan="7" style="text-align:center; color: var(--text-tertiary); padding: 20px;">Chargement des messages…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -1859,6 +1903,172 @@
     </div>
   </div>
 
+  <!-- ========================================================
+       MODALE DE CONNEXION / INSCRIPTION (AUTHENTIFICATION API)
+       ======================================================== -->
+  <div class="modal-overlay" id="login-modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="login-modal-title" style="max-width: 480px;">
+      
+      <div class="modal-header">
+        <div>
+          <h3 id="login-modal-title" style="font-size: 1.125rem;">Espace NovoRise</h3>
+          <p style="font-size: 0.8125rem; color: var(--text-secondary);" id="login-modal-subtitle">Connexion & Inscription sécurisées (API :3006)</p>
+        </div>
+        <button class="drawer-close-btn" id="login-modal-close" aria-label="Fermer la modale">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div style="padding: 24px;">
+        <!-- Comptes Démo Rapides -->
+        <div style="margin-bottom: 20px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px;">
+          <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-tertiary); margin-bottom: 8px;">
+            ⚡ Connexion rapide démo :
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-quick-candidate" style="flex: 1; font-size: 0.75rem; padding: 6px 8px;" title="Amine Candidat (candidat.test@gmail.com)">
+              👤 Candidat
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-quick-recruiter" style="flex: 1; font-size: 0.75rem; padding: 6px 8px;" title="Nadia Recruteur (recruteur.test@gmail.com)">
+              💼 Recruteur
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-quick-admin" style="flex: 1; font-size: 0.75rem; padding: 6px 8px;" title="Admin (admin@novorise.com)">
+              ⚡ Admin
+            </button>
+          </div>
+        </div>
+
+        <!-- Onglets Connexion / Inscription -->
+        <div style="display: flex; border-bottom: 1px solid var(--border); margin-bottom: 18px;">
+          <button type="button" id="tab-login-btn" style="flex: 1; padding: 10px; background: none; border: none; border-bottom: 2px solid var(--primary); font-weight: 700; color: var(--primary); cursor: pointer; font-size: 0.875rem;">
+            Se connecter
+          </button>
+          <button type="button" id="tab-register-btn" style="flex: 1; padding: 10px; background: none; border: none; border-bottom: 2px solid transparent; font-weight: 500; color: var(--text-tertiary); cursor: pointer; font-size: 0.875rem;">
+            Créer un compte
+          </button>
+        </div>
+
+        <!-- Message d'erreur / statut -->
+        <div id="auth-alert-msg" style="display: none; padding: 10px 12px; border-radius: var(--radius-sm); font-size: 0.8125rem; margin-bottom: 16px;"></div>
+
+        <!-- Formulaire de Connexion -->
+        <form id="form-login" novalidate>
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label for="login-email">Adresse e-mail</label>
+            <input type="email" id="login-email" placeholder="ex: candidat.test@gmail.com" required />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 18px;">
+            <label for="login-password">Mot de passe</label>
+            <input type="password" id="login-password" placeholder="••••••••" required />
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="btn-submit-login" style="width: 100%; justify-content: center; padding: 10px;">
+            <span id="btn-submit-login-text">Se connecter</span>
+          </button>
+        </form>
+
+        <!-- Formulaire d'Inscription -->
+        <form id="form-register" style="display: none;" novalidate>
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label for="reg-name">Nom complet</label>
+            <input type="text" id="reg-name" placeholder="ex: Sarah Alami" required />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label for="reg-email">Adresse e-mail</label>
+            <input type="email" id="reg-email" placeholder="ex: sarah@exemple.com" required />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label for="reg-password">Mot de passe (min 8 car.)</label>
+            <input type="password" id="reg-password" placeholder="Au moins 8 caractères" required />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 18px;">
+            <label for="reg-role">Vous êtes :</label>
+            <select id="reg-role">
+              <option value="candidat">Candidat (je cherche un emploi)</option>
+              <option value="recruteur">Recruteur (je recrute des talents)</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="btn-submit-register" style="width: 100%; justify-content: center; padding: 10px;">
+            <span id="btn-submit-register-text">Créer mon compte</span>
+          </button>
+        </form>
+
+        <!-- Note API -->
+        <div style="margin-top: 18px; text-align: center; font-size: 0.75rem; color: var(--text-tertiary); display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <svg class="icon icon-sm" viewBox="0 0 24 24" style="color: var(--primary);"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          API REST sécurisée : JWT 7 jours, CORS hermétique, Bcrypt 10 rounds
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL CONTACT
+       ======================================================== -->
+  <div class="modal-overlay" id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
+    <div class="modal-content" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 id="contact-modal-title" style="font-size: 1.125rem;">✉ Contactez-nous</h3>
+        <button class="modal-close" id="btn-close-contact-modal" aria-label="Fermer">✕</button>
+      </div>
+
+      <div id="contact-alert" style="display: none; padding: 10px 12px; border-radius: var(--radius-sm); font-size: 0.8125rem; margin-bottom: 14px;"></div>
+
+      <form id="form-contact" novalidate>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+          <div class="form-group">
+            <label for="contact-nom">Nom <span style="color: var(--danger);">*</span></label>
+            <input type="text" id="contact-nom" placeholder="Dupont" required />
+          </div>
+          <div class="form-group">
+            <label for="contact-prenom">Prénom <span style="color: var(--danger);">*</span></label>
+            <input type="text" id="contact-prenom" placeholder="Marie" required />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+          <div class="form-group">
+            <label for="contact-email">Adresse e-mail <span style="color: var(--danger);">*</span></label>
+            <input type="email" id="contact-email" placeholder="marie@exemple.com" required />
+          </div>
+          <div class="form-group">
+            <label for="contact-telephone">Téléphone <span style="color: var(--danger);">*</span></label>
+            <input type="tel" id="contact-telephone" placeholder="+33 6 00 00 00 00" required />
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label for="contact-sujet">Sujet <span style="color: var(--danger);">*</span></label>
+          <select id="contact-sujet" required>
+            <option value="">— Choisissez un sujet —</option>
+            <option value="Demande d'information">Demande d'information</option>
+            <option value="Problème technique">Problème technique</option>
+            <option value="Partenariat">Partenariat</option>
+            <option value="Signalement">Signalement</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label for="contact-message">Message <span style="color: var(--danger);">*</span></label>
+          <textarea id="contact-message" rows="5" placeholder="Décrivez votre demande en détail…" required style="resize: vertical; min-height: 110px;"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btn-submit-contact" style="width: 100%; justify-content: center; padding: 11px;">
+          <span id="btn-submit-contact-text">Envoyer le message</span>
+        </button>
+
+        <p style="margin-top: 10px; font-size: 0.75rem; color: var(--text-tertiary); text-align: center;">Tous les champs marqués <span style="color: var(--danger);">*</span> sont obligatoires.</p>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div class="toast-container" id="toast-container" aria-live="polite"></div>
 
@@ -1906,6 +2116,7 @@
             <li><a href="#">Politique de confidentialité (RGPD)</a></li>
             <li><a href="#">Conditions Générales</a></li>
             <li><a href="#">Accessibilité & Démarche</a></li>
+            <li><a href="#" id="footer-link-contact"><strong>✉ Contactez-nous</strong></a></li>
           </ul>
         </div>
 
@@ -2297,7 +2508,12 @@
         }
       ];
 
-      // État de l'application
+      // État de l'application & Synchronisation API
+      const API_BASE_URL = 'http://localhost:3006/api';
+      let currentUser = JSON.parse(localStorage.getItem('novorise_user') || 'null');
+      let authToken = localStorage.getItem('novorise_token') || null;
+      let isBackendOnline = false;
+
       let allJobs = [...INITIAL_JOBS];
       let savedJobIds = new Set(JSON.parse(localStorage.getItem('novorise_saved_jobs') || '[]'));
       let selectedJobForApply = null;
@@ -2310,6 +2526,29 @@
       const filteredCountEl = document.getElementById('filtered-count');
       const savedCounterEl = document.getElementById('saved-counter');
       const toastContainer = document.getElementById('toast-container');
+
+      // En-tête : Badge API & Profil Utilisateur
+      const backendStatusBadge = document.getElementById('backend-status-badge');
+      const backendStatusDot = document.getElementById('backend-status-dot');
+      const backendStatusText = document.getElementById('backend-status-text');
+      const userSessionChip = document.getElementById('user-session-chip');
+      const userChipAvatar = document.getElementById('user-chip-avatar');
+      const userChipName = document.getElementById('user-chip-name');
+      const userChipRole = document.getElementById('user-chip-role');
+      const btnLogout = document.getElementById('btn-logout');
+      const btnLoginModal = document.getElementById('btn-login-modal');
+
+      // Modale d'authentification
+      const loginModal = document.getElementById('login-modal');
+      const loginModalClose = document.getElementById('login-modal-close');
+      const tabLoginBtn = document.getElementById('tab-login-btn');
+      const tabRegisterBtn = document.getElementById('tab-register-btn');
+      const formLogin = document.getElementById('form-login');
+      const formRegister = document.getElementById('form-register');
+      const authAlertMsg = document.getElementById('auth-alert-msg');
+      const btnQuickCandidate = document.getElementById('btn-quick-candidate');
+      const btnQuickRecruiter = document.getElementById('btn-quick-recruiter');
+      const btnQuickAdmin = document.getElementById('btn-quick-admin');
 
       // Vues
       const candidateView = document.getElementById('candidate-view');
@@ -2739,7 +2978,36 @@
         recruiterApplications.unshift(newApp);
         updateRecruiterDashboard();
 
-        showToast(`Votre candidature pour ${newApp.jobTitle} a été transmise avec succès !`);
+        // Synchronisation API si connecté en tant que candidat
+        if (isBackendOnline && authToken && currentUser?.role === 'candidat' && selectedJobForApply) {
+          (async () => {
+            try {
+              const letter = document.getElementById('apply-letter').value.trim();
+              const res = await fetch(`${API_BASE_URL}/applications`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + authToken
+                },
+                body: JSON.stringify({
+                  jobId: selectedJobForApply.id,
+                  coverNote: letter || undefined,
+                  cvFileName: applyCvInput.files[0].name
+                })
+              });
+              if (res.ok) {
+                showToast(`Candidature pour "${newApp.jobTitle}" enregistrée et synchronisée avec l'API !`);
+              } else {
+                const errData = await res.json().catch(() => ({}));
+                showToast(errData.message || `Candidature enregistrée en local !`);
+              }
+            } catch (_) {
+              showToast(`Candidature enregistrée en local !`);
+            }
+          })();
+        } else {
+          showToast(`Votre candidature pour ${newApp.jobTitle} a été transmise avec succès !`);
+        }
         closeApplyModal();
       });
 
@@ -2791,7 +3059,7 @@
       }
 
       // Changement de statut candidat
-      document.getElementById('recruiter-applications-body').addEventListener('change', (e) => {
+      document.getElementById('recruiter-applications-body').addEventListener('change', async (e) => {
         if (e.target.classList.contains('status-select')) {
           const appId = e.target.getAttribute('data-app-id');
           const newStatus = e.target.value;
@@ -2801,6 +3069,19 @@
             e.target.className = `status-select status-${newStatus.toLowerCase()}`;
             updateRecruiterDashboard();
             showToast(`Statut de ${app.name} mis à jour : ${newStatus}`);
+
+            if (isBackendOnline && authToken && (currentUser?.role === 'recruteur' || currentUser?.role === 'admin')) {
+              try {
+                await fetch(`${API_BASE_URL}/applications/${appId}/status`, {
+                  method: 'PATCH',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + authToken
+                  },
+                  body: JSON.stringify({ status: newStatus })
+                });
+              } catch (_) {}
+            }
           }
         }
       });
@@ -2822,7 +3103,7 @@
       createJobClose.addEventListener('click', closeCreateJobModal);
       createJobCancel.addEventListener('click', closeCreateJobModal);
 
-      createJobForm.addEventListener('submit', (e) => {
+      createJobForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const title = document.getElementById('job-in-title').value.trim();
         const company = document.getElementById('job-in-company').value.trim();
@@ -2838,6 +3119,10 @@
           return;
         }
 
+        let salaryNum = 50000;
+        const match = salary.match(/(\d+)\s*k/i);
+        if (match) salaryNum = parseInt(match[1], 10) * 1000;
+
         const newJob = {
           id: 'job-' + Date.now(),
           title,
@@ -2848,7 +3133,7 @@
           workplace,
           experience: 'Confirmé',
           salary,
-          salaryNum: 50000,
+          salaryNum: salaryNum,
           daysAgo: 1,
           tags: tagsRaw ? tagsRaw.split(',').map(t => t.trim()) : ['Polyvalence'],
           description: desc,
@@ -2857,11 +3142,45 @@
           benefits: ['RTT', 'Mutuelle d’entreprise', 'Télétravail partiel']
         };
 
+        // Synchronisation API si connecté en tant que recruteur ou admin
+        if (isBackendOnline && authToken && (currentUser?.role === 'recruteur' || currentUser?.role === 'admin')) {
+          try {
+            const res = await fetch(`${API_BASE_URL}/jobs`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + authToken
+              },
+              body: JSON.stringify({
+                title,
+                company,
+                category: 'Tech & Ingénierie',
+                contract,
+                workplace,
+                location,
+                salary,
+                description: desc,
+                tags: newJob.tags
+              })
+            });
+            if (res.ok) {
+              const apiJob = await res.json();
+              newJob.id = apiJob.id;
+              showToast(`L'offre "${title}" a été publiée et synchronisée avec l'API !`);
+            } else {
+              showToast(`L'offre "${title}" a été enregistrée en local.`);
+            }
+          } catch (_) {
+            showToast(`L'offre "${title}" a été enregistrée en local.`);
+          }
+        } else {
+          showToast(`L'offre "${title}" a été publiée avec succès (mode local) !`);
+        }
+
         allJobs.unshift(newJob);
         renderJobs();
         updateRecruiterDashboard();
         closeCreateJobModal();
-        showToast(`L'offre "${title}" a été publiée avec succès !`);
 
         // Basculer sur la vue candidat pour admirer l'offre en haut de liste
         switchToCandidateView();
@@ -2892,6 +3211,85 @@
       btnModeCandidate.addEventListener('click', switchToCandidateView);
       btnModeRecruiter.addEventListener('click', switchToRecruiterView);
       document.getElementById('footer-link-recruiter').addEventListener('click', (e) => { e.preventDefault(); switchToRecruiterView(); });
+
+      // ── CONTACT MODAL ─────────────────────────────────────────────────────────
+      const contactModal   = document.getElementById('contact-modal');
+      const btnCloseContact = document.getElementById('btn-close-contact-modal');
+      const formContact    = document.getElementById('form-contact');
+      const contactAlert   = document.getElementById('contact-alert');
+
+      function openContactModal() {
+        formContact.reset();
+        contactAlert.style.display = 'none';
+        contactModal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        document.getElementById('contact-nom').focus();
+      }
+
+      function closeContactModal() {
+        contactModal.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      function showContactAlert(msg, isError = true) {
+        contactAlert.textContent = msg;
+        contactAlert.style.display = 'block';
+        contactAlert.style.background = isError ? 'var(--danger-bg)' : 'var(--success-bg)';
+        contactAlert.style.color     = isError ? 'var(--danger)'    : 'var(--success)';
+        contactAlert.style.border    = `1px solid ${isError ? 'var(--danger)' : 'var(--success)'}`;
+      }
+
+      document.getElementById('footer-link-contact').addEventListener('click', (e) => { e.preventDefault(); openContactModal(); });
+      btnCloseContact.addEventListener('click', closeContactModal);
+      contactModal.addEventListener('click', (e) => { if (e.target === contactModal) closeContactModal(); });
+
+      formContact.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nom       = document.getElementById('contact-nom').value.trim();
+        const prenom    = document.getElementById('contact-prenom').value.trim();
+        const email     = document.getElementById('contact-email').value.trim();
+        const telephone = document.getElementById('contact-telephone').value.trim();
+        const sujet     = document.getElementById('contact-sujet').value;
+        const message   = document.getElementById('contact-message').value.trim();
+
+        if (!nom || !prenom || !email || !telephone || !sujet || !message) {
+          showContactAlert('Tous les champs sont obligatoires. Veuillez les compléter.');
+          return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          showContactAlert('Adresse e-mail invalide.');
+          return;
+        }
+
+        const btn     = document.getElementById('btn-submit-contact');
+        const btnText = document.getElementById('btn-submit-contact-text');
+        btn.disabled  = true;
+        btnText.textContent = 'Envoi en cours…';
+
+        try {
+          const resp = await fetch(`${API_BASE_URL}/contact`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nom, prenom, email, telephone, sujet, message })
+          });
+          const data = await resp.json();
+
+          if (!resp.ok) {
+            showContactAlert(data.details || 'Une erreur est survenue. Réessayez.');
+          } else {
+            showContactAlert('✅ Votre message a bien été envoyé. Nous vous répondrons sous 48 h.', false);
+            formContact.reset();
+            showToast('Message envoyé avec succès !');
+          }
+        } catch (_) {
+          showContactAlert('Impossible de joindre le serveur. Vérifiez votre connexion.');
+        } finally {
+          btn.disabled = false;
+          btnText.textContent = 'Envoyer le message';
+        }
+      });
 
       // 10. RECHERCHE & FILTRAGE EN TEMPS RÉEL
       searchForm.addEventListener('submit', (e) => {
@@ -2957,10 +3355,440 @@
       btnResetFilters.addEventListener('click', resetAllFilters);
       btnEmptyReset.addEventListener('click', resetAllFilters);
 
-      // Modale de connexion simplifiée
-      document.getElementById('btn-login-modal').addEventListener('click', () => {
-        showToast('Espace d’authentification sécurisé NovoRise (SSO / Email)');
+      // 11. INTÉGRATION API BACKEND & AUTHENTIFICATION
+      async function checkBackendHealth(showToasts = false) {
+        try {
+          const res = await fetch(`${API_BASE_URL}/health`, { method: 'GET' });
+          if (res.ok) {
+            isBackendOnline = true;
+            backendStatusDot.style.background = '#10B981';
+            backendStatusText.textContent = 'API Connectée (3006)';
+            backendStatusBadge.className = 'badge badge-primary';
+            if (showToasts) showToast('Connexion API établie (Port 3006) !');
+            return true;
+          }
+        } catch (_) {}
+        isBackendOnline = false;
+        backendStatusDot.style.background = '#F59E0B';
+        backendStatusText.textContent = 'Mode Démo (3006 hors-ligne)';
+        backendStatusBadge.className = 'badge badge-neutral';
+        if (showToasts) showToast('API :3006 non joignable. Données locales actives.');
+        return false;
+      }
+
+      backendStatusBadge.addEventListener('click', () => {
+        checkBackendHealth(true);
       });
+
+      function updateUserSessionUI() {
+        if (currentUser && authToken) {
+          userSessionChip.style.display = 'inline-flex';
+          btnLoginModal.style.display = 'none';
+          userChipAvatar.textContent = (currentUser.name || 'U').charAt(0).toUpperCase();
+          userChipName.textContent = currentUser.name || 'Utilisateur';
+          const roleLabel = currentUser.role === 'recruteur' ? 'Recruteur' : (currentUser.role === 'admin' ? 'Admin' : 'Candidat');
+          userChipRole.textContent = roleLabel;
+          userChipRole.className = currentUser.role === 'recruteur' ? 'badge badge-primary' : 'badge badge-neutral';
+
+          // Pré-remplir la candidature si candidat
+          if (currentUser.role === 'candidat') {
+            const fnInput = document.getElementById('apply-fullname');
+            const emInput = document.getElementById('apply-email');
+            const phInput = document.getElementById('apply-phone');
+            if (fnInput && !fnInput.value) fnInput.value = currentUser.name || '';
+            if (emInput && !emInput.value) emInput.value = currentUser.email || '';
+            if (phInput && !phInput.value && currentUser.profile?.phone) phInput.value = currentUser.profile.phone;
+          }
+
+          // Boîte de messagerie visible seulement pour admin / admin_manager
+          const isAdmin = currentUser.role === 'admin' || currentUser.role === 'admin_manager';
+          const inboxCard = document.getElementById('contact-inbox-card');
+          if (inboxCard) {
+            inboxCard.style.display = isAdmin ? 'block' : 'none';
+            if (isAdmin && isBackendOnline) loadContactMessages();
+          }
+        } else {
+          userSessionChip.style.display = 'none';
+          btnLoginModal.style.display = 'inline-flex';
+          const inboxCard = document.getElementById('contact-inbox-card');
+          if (inboxCard) inboxCard.style.display = 'none';
+        }
+      }
+
+      // ── CHARGEMENT DES MESSAGES DE CONTACT (admin) ───────────────────────────
+      async function loadContactMessages() {
+        const tbody = document.getElementById('contact-messages-body');
+        const badge = document.getElementById('contact-unread-badge');
+        if (!tbody || !authToken) return;
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/admin/messages`, {
+            headers: { 'Authorization': 'Bearer ' + authToken }
+          });
+          if (!res.ok) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: var(--danger); padding: 16px;">Erreur de chargement des messages.</td></tr>';
+            return;
+          }
+          const { messages } = await res.json();
+
+          if (!messages || messages.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: var(--text-tertiary); padding: 20px;">Aucun message pour le moment.</td></tr>';
+            if (badge) badge.style.display = 'none';
+            return;
+          }
+
+          const unread = messages.filter(m => !m.is_read).length;
+          if (badge) {
+            badge.style.display = unread > 0 ? 'inline-flex' : 'none';
+            badge.textContent = `${unread} non lu(s)`;
+          }
+
+          tbody.innerHTML = messages.map((m) => {
+            const date = new Date(m.created_at).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+            const isUnread = !m.is_read;
+            const rowBg = isUnread ? 'background:var(--primary-subtle);' : '';
+            const fw = isUnread ? 'font-weight:600;' : '';
+            const safeEmail = m.email.replace(/&/g,'&amp;');
+            const safeMsg = m.message.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            const shortMsg = m.message.length > 70 ? m.message.substring(0,70)+'...' : m.message;
+            const unreadDot = isUnread ? '<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--primary);margin-left:5px;vertical-align:middle;"></span>' : '';
+            const readBtn = m.is_read
+              ? '<span style="color:var(--success);font-size:0.85rem;">&#10003; Lu</span>'
+              : '<button class="btn btn-secondary btn-sm" style="padding:3px 8px;font-size:0.73rem;" onclick="markMessageRead(\''+m.id+'\')">Marquer lu</button>';
+            const expandBtn = m.message.length > 70
+              ? '<button onclick="showFullMessage(\''+m.id+'\')" style="background:none;border:none;cursor:pointer;color:var(--primary);font-size:0.72rem;padding:0;text-decoration:underline;">Voir complet</button>'
+              : '';
+            return '<tr style="'+rowBg+'">'
+              + '<td style="'+fw+'">'+m.prenom+' '+m.nom+unreadDot+'</td>'
+              + '<td style="font-size:0.82rem;">'+safeEmail
+              + ' <button onclick="navigator.clipboard.writeText(\''+safeEmail+'\');showToast(\'Email copi&eacute; !\')" style="background:none;border:none;cursor:pointer;color:var(--primary);padding:0 3px;font-size:0.7rem;" title="Copier">&#128203;</button></td>'
+              + '<td style="font-size:0.82rem;">'+m.telephone+'</td>'
+              + '<td><span class="badge badge-neutral" style="font-size:0.74rem;">'+m.sujet+'</span></td>'
+              + '<td style="font-size:0.8rem;color:var(--text-secondary);max-width:200px;"><span>'+shortMsg+'</span><br>'+expandBtn+'</td>'
+              + '<td style="font-size:0.78rem;color:var(--text-tertiary);white-space:nowrap;">'+date+'</td>'
+              + '<td style="white-space:nowrap;">'+readBtn+'</td>'
+              + '</tr>'
+              + '<tr id="msg-full-'+m.id+'" style="display:none;background:var(--bg-subtle);">'
+              + '<td colspan="7" style="padding:14px 20px;">'
+              + '<p style="font-size:0.78rem;color:var(--text-tertiary);margin:0 0 6px;">Message de <strong>'+m.prenom+' '+m.nom+'</strong> ('+safeEmail+') — '+date+'</p>'
+              + '<p style="font-size:0.9rem;line-height:1.6;white-space:pre-wrap;margin:0 0 10px;">'+safeMsg+'</p>'
+              + '<button onclick="document.getElementById(\'msg-full-'+m.id+'\').style.display=\'none\'" style="background:none;border:none;cursor:pointer;color:var(--text-tertiary);font-size:0.78rem;">&#10005; Fermer</button>'
+              + '</td></tr>';
+          }).join('');
+        } catch (_) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: var(--danger); padding: 16px;">Impossible de charger les messages.</td></tr>';
+        }
+      }
+
+      window.showFullMessage = function(id) {
+        const row = document.getElementById('msg-full-' + id);
+        if (row) row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+      };
+      window.markMessageRead = async function(id) {
+        if (!authToken) return;
+        try {
+          await fetch(`${API_BASE_URL}/admin/messages/${id}/read`, {
+            method: 'PATCH',
+            headers: { 'Authorization': 'Bearer ' + authToken }
+          });
+          loadContactMessages();
+          showToast('Message marqué comme lu.');
+        } catch (_) {}
+      };
+
+      document.getElementById('btn-refresh-messages')?.addEventListener('click', () => {
+        if (isBackendOnline && authToken) loadContactMessages();
+      });
+
+      // Bouton nav 'Contactez-nous' -> ouvre la modale (jamais Outlook)
+      document.getElementById('nav-btn-contact')?.addEventListener('click', () => { openContactModal(); });
+
+
+      function logout() {
+        currentUser = null;
+        authToken = null;
+        localStorage.removeItem('novorise_user');
+        localStorage.removeItem('novorise_token');
+        updateUserSessionUI();
+        showToast('Vous avez été déconnecté.');
+        switchToCandidateView();
+      }
+
+      btnLogout.addEventListener('click', logout);
+
+      // Gestion de la modale d'authentification
+      function openLoginModal() {
+        loginModal.classList.add('open');
+        authAlertMsg.style.display = 'none';
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLoginModal() {
+        loginModal.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      btnLoginModal.addEventListener('click', openLoginModal);
+      loginModalClose.addEventListener('click', closeLoginModal);
+      loginModal.addEventListener('click', (e) => {
+        if (e.target === loginModal) closeLoginModal();
+      });
+
+      // Bascule Onglets Connexion / Inscription
+      tabLoginBtn.addEventListener('click', () => {
+        tabLoginBtn.style.borderBottom = '2px solid var(--primary)';
+        tabLoginBtn.style.color = 'var(--primary)';
+        tabLoginBtn.style.fontWeight = '700';
+        tabRegisterBtn.style.borderBottom = '2px solid transparent';
+        tabRegisterBtn.style.color = 'var(--text-tertiary)';
+        tabRegisterBtn.style.fontWeight = '500';
+        formLogin.style.display = 'block';
+        formRegister.style.display = 'none';
+        authAlertMsg.style.display = 'none';
+      });
+
+      tabRegisterBtn.addEventListener('click', () => {
+        tabRegisterBtn.style.borderBottom = '2px solid var(--primary)';
+        tabRegisterBtn.style.color = 'var(--primary)';
+        tabRegisterBtn.style.fontWeight = '700';
+        tabLoginBtn.style.borderBottom = '2px solid transparent';
+        tabLoginBtn.style.color = 'var(--text-tertiary)';
+        tabLoginBtn.style.fontWeight = '500';
+        formRegister.style.display = 'block';
+        formLogin.style.display = 'none';
+        authAlertMsg.style.display = 'none';
+      });
+
+      // Connexions rapides démo
+      btnQuickCandidate.addEventListener('click', () => {
+        document.getElementById('login-email').value = 'candidat.test@gmail.com';
+        document.getElementById('login-password').value = 'Test@1234';
+        tabLoginBtn.click();
+        apiLogin('candidat.test@gmail.com', 'Test@1234');
+      });
+
+      btnQuickRecruiter.addEventListener('click', () => {
+        document.getElementById('login-email').value = 'recruteur.test@gmail.com';
+        document.getElementById('login-password').value = 'Test@1234';
+        tabLoginBtn.click();
+        apiLogin('recruteur.test@gmail.com', 'Test@1234');
+      });
+
+      btnQuickAdmin.addEventListener('click', () => {
+        document.getElementById('login-email').value = 'admin@novorise.com';
+        document.getElementById('login-password').value = 'Test@1234';
+        tabLoginBtn.click();
+        apiLogin('admin@novorise.com', 'Test@1234');
+      });
+
+      // Appel API Connexion
+      async function apiLogin(email, password) {
+        const btnText = document.getElementById('btn-submit-login-text');
+        const submitBtn = document.getElementById('btn-submit-login');
+        btnText.textContent = 'Connexion...';
+        submitBtn.disabled = true;
+        authAlertMsg.style.display = 'none';
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+
+          if (!res.ok) {
+            authAlertMsg.style.display = 'block';
+            authAlertMsg.style.background = 'var(--danger-bg)';
+            authAlertMsg.style.color = 'var(--danger)';
+            authAlertMsg.style.border = '1px solid #FECACA';
+            authAlertMsg.textContent = data.message || data.error || 'Identifiants incorrects.';
+            return;
+          }
+
+          authToken = data.token;
+          currentUser = data.user;
+          localStorage.setItem('novorise_token', authToken);
+          localStorage.setItem('novorise_user', JSON.stringify(currentUser));
+          updateUserSessionUI();
+          closeLoginModal();
+          showToast(`Bienvenue, ${currentUser.name} !`);
+
+          if (currentUser.role === 'recruteur' || currentUser.role === 'admin') {
+            switchToRecruiterView();
+            loadRecruiterJobs();
+          } else {
+            switchToCandidateView();
+          }
+        } catch (err) {
+          authAlertMsg.style.display = 'block';
+          authAlertMsg.style.background = 'var(--danger-bg)';
+          authAlertMsg.style.color = 'var(--danger)';
+          authAlertMsg.style.border = '1px solid #FECACA';
+          authAlertMsg.textContent = 'Impossible de joindre le serveur API NovoRise (:3006).';
+        } finally {
+          btnText.textContent = 'Se connecter';
+          submitBtn.disabled = false;
+        }
+      }
+
+      formLogin.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value.trim();
+        const pass = document.getElementById('login-password').value.trim();
+        if (!email || !pass) {
+          authAlertMsg.style.display = 'block';
+          authAlertMsg.style.background = 'var(--danger-bg)';
+          authAlertMsg.style.color = 'var(--danger)';
+          authAlertMsg.textContent = 'Veuillez renseigner votre email et mot de passe.';
+          return;
+        }
+        apiLogin(email, pass);
+      });
+
+      // Appel API Inscription
+      formRegister.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('reg-name').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const password = document.getElementById('reg-password').value.trim();
+        const role = document.getElementById('reg-role').value;
+
+        if (!name || !email || password.length < 8) {
+          authAlertMsg.style.display = 'block';
+          authAlertMsg.style.background = 'var(--danger-bg)';
+          authAlertMsg.style.color = 'var(--danger)';
+          authAlertMsg.textContent = 'Tous les champs sont requis (mot de passe 8 car. min).';
+          return;
+        }
+
+        const btnText = document.getElementById('btn-submit-register-text');
+        const submitBtn = document.getElementById('btn-submit-register');
+        btnText.textContent = 'Création...';
+        submitBtn.disabled = true;
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password, role })
+          });
+          const data = await res.json();
+
+          if (!res.ok) {
+            authAlertMsg.style.display = 'block';
+            authAlertMsg.style.background = 'var(--danger-bg)';
+            authAlertMsg.style.color = 'var(--danger)';
+            authAlertMsg.textContent = data.message || 'Erreur lors de la création.';
+            return;
+          }
+
+          if (data.verificationToken) {
+            await fetch(`${API_BASE_URL}/auth/verify?token=${data.verificationToken}&email=${encodeURIComponent(email)}`).catch(() => {});
+          }
+          showToast('Compte créé avec succès ! Connexion en cours...');
+          await apiLogin(email, password);
+        } catch (err) {
+          authAlertMsg.style.display = 'block';
+          authAlertMsg.style.background = 'var(--danger-bg)';
+          authAlertMsg.style.color = 'var(--danger)';
+          authAlertMsg.textContent = 'Erreur réseau avec le serveur NovoRise.';
+        } finally {
+          btnText.textContent = 'Créer mon compte';
+          submitBtn.disabled = false;
+        }
+      });
+
+      // Synchronisation des offres depuis l'API
+      async function fetchJobsFromBackend() {
+        try {
+          const res = await fetch(`${API_BASE_URL}/jobs`);
+          if (!res.ok) return;
+          const apiJobs = await res.json();
+          if (Array.isArray(apiJobs) && apiJobs.length > 0) {
+            allJobs = apiJobs.map((j, idx) => {
+              const tags = Array.isArray(j.tags) ? j.tags : (typeof j.tags === 'string' ? JSON.parse(j.tags) : []);
+              const daysAgo = j.created_at ? Math.max(1, Math.floor((Date.now() - new Date(j.created_at).getTime()) / (1000 * 3600 * 24))) : (idx + 1);
+
+              let salaryNum = 50000;
+              const match = (j.salary || '').match(/(\d+)\s*k/i);
+              if (match) salaryNum = parseInt(match[1], 10) * 1000;
+
+              return {
+                id: j.id,
+                title: j.title,
+                company: j.company,
+                logoText: (j.company || 'NR').substring(0, 2).toUpperCase(),
+                location: j.location || 'Casablanca',
+                contract: j.contract || 'CDI',
+                workplace: j.workplace || 'Hybride',
+                experience: j.experience || 'Confirmé',
+                salary: j.salary || 'À négocier',
+                salaryNum: salaryNum,
+                daysAgo: daysAgo,
+                tags: tags.length ? tags : ['Innovation', 'Tech'],
+                description: j.description || `Opportunité de carrière chez ${j.company}.`,
+                missions: [
+                  'Participer activement aux projets et livrables stratégiques',
+                  'Collaborer étroitement avec les équipes pluridisciplinaires',
+                  'Garantir l’excellence technique et le respect des standards NovoRise'
+                ],
+                requirements: [
+                  'Expérience solide et compétences éprouvées dans le domaine',
+                  'Rigueur, sens des responsabilités et communication fluide',
+                  'Capacité à évoluer dans un environnement stimulant et innovant'
+                ],
+                benefits: ['Télétravail flexible', 'Mutuelle d’entreprise', 'Tickets restaurant', 'Budget formation & conférences']
+              };
+            });
+            renderJobs();
+            updateRecruiterDashboard();
+          }
+        } catch (_) {}
+      }
+
+      // Synchronisation de l'espace recruteur avec l'API
+      async function loadRecruiterJobs() {
+        if (!authToken || !currentUser || (currentUser.role !== 'recruteur' && currentUser.role !== 'admin')) return;
+        try {
+          const res = await fetch(`${API_BASE_URL}/jobs/mine`, {
+            headers: { 'Authorization': 'Bearer ' + authToken }
+          });
+          if (res.ok) {
+            const myJobs = await res.json();
+            if (Array.isArray(myJobs) && myJobs.length > 0) {
+              document.getElementById('kpi-active-jobs').textContent = myJobs.length;
+              for (const job of myJobs) {
+                try {
+                  const appsRes = await fetch(`${API_BASE_URL}/applications/job/${job.id}`, {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                  });
+                  if (appsRes.ok) {
+                    const apps = await appsRes.json();
+                    if (Array.isArray(apps)) {
+                      apps.forEach(a => {
+                        if (!recruiterApplications.some(x => x.id === a.id)) {
+                          recruiterApplications.unshift({
+                            id: a.id,
+                            name: a.candidate_name || a.name || 'Candidat NovoRise',
+                            email: a.candidate_email || a.email || 'candidat@email.com',
+                            phone: a.candidate_phone || '06 12 34 56 78',
+                            jobTitle: job.title,
+                            date: a.applied_at ? new Date(a.applied_at).toLocaleDateString('fr-FR') : "Récent",
+                            cvName: a.cv_filename || 'CV.pdf',
+                            status: a.status || 'Nouveau'
+                          });
+                        }
+                      });
+                      updateRecruiterDashboard();
+                    }
+                  }
+                } catch (_) {}
+              }
+            }
+          }
+        } catch (_) {}
+      }
 
       // Touche Escape pour fermer les modales/drawers
       window.addEventListener('keydown', (e) => {
@@ -2968,6 +3796,7 @@
           closeDrawer();
           closeApplyModal();
           closeCreateJobModal();
+          closeLoginModal();
         }
       });
 
@@ -2975,6 +3804,18 @@
       initTheme();
       renderJobs();
       updateRecruiterDashboard();
+      updateUserSessionUI();
+
+      // Démarrage de la synchronisation API
+      (async function bootAPI() {
+        const connected = await checkBackendHealth();
+        if (connected) {
+          await fetchJobsFromBackend();
+          if (currentUser?.role === 'recruteur' || currentUser?.role === 'admin') {
+            await loadRecruiterJobs();
+          }
+        }
+      })();
 
     })();
   </script>

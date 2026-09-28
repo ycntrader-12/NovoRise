@@ -2,7 +2,6 @@ import { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import pool from '../db/pool';
 import { requireAuth, requireRole } from '../middleware/auth.middleware';
-import emailQueue from '../services/email.queue';
 
 const router = Router();
 
@@ -16,7 +15,7 @@ router.get('/', async (req: Request, res: Response) => {
     let query = `
       SELECT j.*, u.name as recruiter_name, u.avatar_url as recruiter_avatar
       FROM job_posts j
-      JOIN users u ON j.recruiter_id = u.id
+      LEFT JOIN users u ON j.recruiter_id = u.id
       WHERE j.status = 'Actif'
     `;
     const params: string[] = [];
@@ -75,9 +74,9 @@ router.post(
   [
     body('title').trim().notEmpty(),
     body('company').trim().notEmpty(),
-    body('category').isString().notEmpty().withMessage('Secteur requis'),
+    body('category').optional().isString(),
     body('contract').isIn(['CDI', 'CDD', 'Freelance', 'Stage']),
-    body('workplace').isIn(['Remote', 'Hybride', 'Présentiel']),
+    body('workplace').isIn(['Remote', 'Hybride', 'Présentiel', 'Télétravail total', 'Sur site']),
   ],
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
@@ -93,7 +92,7 @@ router.post(
         `INSERT INTO job_posts (recruiter_id, title, company, category, contract, workplace, location, salary, description, tags)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
          RETURNING *`,
-        [req.user!.sub, title, company, category, contract, workplace, location, salary, description, tags || []]
+        [req.user!.sub, title, company, category || 'Tech & Ingénierie', contract, workplace, location, salary, description, tags || []]
       );
 
       res.status(201).json(result.rows[0]);

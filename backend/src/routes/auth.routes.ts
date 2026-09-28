@@ -299,7 +299,7 @@ router.get(
   }
 );
 
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '835055005645-14vp9a34co61gd6f4em3l0k5rh86fq2r.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 const googleOAuthClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -1,8 +1,5 @@
 import nodemailer from 'nodemailer';
 import { emailQueue, EmailJobData } from '../services/email.queue';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 let transporter: any;
 
