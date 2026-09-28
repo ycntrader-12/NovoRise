@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { CheckCircle2, XCircle, Loader2, AlertCircle, Copy, Check, ExternalLink } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { UserRole } from '../../types/auth';
 import { apiGetMe } from '../../api/auth.api';
 
 /**
  * GoogleCallbackPage — appelé après le redirect OAuth Google :
- * http://localhost:5173/auth/google/success?token=JWT&role=candidat
+ * http://localhost:3005/auth/google/success?token=JWT&role=candidat
  *
  * Lit le JWT dans l'URL, restaure la session, redirige vers le dashboard.
  */
@@ -14,6 +14,7 @@ export const GoogleCallbackPage: React.FC = () => {
   const { setActiveView, loginWithGoogleInstant } = useAuth();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -105,7 +106,44 @@ export const GoogleCallbackPage: React.FC = () => {
                 <XCircle className="w-8 h-8 text-red-500" />
               </div>
               <h2 className="text-lg font-extrabold text-[#0B132B] mb-1.5">Échec de la connexion externe</h2>
-              <p className="text-slate-500 text-xs mb-4">{message}</p>
+              <p className="text-slate-500 text-xs mb-3">{message}</p>
+
+              {/* Guide Erreur 400 Google Cloud */}
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 text-left mb-4 space-y-2">
+                <div className="flex items-center gap-1.5 font-bold text-xs text-amber-900">
+                  <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                  <span>Si vous voyez l'erreur 400 redirect_uri_mismatch :</span>
+                </div>
+                <p className="text-[11px] text-amber-800 leading-relaxed">
+                  Ajoutez l'URI suivant dans votre console Google Cloud (URIs de redirection autorisés) :
+                </p>
+                <div className="flex items-center gap-2 bg-white border border-amber-300 rounded-xl p-2 font-mono text-[11px] text-slate-800">
+                  <span className="flex-1 truncate select-all">http://localhost:3006/api/auth/google/callback</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText('http://localhost:3006/api/auth/google/callback');
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    }}
+                    className="bg-[#2D6BE4] hover:bg-[#2563EB] text-white px-2.5 py-1 rounded-lg font-bold text-[11px] flex items-center gap-1 cursor-pointer transition-colors"
+                  >
+                    {copied ? <Check className="w-3 h-3 text-emerald-300" /> : <Copy className="w-3 h-3" />}
+                    <span>{copied ? 'Copié !' : 'Copier'}</span>
+                  </button>
+                </div>
+                <div className="pt-1">
+                  <a
+                    href="https://console.cloud.google.com/apis/credentials"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] text-[#2D6BE4] hover:underline font-bold"
+                  >
+                    <span>Ouvrir Google Cloud Console Credentials</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              </div>
               
               <button
                 onClick={async () => {
@@ -124,7 +162,7 @@ export const GoogleCallbackPage: React.FC = () => {
                 className="w-full bg-[#16A34A] hover:bg-[#15803D] text-white py-3 rounded-2xl font-bold shadow-md shadow-emerald-500/20 transition-all text-xs cursor-pointer flex items-center justify-center gap-2 mb-2.5"
               >
                 <CheckCircle2 className="w-4 h-4" />
-                <span>Continuer avec Google (Mode Direct Sans Blocage)</span>
+                <span>Continuer avec Google (Mode Direct)</span>
               </button>
 
               <button

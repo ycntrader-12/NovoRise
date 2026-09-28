@@ -128,7 +128,8 @@ export const loginOrRegisterGoogleUser = async (
   email: string,
   name: string,
   role: 'candidat' | 'recruteur',
-  avatarUrl?: string
+  avatarUrl?: string,
+  googleId?: string
 ) => {
   const cleanEmail = email.toLowerCase().trim();
   const cleanRole = role === 'recruteur' ? 'recruteur' : 'candidat';
@@ -140,17 +141,18 @@ export const loginOrRegisterGoogleUser = async (
   if (existing.rows.length > 0) {
     user = existing.rows[0];
     await pool.query(
-      'UPDATE users SET verified = 1, avatar_url = COALESCE(avatar_url, $1) WHERE id = $2',
-      [avatar, user.id]
+      'UPDATE users SET verified = 1, avatar_url = COALESCE(avatar_url, $1), google_id = COALESCE($2, google_id) WHERE id = $3',
+      [avatar, googleId || null, user.id]
     );
     user.verified = true;
     if (!user.avatar_url) user.avatar_url = avatar;
+    if (googleId && !user.google_id) user.google_id = googleId;
   } else {
     const newId = uuidv4();
     await pool.query(
       `INSERT INTO users (id, name, email, role, verified, avatar_url, google_id)
        VALUES ($1, $2, $3, $4, 1, $5, $6)`,
-      [newId, cleanName, cleanEmail, cleanRole, avatar, `google_fast_${Date.now()}`]
+      [newId, cleanName, cleanEmail, cleanRole, avatar, googleId || `google_${Date.now()}`]
     );
     user = {
       id: newId,

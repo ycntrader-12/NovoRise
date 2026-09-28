@@ -44,7 +44,7 @@ interface AuthContextType {
   confirmEmailToken: (token: string) => Promise<void>;
   login: (email: string, password: string) => Promise<{ success: boolean; role: UserRole }>;
   loginWithGoogle: (preferredRole?: UserRole) => void;
-  loginWithGoogleInstant: (preferredRole?: UserRole, customEmail?: string, customName?: string) => Promise<{ success: boolean; role: UserRole }>;
+  loginWithGoogleInstant: (preferredRole?: UserRole, customEmail?: string, customName?: string, credential?: string, avatarUrl?: string) => Promise<{ success: boolean; role: UserRole }>;
   requestPasswordReset: (email: string) => Promise<string>;
   completePasswordReset: (token: string, newPassword: string) => Promise<boolean>;
   logout: () => void;
@@ -256,17 +256,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     window.location.href = `${apiBase}/api/auth/google?role=${preferredRole}`;
   };
 
-  // ─── Google Fast / Direct Login (Anti-blocage / Instantané) ─────────────────
+  // ─── Google Fast / Direct Login (Anti-blocage / Instantané / GSI) ───────────
   const loginWithGoogleInstant = async (
     preferredRole: UserRole = 'candidat',
     customEmail?: string,
-    customName?: string
+    customName?: string,
+    credential?: string,
+    avatarUrl?: string
   ) => {
     try {
       setApiError(null);
-      const email = customEmail || (preferredRole === 'recruteur' ? 'recruteur.partenaire@novorise.ma' : 'candidat.ambitieux@novorise.ma');
-      const name = customName || (preferredRole === 'recruteur' ? 'Karim Bennani (Recruteur Google)' : 'Yassine Alami (Candidat Google)');
-      const { user: googleUser, token: jwtToken } = await apiGoogleDirectLogin(email, name, preferredRole);
+      const email = customEmail || (!credential ? (preferredRole === 'recruteur' ? 'recruteur.partenaire@novorise.ma' : 'candidat.ambitieux@novorise.ma') : undefined);
+      const name = customName || (!credential ? (preferredRole === 'recruteur' ? 'Karim Bennani (Recruteur Google)' : 'Yassine Alami (Candidat Google)') : undefined);
+      const { user: googleUser, token: jwtToken } = await apiGoogleDirectLogin(
+        email,
+        name,
+        preferredRole,
+        credential,
+        avatarUrl
+      );
       establishSession(googleUser, jwtToken);
       setAuthModalOpen(false);
       return { success: true, role: googleUser.role };

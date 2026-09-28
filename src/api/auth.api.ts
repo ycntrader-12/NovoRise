@@ -26,13 +26,15 @@ export const apiRegister = (
 export const apiVerifyEmail = (token: string, email?: string): Promise<AuthResponse> =>
   apiGet<AuthResponse>(`/auth/verify?token=${encodeURIComponent(token)}${email ? `&email=${encodeURIComponent(email)}` : ''}`);
 
-// POST /api/auth/google/direct (Anti-blocage / Connexion instantanée)
+// POST /api/auth/google/direct (Anti-blocage / Connexion directe avec Google)
 export const apiGoogleDirectLogin = (
   email?: string,
   name?: string,
-  role: UserRole = 'candidat'
+  role: UserRole = 'candidat',
+  credential?: string,
+  avatarUrl?: string
 ): Promise<AuthResponse> =>
-  apiPost<AuthResponse>('/auth/google/direct', { email, name, role });
+  apiPost<AuthResponse>('/auth/google/direct', { email, name, role, credential, avatarUrl });
 
 // POST /api/auth/login
 export const apiLogin = (email: string, password: string): Promise<AuthResponse> =>

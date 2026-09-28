@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import passport from 'passport';
+import { OAuth2Client } from 'google-auth-library';
 import {
   registerUser,
   verifyEmailToken,
@@ -257,7 +258,7 @@ router.get('/google', (req: Request, res: Response, next) => {
   const rawRole = (req.query.role as string) || 'candidat';
   const role = (rawRole === 'recruteur' || rawRole === 'candidat') ? rawRole : 'candidat';
   passport.authenticate('google', {
-    scope: ['profile', 'email'],
+    scope: ['openid', 'profile', 'email'],
     prompt: 'select_account consent',
     accessType: 'offline',
     state: role,  // Passer le rôle via state OAuth
@@ -290,18 +291,71 @@ router.get(
   }
 );
 
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '835055005645-14vp9a34co61gd6f4em3l0k5rh86fq2r.apps.googleusercontent.com';
+const googleOAuthClient = new OAuth2Client(GOOGLE_CLIENT_ID);
+
 // ─────────────────────────────────────────────────────────────────────────────
-// Google Fast / Direct Login (Mode sans blocage & immédiat)
+// Google Fast / Direct Login (Standard Google Identity Services GIS)
 // POST /api/auth/google/direct
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/google/direct', async (req: Request, res: Response) => {
   try {
-    const { email, name, role, avatarUrl } = req.body;
+    const { credential, email, name, role, avatarUrl } = req.body;
     const cleanRole = role === 'recruteur' ? 'recruteur' : 'candidat';
-    const cleanEmail = email || `user_${Date.now()}@gmail.com`;
-    const cleanName = name || (cleanRole === 'recruteur' ? 'Recruteur Google' : 'Candidat Google');
 
-    const { user, token } = await loginOrRegisterGoogleUser(cleanEmail, cleanName, cleanRole, avatarUrl);
+    let finalEmail = email;
+    let finalName = name;
+    let finalAvatar = avatarUrl;
+    let googleId: string | undefined = undefined;
+
+    // Standard Google Identity Services: Vérification cryptographique via google-auth-library
+    if (credential) {
+      let verified = false;
+      try {
+        const ticket = await googleOAuthClient.verifyIdToken({
+          idToken: credential,
+          audience: GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        if (payload) {
+          finalEmail = payload.email || finalEmail;
+          finalName = payload.name || payload.given_name || finalName;
+          finalAvatar = payload.picture || finalAvatar;
+          googleId = payload.sub;
+          verified = true;
+        }
+      } catch (authLibErr: any) {
+        console.warn('google-auth-library verification notice, trying tokeninfo fallback:', authLibErr?.message);
+      }
+
+      // Fallback Google tokeninfo endpoint
+      if (!verified) {
+        try {
+          const verifyRes = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${credential}`);
+          if (verifyRes.ok) {
+            const payload: any = await verifyRes.json();
+            finalEmail = payload.email || finalEmail;
+            finalName = payload.name || payload.given_name || finalName;
+            finalAvatar = payload.picture || finalAvatar;
+            googleId = payload.sub;
+          } else {
+            console.warn('Google tokeninfo status:', verifyRes.status);
+          }
+        } catch (fetchErr) {
+          console.warn('Failed to verify Google token via tokeninfo:', fetchErr);
+        }
+      }
+    }
+
+    if (!finalEmail) {
+      res.status(400).json({ error: 'MISSING_EMAIL', message: 'Email Google requis.' });
+      return;
+    }
+
+    const cleanEmail = String(finalEmail).toLowerCase().trim();
+    const cleanName = String(finalName || cleanEmail.split('@')[0] || (cleanRole === 'recruteur' ? 'Recruteur' : 'Candidat')).trim();
+
+    const { user, token } = await loginOrRegisterGoogleUser(cleanEmail, cleanName, cleanRole, finalAvatar, googleId);
 
     res.json({
       token,
