@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+    "strict": false
+  },
+  "references": [
+    { "path": "./frontend" },
+    { "path": "./backend" }
+  ],
+  "files": []
+}
