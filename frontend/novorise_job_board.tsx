@@ -49,6 +49,7 @@ import { GoogleCallbackPage } from './src/components/auth/GoogleCallbackPage';
 import { JOB_CATEGORIES, FEATURED_CATEGORIES, CATEGORY_GROUPS, type JobCategory } from './src/types/categories';
 import { apiGenerateCoverLetter } from './src/api/ai.api';
 import { apiGetJobs } from './src/api/jobs.api';
+import { apiPost } from './src/api/client';
 
 // Job Type
 export interface Job {
@@ -431,6 +432,30 @@ function NovoRiseMain() {
 
   // Toast
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Contact Modal State
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    nom: '', prenom: '', email: '', telephone: '', sujet: '', message: ''
+  });
+  const [contactLoading, setContactLoading] = useState(false);
+  const [contactError, setContactError] = useState<string | null>(null);
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setContactLoading(true);
+    setContactError(null);
+    try {
+      await apiPost('/contact', contactForm);
+      showToast('Votre message a bien été envoyé aux administrateurs !');
+      setShowContactModal(false);
+      setContactForm({ nom: '', prenom: '', email: '', telephone: '', sujet: '', message: '' });
+    } catch (err: any) {
+      setContactError(err.message || 'Erreur lors de l\'envoi du message');
+    } finally {
+      setContactLoading(false);
+    }
+  };
 
   // Application form
   const [applyForm, setApplyForm] = useState({
@@ -1444,7 +1469,7 @@ function NovoRiseMain() {
                   </a>
                 </li>
                 <li>
-                  <a href="mailto:contact@novorise.com" className="hover:text-[#2D6BE4] dark:hover:text-cyan-400 transition-colors">
+                  <a href="#" onClick={(e) => { e.preventDefault(); setShowContactModal(true); }} className="hover:text-[#2D6BE4] dark:hover:text-cyan-400 transition-colors">
                     Contactez-nous
                   </a>
                 </li>
@@ -1790,6 +1815,77 @@ function NovoRiseMain() {
                   >
                     <Send className="w-4 h-4" />
                     <span>Envoyer ma candidature</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: CONTACTEZ-NOUS ================= */}
+      {showContactModal && (
+        <div className="fixed inset-0 z-50 bg-[#0B132B]/75 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
+          <div className="bg-white dark:bg-[#0E172A] rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800 relative my-4 flex flex-col transition-colors">
+            
+            <div className="bg-gradient-to-r from-[#0B132B] via-[#1C2541] to-[#0B132B] text-white p-5 sm:p-6 relative overflow-hidden flex-shrink-0">
+              <div className="absolute right-0 top-0 w-48 h-48 bg-[#2D6BE4]/20 rounded-full blur-2xl pointer-events-none" />
+              <button 
+                onClick={() => setShowContactModal(false)}
+                className="absolute top-4 right-4 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors z-20 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              <div className="relative z-10 pr-8">
+                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">Contactez-nous</h3>
+                <p className="text-slate-300 text-xs sm:text-sm mt-0.5 font-medium">Envoyez un message direct à nos administrateurs.</p>
+              </div>
+            </div>
+
+            <div className="p-5 sm:p-6 overflow-y-auto">
+              <form onSubmit={handleContactSubmit} className="space-y-3.5 text-xs">
+                {contactError && (
+                  <div className="bg-red-50 text-red-700 text-xs p-3 rounded-xl border border-red-100 mb-2">
+                    {contactError}
+                  </div>
+                )}
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1 text-[11px]">Nom *</label>
+                    <input type="text" required value={contactForm.nom} onChange={(e) => setContactForm({...contactForm, nom: e.target.value})} className="w-full border border-slate-200 dark:border-slate-700 focus:border-[#2D6BE4] dark:focus:border-cyan-400 rounded-xl px-3 py-2 outline-none transition-all text-xs text-slate-800 dark:text-white bg-slate-50/50 dark:bg-slate-800/60 focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-[#2D6BE4]/15" />
+                  </div>
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1 text-[11px]">Prénom *</label>
+                    <input type="text" required value={contactForm.prenom} onChange={(e) => setContactForm({...contactForm, prenom: e.target.value})} className="w-full border border-slate-200 dark:border-slate-700 focus:border-[#2D6BE4] dark:focus:border-cyan-400 rounded-xl px-3 py-2 outline-none transition-all text-xs text-slate-800 dark:text-white bg-slate-50/50 dark:bg-slate-800/60 focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-[#2D6BE4]/15" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1 text-[11px]">Email *</label>
+                    <input type="email" required value={contactForm.email} onChange={(e) => setContactForm({...contactForm, email: e.target.value})} className="w-full border border-slate-200 dark:border-slate-700 focus:border-[#2D6BE4] dark:focus:border-cyan-400 rounded-xl px-3 py-2 outline-none transition-all text-xs text-slate-800 dark:text-white bg-slate-50/50 dark:bg-slate-800/60 focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-[#2D6BE4]/15" />
+                  </div>
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1 text-[11px]">Téléphone *</label>
+                    <input type="tel" required value={contactForm.telephone} onChange={(e) => setContactForm({...contactForm, telephone: e.target.value})} className="w-full border border-slate-200 dark:border-slate-700 focus:border-[#2D6BE4] dark:focus:border-cyan-400 rounded-xl px-3 py-2 outline-none transition-all text-xs text-slate-800 dark:text-white bg-slate-50/50 dark:bg-slate-800/60 focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-[#2D6BE4]/15" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1 text-[11px]">Objet / Sujet *</label>
+                  <input type="text" required value={contactForm.sujet} onChange={(e) => setContactForm({...contactForm, sujet: e.target.value})} className="w-full border border-slate-200 dark:border-slate-700 focus:border-[#2D6BE4] dark:focus:border-cyan-400 rounded-xl px-3 py-2 outline-none transition-all text-xs text-slate-800 dark:text-white bg-slate-50/50 dark:bg-slate-800/60 focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-[#2D6BE4]/15" />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1 text-[11px]">Message *</label>
+                  <textarea rows={4} required value={contactForm.message} onChange={(e) => setContactForm({...contactForm, message: e.target.value})} className="w-full border border-slate-200 dark:border-slate-700 focus:border-[#2D6BE4] dark:focus:border-cyan-400 rounded-xl px-3 py-2 outline-none transition-all text-xs text-slate-800 dark:text-white bg-slate-50/50 dark:bg-slate-800/60 focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-[#2D6BE4]/15 resize-none" />
+                </div>
+
+                <div className="pt-2">
+                  <button type="submit" disabled={contactLoading} className="w-full bg-[#2D6BE4] hover:bg-[#2563EB] dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-slate-950 py-3 rounded-2xl font-bold shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer text-xs disabled:opacity-70">
+                    {contactLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                    <span>{contactLoading ? 'Envoi...' : 'Envoyer le message'}</span>
                   </button>
                 </div>
               </form>

@@ -37,7 +37,7 @@ import {
   Filter
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { adminApi, AdminStats, AdminUser, AdminJob, DbTableInfo, CreateUserPayload, UpdateUserPayload } from '../../api/admin.api';
+import { adminApi, AdminStats, AdminUser, AdminJob, DbTableInfo, CreateUserPayload, UpdateUserPayload, AdminMessage } from '../../api/admin.api';
 
 export const AdminDashboardPortal: React.FC = () => {
   const { user, isAuthenticated, login, logout } = useAuth();
@@ -48,7 +48,7 @@ export const AdminDashboardPortal: React.FC = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
 
   // Admin Dashboard State
-  const [activeTab, setActiveTab] = useState<'stats' | 'users' | 'database' | 'jobs'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'users' | 'database' | 'jobs' | 'messages'>('stats');
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [usersList, setUsersList] = useState<AdminUser[]>([]);
   const [userRoleFilter, setUserRoleFilter] = useState('Tous');
@@ -101,6 +101,9 @@ export const AdminDashboardPortal: React.FC = () => {
   const [selectedJobModal, setSelectedJobModal] = useState<AdminJob | null>(null);
   const [deleteJobModal, setDeleteJobModal] = useState<AdminJob | null>(null);
   const [deleteJobLoading, setDeleteJobLoading] = useState(false);
+
+  // Admin Messages State
+  const [messagesList, setMessagesList] = useState<AdminMessage[]>([]);
 
   const isAdminManager = user?.role === 'admin_manager';
 
@@ -174,6 +177,28 @@ export const AdminDashboardPortal: React.FC = () => {
     }
   };
 
+  const loadMessages = async () => {
+    try {
+      setLoading(true);
+      const data = await adminApi.getMessages();
+      setMessagesList(data.messages);
+    } catch (err) {
+      console.error('Failed to load messages:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMarkMessageRead = async (id: string) => {
+    try {
+      await adminApi.markMessageAsRead(id);
+      showToast('Message marqué comme lu');
+      loadMessages();
+    } catch (err) {
+      showToast('Erreur lors de la mise à jour du message');
+    }
+  };
+
   const handleToggleJobStatus = async (job: AdminJob) => {
     const nextStatus = job.status === 'Actif' ? 'Pause' : 'Actif';
     try {
@@ -205,6 +230,7 @@ export const AdminDashboardPortal: React.FC = () => {
   useEffect(() => {
     if (isAuthenticated && (user?.role === 'admin' || user?.role === 'admin_manager')) {
       loadUsers();
+      loadMessages();
       if (user?.role === 'admin') {
         loadStats();
         loadDatabaseTables();
@@ -602,6 +628,16 @@ export const AdminDashboardPortal: React.FC = () => {
                   <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                 </button>
               )}
+
+              <button
+                onClick={() => setActiveTab('messages')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === 'messages' ? 'bg-[#2D6BE4] text-white shadow-sm' : 'text-gray-300 hover:text-white'
+                }`}
+              >
+                <Mail className="w-4 h-4" />
+                <span>Messagerie ({messagesList.filter(m => !m.is_read).length})</span>
+              </button>
 
               <div className="flex items-center gap-2.5 bg-gray-800/80 px-3 py-1.5 rounded-xl border border-gray-700">
                 <div className="w-7 h-7 rounded-lg bg-[#2D6BE4] text-white flex items-center justify-center font-bold text-xs">
@@ -1098,6 +1134,80 @@ export const AdminDashboardPortal: React.FC = () => {
                   </table>
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* ================= TAB 5: MESSAGES (CONTACT US) ================= */}
+        {activeTab === 'messages' && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold text-[#1A1A2E]">Boîte de Messagerie</h2>
+                <p className="text-[#6B7280] text-sm mt-1 font-medium">Messages reçus depuis le formulaire de contact.</p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-[#F8F7F5] border-b border-gray-200/60 text-[#6B7280] font-semibold uppercase tracking-wider">
+                      <th className="py-3.5 px-4 w-12">Statut</th>
+                      <th className="py-3.5 px-4">Date</th>
+                      <th className="py-3.5 px-4">Expéditeur</th>
+                      <th className="py-3.5 px-4">Contact</th>
+                      <th className="py-3.5 px-4">Sujet / Message</th>
+                      <th className="py-3.5 px-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 text-[#1A1A2E]">
+                    {messagesList.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="py-8 text-center text-[#6B7280]">Aucun message trouvé.</td>
+                      </tr>
+                    ) : (
+                      messagesList.map((msg) => (
+                        <tr key={msg.id} className={`hover:bg-gray-50/80 transition-colors ${msg.is_read ? 'bg-white' : 'bg-blue-50/30'}`}>
+                          <td className="py-3.5 px-4">
+                            {!msg.is_read ? (
+                              <span className="w-2.5 h-2.5 rounded-full bg-blue-500 block"></span>
+                            ) : (
+                              <CheckCircle2 className="w-4 h-4 text-gray-400" />
+                            )}
+                          </td>
+                          <td className="py-3.5 px-4 text-[#6B7280] whitespace-nowrap">
+                            {new Date(msg.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                          </td>
+                          <td className="py-3.5 px-4 font-semibold whitespace-nowrap">
+                            {msg.nom} {msg.prenom}
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <div className="flex flex-col gap-1">
+                              <span className="text-blue-600 hover:underline">{msg.email}</span>
+                              <span className="text-gray-500">{msg.telephone}</span>
+                            </div>
+                          </td>
+                          <td className="py-3.5 px-4 max-w-sm">
+                            <div className="font-semibold text-gray-800 mb-1 truncate">{msg.sujet}</div>
+                            <div className="text-gray-600 text-[11px] line-clamp-2" title={msg.message}>{msg.message}</div>
+                          </td>
+                          <td className="py-3.5 px-4 text-right">
+                            {!msg.is_read && (
+                              <button
+                                onClick={() => handleMarkMessageRead(msg.id)}
+                                className="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg font-medium transition-colors"
+                              >
+                                Marquer lu
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}

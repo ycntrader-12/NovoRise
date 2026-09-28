@@ -94,6 +94,18 @@ export interface AdminJob {
   recruiter_company?: string;
 }
 
+export interface AdminMessage {
+  id: string;
+  nom: string;
+  prenom: string;
+  email: string;
+  telephone: string;
+  sujet: string;
+  message: string;
+  is_read: number;
+  created_at: string;
+}
+
 export const adminApi = {
   // Get system & database statistics
   async getStats(): Promise<AdminStats> {
@@ -162,4 +174,15 @@ export const adminApi = {
   async createUser(payload: CreateUserPayload): Promise<{ message: string; user: AdminUser }> {
     return apiPost<{ message: string; user: AdminUser }>('/admin/users', payload);
   },
+
+  // Get contact messages
+  async getMessages(): Promise<{ messages: AdminMessage[] }> {
+    return apiGet<{ messages: AdminMessage[] }>('/admin/messages');
+  },
+
+  // Mark message as read
+  async markMessageAsRead(id: string): Promise<{ message: string }> {
+    return apiPatch<{ message: string }>(`/admin/messages/${id}/read`, {});
+  },
 };
+
